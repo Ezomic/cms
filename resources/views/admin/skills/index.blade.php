@@ -9,10 +9,13 @@
   @forelse ($skills as $category => $items)
     <div class="mb-6">
       <div class="text-xs font-mono uppercase tracking-wide text-orange-600 mb-2">{{ $category }}</div>
-      <div class="bg-white border border-stone-200 rounded divide-y divide-stone-200">
+      <div class="skill-list bg-white border border-stone-200 rounded divide-y divide-stone-200">
         @foreach ($items as $skill)
-          <div class="flex items-center justify-between px-6 py-3">
-            <span class="text-sm">{{ $skill->name }}</span>
+          <div class="flex items-center justify-between px-6 py-3" data-id="{{ $skill->id }}">
+            <span class="text-sm flex items-center gap-3">
+              <span class="drag-handle cursor-grab text-stone-300 select-none">⠿</span>
+              {{ $skill->name }}
+            </span>
             <div class="flex gap-3 text-sm">
               <a href="{{ route('admin.skills.edit', $skill) }}" class="text-stone-600 hover:text-orange-600">Edit</a>
               <form method="POST" action="{{ route('admin.skills.destroy', $skill) }}" onsubmit="return confirm('Delete this skill?')">
@@ -27,4 +30,24 @@
   @empty
     <div class="bg-white border border-stone-200 rounded px-6 py-10 text-center text-sm text-stone-400">No skills yet.</div>
   @endforelse
+
+  <script>
+    document.querySelectorAll('.skill-list').forEach(list => {
+      new Sortable(list, {
+        handle: '.drag-handle',
+        animation: 150,
+        onEnd() {
+          const ids = [...list.children].map(el => el.dataset.id);
+          fetch('{{ route('admin.skills.reorder') }}', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            },
+            body: JSON.stringify({ ids }),
+          });
+        },
+      });
+    });
+  </script>
 @endsection

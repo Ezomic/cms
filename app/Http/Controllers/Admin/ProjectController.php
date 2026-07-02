@@ -46,6 +46,20 @@ class ProjectController extends Controller
         return back()->with('status', 'Project deleted.');
     }
 
+    public function reorder(Request $request)
+    {
+        $data = $request->validate([
+            'ids'   => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:projects,id'],
+        ]);
+
+        foreach ($data['ids'] as $index => $id) {
+            Project::where('id', $id)->update(['sort_order' => $index]);
+        }
+
+        return response()->noContent();
+    }
+
     private function validated(Request $request): array
     {
         return $request->validate([
