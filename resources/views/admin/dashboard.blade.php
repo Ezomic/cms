@@ -19,6 +19,11 @@
     </a>
   </div>
 
+  <div class="border border-stone-200 rounded p-6 bg-white mb-10 max-w-xs">
+    <div class="text-3xl font-semibold">{{ $pageViewCount }}</div>
+    <div class="text-sm text-stone-500 mt-1">Page views (all-time)</div>
+  </div>
+
   <a href="{{ route('admin.profile.edit') }}" class="text-sm font-mono border border-stone-900 rounded px-4 py-2 inline-block hover:bg-stone-900 hover:text-white transition">
     Edit profile & hero content →
   </a>
