@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Profile;
+use App\Models\Project;
+use App\Models\Skill;
+use App\Models\Testimonial;
+
+class HomeController extends Controller
+{
+    public function index()
+    {
+        return view('home', [
+            'profile'      => Profile::current(),
+            'skills'       => Skill::ordered()->get()->groupBy('category'),
+            'projects'     => Project::ordered()->get(),
+            'testimonial'  => Testimonial::where('featured', true)->latest()->first(),
+        ]);
+    }
+}
