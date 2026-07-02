@@ -3,7 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ $profile->name }} — {{ $profile->tagline }}</title>
+<title>{{ $profile->meta_title ?: $profile->name.' — '.$profile->tagline }}</title>
+<meta name="description" content="{{ $profile->meta_description ?: $profile->hero_subtext }}">
+<meta property="og:title" content="{{ $profile->meta_title ?: $profile->name.' — '.$profile->tagline }}">
+<meta property="og:description" content="{{ $profile->meta_description ?: $profile->hero_subtext }}">
+<meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>

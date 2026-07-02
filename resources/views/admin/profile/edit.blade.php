@@ -72,6 +72,18 @@
       </div>
     </div>
 
+    <fieldset class="border border-stone-200 rounded p-4 space-y-4">
+      <legend class="text-xs font-medium text-stone-600 px-1">SEO</legend>
+      <div>
+        <label class="block text-xs font-medium text-stone-600 mb-1">Meta title</label>
+        <input name="meta_title" value="{{ old('meta_title', $profile->meta_title) }}" placeholder="defaults to name — tagline" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-stone-600 mb-1">Meta description</label>
+        <textarea name="meta_description" rows="2" placeholder="defaults to hero subtext" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">{{ old('meta_description', $profile->meta_description) }}</textarea>
+      </div>
+    </fieldset>
+
     <div class="pt-2">
       <button class="bg-stone-900 text-white text-sm rounded px-4 py-2 hover:bg-orange-600 transition">Save changes</button>
     </div>

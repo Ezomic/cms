@@ -12,6 +12,7 @@ class Profile extends Model
         'name', 'city', 'tagline', 'hero_headline', 'hero_subtext',
         'available', 'email', 'linkedin_url', 'github_url',
         'rate', 'availability_from', 'kvk_number',
+        'meta_title', 'meta_description',
     ];
 
     protected $casts = [
