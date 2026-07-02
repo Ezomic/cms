@@ -18,4 +18,12 @@ class HomeController extends Controller
             'testimonial'  => Testimonial::where('featured', true)->latest()->first(),
         ]);
     }
+
+    public function project(Project $project)
+    {
+        return view('project', [
+            'profile' => Profile::current(),
+            'project' => $project,
+        ]);
+    }
 }

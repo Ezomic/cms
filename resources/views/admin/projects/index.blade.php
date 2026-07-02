@@ -14,6 +14,9 @@
           <div class="text-xs text-stone-500">{{ $project->year }} — {{ $project->client_name }}</div>
         </div>
         <div class="flex gap-3 text-sm">
+          @if ($project->body)
+            <a href="{{ url('/work/'.$project->slug) }}" target="_blank" class="text-stone-600 hover:text-orange-600">View</a>
+          @endif
           <a href="{{ route('admin.projects.edit', $project) }}" class="text-stone-600 hover:text-orange-600">Edit</a>
           <form method="POST" action="{{ route('admin.projects.destroy', $project) }}" onsubmit="return confirm('Delete this project?')">
             @csrf @method('DELETE')

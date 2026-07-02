@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 // Public site
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/work/{project:slug}', [HomeController::class, 'project'])->name('project.show');
 
 // Admin auth
 Route::get('/admin/login', [AdminLoginController::class, 'show'])->name('admin.login');

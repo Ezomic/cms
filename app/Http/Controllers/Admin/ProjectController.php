@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ProjectController extends Controller
 {
@@ -22,7 +23,7 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
-        Project::create($this->validated($request));
+        Project::create($this->validated($request, new Project()));
 
         return redirect()->route('admin.projects.index')->with('status', 'Project created.');
     }
@@ -34,7 +35,7 @@ class ProjectController extends Controller
 
     public function update(Request $request, Project $project)
     {
-        $project->update($this->validated($request));
+        $project->update($this->validated($request, $project));
 
         return redirect()->route('admin.projects.index')->with('status', 'Project updated.');
     }
@@ -46,13 +47,15 @@ class ProjectController extends Controller
         return back()->with('status', 'Project deleted.');
     }
 
-    private function validated(Request $request): array
+    private function validated(Request $request, Project $project): array
     {
         return $request->validate([
             'name'        => ['required', 'string', 'max:255'],
+            'slug'        => ['nullable', 'string', 'max:255', 'alpha_dash', Rule::unique('projects', 'slug')->ignore($project->id)],
             'client_name' => ['nullable', 'string', 'max:255'],
             'year'        => ['nullable', 'string', 'max:4'],
             'description' => ['nullable', 'string'],
+            'body'        => ['nullable', 'string'],
             'tags'        => ['nullable', 'string', 'max:255'],
             'sort_order'  => ['nullable', 'integer'],
         ]);

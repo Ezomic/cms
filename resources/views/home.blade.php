@@ -56,6 +56,8 @@
   .work-list .work-item:first-child{border-top:none;}
   .work-year{font-family:var(--mono);font-size:13px;color:var(--ink-soft);}
   .work-name{font-family:var(--display);font-weight:600;font-size:22px;margin-bottom:8px;}
+  .work-name a{text-decoration:none;}
+  .work-name a:hover{color:var(--accent);}
   .work-desc{color:var(--ink-soft);font-size:15px;max-width:48ch;}
   .work-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;}
   .tag{font-family:var(--mono);font-size:12px;color:var(--ink-soft);border:1px solid var(--line);padding:4px 10px;border-radius:20px;white-space:nowrap;}
@@ -157,7 +159,13 @@
         <div class="work-item">
           <div class="work-year">{{ $project->year }} — {{ $project->client_name }}</div>
           <div>
-            <div class="work-name">{{ $project->name }}</div>
+            <div class="work-name">
+              @if ($project->body)
+                <a href="{{ route('project.show', $project) }}">{{ $project->name }} →</a>
+              @else
+                {{ $project->name }}
+              @endif
+            </div>
             <div class="work-desc">{{ $project->description }}</div>
           </div>
           <div class="work-tags">
