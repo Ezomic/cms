@@ -81,6 +81,17 @@
   .meta-box div:first-child{border-top:none;}
   .meta-box strong{color:var(--ink);font-weight:500;}
   @media (max-width:800px){.contact-inner{grid-template-columns:1fr;}}
+  .contact-form{margin-top:48px;border-top:1px solid var(--line);padding-top:48px;}
+  .contact-form h3{font-family:var(--display);font-weight:600;font-size:18px;margin-bottom:20px;}
+  .contact-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+  .contact-form label{display:block;font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin-bottom:6px;}
+  .contact-form input,.contact-form textarea{width:100%;border:1px solid var(--line);background:var(--white);padding:12px 14px;font-family:var(--body);font-size:14px;color:var(--ink);}
+  .contact-form input:focus,.contact-form textarea:focus{outline:1px solid var(--ink);}
+  .contact-form textarea{margin-bottom:16px;resize:vertical;}
+  .honeypot{position:absolute;left:-9999px;top:-9999px;}
+  .form-status{font-family:var(--mono);font-size:13px;padding:12px 16px;margin-bottom:20px;border:1px solid var(--accent);color:var(--accent);}
+  .form-errors{font-family:var(--mono);font-size:13px;padding:12px 16px;margin-bottom:20px;border:1px solid #C0392B;color:#C0392B;}
+  @media (max-width:560px){.contact-form-grid{grid-template-columns:1fr;}}
   footer{padding:32px 0;font-family:var(--mono);font-size:12px;color:var(--ink-soft);}
   footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
 </style>
@@ -232,6 +243,37 @@
         @if ($profile->github_url)
         <a class="contact-row" href="{{ $profile->github_url }}" target="_blank"><span>GitHub</span> {{ $profile->github_url }}</a>
         @endif
+      </div>
+
+      <div class="contact-form">
+        <h3>Or send a message directly</h3>
+
+        @if (session('status'))
+          <div class="form-status">{{ session('status') }}</div>
+        @endif
+        @if ($errors->any())
+          <div class="form-errors">
+            @foreach ($errors->all() as $error)<div>{{ $error }}</div>@endforeach
+          </div>
+        @endif
+
+        <form method="POST" action="{{ route('contact.store') }}">
+          @csrf
+          <input type="text" name="website" class="honeypot" tabindex="-1" autocomplete="off">
+          <div class="contact-form-grid">
+            <div>
+              <label for="contact-name">Name</label>
+              <input id="contact-name" type="text" name="name" value="{{ old('name') }}" required>
+            </div>
+            <div>
+              <label for="contact-email">Email</label>
+              <input id="contact-email" type="email" name="email" value="{{ old('email') }}" required>
+            </div>
+          </div>
+          <label for="contact-message">Message</label>
+          <textarea id="contact-message" name="message" rows="4" required>{{ old('message') }}</textarea>
+          <button class="btn-primary" type="submit" style="border:none;cursor:pointer;">Send message →</button>
+        </form>
       </div>
     </div>
 
