@@ -10,7 +10,14 @@
     @forelse ($projects as $project)
       <div class="flex items-center justify-between px-6 py-4">
         <div>
-          <div class="font-medium">{{ $project->name }}</div>
+          <div class="font-medium flex items-center gap-2">
+            {{ $project->name }}
+            @if ($project->published)
+              <span class="text-[10px] font-mono uppercase tracking-wide text-green-700 bg-green-50 border border-green-200 rounded px-1.5 py-0.5">Published</span>
+            @else
+              <span class="text-[10px] font-mono uppercase tracking-wide text-stone-500 bg-stone-100 border border-stone-200 rounded px-1.5 py-0.5">Draft</span>
+            @endif
+          </div>
           <div class="text-xs text-stone-500">{{ $project->year }} — {{ $project->client_name }}</div>
         </div>
         <div class="flex gap-3 text-sm">

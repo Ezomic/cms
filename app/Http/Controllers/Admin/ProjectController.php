@@ -22,7 +22,10 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
-        Project::create($this->validated($request));
+        $data = $this->validated($request);
+        $data['published'] = $request->boolean('published');
+
+        Project::create($data);
 
         return redirect()->route('admin.projects.index')->with('status', 'Project created.');
     }
@@ -34,7 +37,10 @@ class ProjectController extends Controller
 
     public function update(Request $request, Project $project)
     {
-        $project->update($this->validated($request));
+        $data = $this->validated($request);
+        $data['published'] = $request->boolean('published');
+
+        $project->update($data);
 
         return redirect()->route('admin.projects.index')->with('status', 'Project updated.');
     }

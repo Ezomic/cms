@@ -35,6 +35,11 @@
       <input type="number" name="sort_order" value="{{ old('sort_order', $project->sort_order ?? 0) }}" class="w-32 border border-stone-300 rounded px-3 py-2 text-sm">
     </div>
 
+    <label class="flex items-center gap-2 text-sm">
+      <input type="checkbox" name="published" value="1" {{ old('published', $project->exists ? $project->published : true) ? 'checked' : '' }}>
+      Published (visible on the live site)
+    </label>
+
     <div class="flex gap-3 pt-2">
       <button class="bg-stone-900 text-white text-sm rounded px-4 py-2 hover:bg-orange-600 transition">Save</button>
       <a href="{{ route('admin.projects.index') }}" class="text-sm text-stone-500 px-4 py-2">Cancel</a>
