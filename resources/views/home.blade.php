@@ -55,6 +55,7 @@
   .work-item{display:grid;grid-template-columns:1fr 2fr 1fr;gap:24px;padding:32px 0;border-top:1px solid var(--line);align-items:start;}
   .work-list .work-item:first-child{border-top:none;}
   .work-year{font-family:var(--mono);font-size:13px;color:var(--ink-soft);}
+  .work-image{width:100%;aspect-ratio:16/10;object-fit:cover;border:1px solid var(--line);margin-bottom:12px;}
   .work-name{font-family:var(--display);font-weight:600;font-size:22px;margin-bottom:8px;}
   .work-desc{color:var(--ink-soft);font-size:15px;max-width:48ch;}
   .work-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;}
@@ -157,6 +158,9 @@
         <div class="work-item">
           <div class="work-year">{{ $project->year }} — {{ $project->client_name }}</div>
           <div>
+            @if ($project->image)
+              <img class="work-image" src="{{ $project->imageUrl() }}" alt="{{ $project->name }}">
+            @endif
             <div class="work-name">{{ $project->name }}</div>
             <div class="work-desc">{{ $project->description }}</div>
           </div>
