@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 
 class Profile extends Model
 {
+    use LogsActivity;
+
     protected $table = 'profile';
 
     protected $fillable = [
@@ -25,5 +28,10 @@ class Profile extends Model
     public static function current(): self
     {
         return static::firstOrCreate(['id' => 1]);
+    }
+
+    public function activityLabel(): string
+    {
+        return 'Profile';
     }
 }

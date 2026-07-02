@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\Project;
 use App\Models\Skill;
 use App\Models\Testimonial;
@@ -15,6 +16,7 @@ class DashboardController extends Controller
             'projectCount'     => Project::count(),
             'skillCount'       => Skill::count(),
             'testimonialCount' => Testimonial::count(),
+            'activity'         => ActivityLog::with('user')->latest()->take(8)->get(),
         ]);
     }
 }
