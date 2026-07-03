@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
 
 class ProjectController extends Controller
 {
@@ -26,7 +28,7 @@ class ProjectController extends Controller
         $data = $this->validated($request);
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('projects', 'public');
+            $data['image'] = $this->storeOptimizedImage($request->file('image'));
         }
 
         Project::create($data);
@@ -47,7 +49,7 @@ class ProjectController extends Controller
             if ($project->image) {
                 Storage::disk('public')->delete($project->image);
             }
-            $data['image'] = $request->file('image')->store('projects', 'public');
+            $data['image'] = $this->storeOptimizedImage($request->file('image'));
         }
 
         $project->update($data);
@@ -77,5 +79,22 @@ class ProjectController extends Controller
             'tags'        => ['nullable', 'string', 'max:255'],
             'sort_order'  => ['nullable', 'integer'],
         ]);
+    }
+
+    /**
+     * Store the uploaded image, downscaled to a max width so a phone photo
+     * doesn't ship multi-megabyte originals to every site visitor.
+     */
+    private function storeOptimizedImage(UploadedFile $file): string
+    {
+        $path = $file->store('projects', 'public');
+        $fullPath = Storage::disk('public')->path($path);
+
+        ImageManager::gd()
+            ->read($fullPath)
+            ->scaleDown(width: 1600)
+            ->save($fullPath, quality: 82);
+
+        return $path;
     }
 }
