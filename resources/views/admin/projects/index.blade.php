@@ -6,10 +6,15 @@
     <a href="{{ route('admin.projects.create') }}" class="text-sm bg-stone-900 text-white rounded px-4 py-2 hover:bg-orange-600 transition">+ New project</a>
   </div>
 
-  <div class="bg-white border border-stone-200 rounded divide-y divide-stone-200">
+  @if ($projects->count() > 1)
+    <p class="text-xs text-stone-400 mb-2">Drag the handle to reorder.</p>
+  @endif
+
+  <div id="project-list" class="bg-white border border-stone-200 rounded divide-y divide-stone-200">
     @forelse ($projects as $project)
-      <div class="flex items-center justify-between px-6 py-4">
+      <div class="flex items-center justify-between px-6 py-4" data-id="{{ $project->id }}">
         <div class="flex items-center gap-4">
+          <span class="drag-handle cursor-grab text-stone-300 select-none">⠿</span>
           @if ($project->image)
             <img src="{{ $project->imageUrl() }}" alt="" class="w-14 h-10 object-cover rounded border border-stone-200">
           @else
@@ -32,4 +37,25 @@
       <div class="px-6 py-10 text-center text-sm text-stone-400">No projects yet.</div>
     @endforelse
   </div>
+
+  <script>
+    const list = document.getElementById('project-list');
+    if (list) {
+      new Sortable(list, {
+        handle: '.drag-handle',
+        animation: 150,
+        onEnd() {
+          const ids = [...list.children].map(el => el.dataset.id);
+          fetch('{{ route('admin.projects.reorder') }}', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            },
+            body: JSON.stringify({ ids }),
+          });
+        },
+      });
+    }
+  </script>
 @endsection

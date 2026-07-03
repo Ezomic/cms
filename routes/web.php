@@ -24,8 +24,11 @@ Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('adm
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
+    Route::post('/projects/reorder', [ProjectController::class, 'reorder'])->name('projects.reorder');
     Route::resource('projects', ProjectController::class)->except(['show']);
     Route::resource('testimonials', TestimonialController::class)->except(['show']);
+
+    Route::post('/skills/reorder', [SkillController::class, 'reorder'])->name('skills.reorder');
     Route::resource('skills', SkillController::class)->except(['show']);
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

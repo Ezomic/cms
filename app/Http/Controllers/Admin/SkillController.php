@@ -46,6 +46,20 @@ class SkillController extends Controller
         return back()->with('status', 'Skill deleted.');
     }
 
+    public function reorder(Request $request)
+    {
+        $data = $request->validate([
+            'ids'   => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:skills,id'],
+        ]);
+
+        foreach ($data['ids'] as $index => $id) {
+            Skill::where('id', $id)->update(['sort_order' => $index]);
+        }
+
+        return response()->noContent();
+    }
+
     private function validated(Request $request): array
     {
         return $request->validate([

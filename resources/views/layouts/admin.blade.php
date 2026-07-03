@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>@yield('title', 'Admin') · CMS</title>
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <style>body{font-family:Inter,system-ui,sans-serif;}</style>
 </head>
 <body class="bg-stone-50 text-stone-900">
