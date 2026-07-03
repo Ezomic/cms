@@ -14,7 +14,7 @@ class HomeController extends Controller
         return view('home', [
             'profile'      => Profile::current(),
             'skills'       => Skill::ordered()->get()->groupBy('category'),
-            'projects'     => Project::ordered()->get(),
+            'projects'     => Project::published()->ordered()->get(),
             'testimonial'  => Testimonial::where('featured', true)->latest()->first(),
         ]);
     }

@@ -26,6 +26,7 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $data = $this->validated($request);
+        $data['published'] = $request->boolean('published');
 
         if ($request->hasFile('image')) {
             $data['image'] = $this->storeOptimizedImage($request->file('image'));
@@ -44,6 +45,7 @@ class ProjectController extends Controller
     public function update(Request $request, Project $project)
     {
         $data = $this->validated($request);
+        $data['published'] = $request->boolean('published');
 
         if ($request->hasFile('image')) {
             if ($project->image) {
