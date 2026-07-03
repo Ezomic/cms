@@ -8,7 +8,7 @@ trait BustsHomeCache
 {
     public static function bootBustsHomeCache(): void
     {
-        static::saved(fn () => Cache::forget('home.page.data'));
-        static::deleted(fn () => Cache::forget('home.page.data'));
+        static::saved(fn () => Cache::forget('home.page.html'));
+        static::deleted(fn () => Cache::forget('home.page.html'));
     }
 }

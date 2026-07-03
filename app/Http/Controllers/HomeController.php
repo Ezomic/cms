@@ -15,16 +15,20 @@ class HomeController extends Controller
     {
         PageView::create(['path' => '/']);
 
-        $data = Cache::rememberForever('home.page.data', function () {
-            return [
+        // Caches the rendered HTML rather than the raw model data: caching
+        // Eloquent instances directly proved unreliable to unserialize
+        // reliably across requests, and rendering to a string sidesteps
+        // that entirely while also skipping view compilation on cache hits.
+        $html = Cache::rememberForever('home.page.html', function () {
+            return view('home', [
                 'profile'      => Profile::current(),
                 'skills'       => Skill::ordered()->get()->groupBy('category'),
                 'projects'     => Project::published()->ordered()->get(),
                 'testimonial'  => Testimonial::where('featured', true)->latest()->first(),
-            ];
+            ])->render();
         });
 
-        return view('home', $data);
+        return response($html);
     }
 
     public function project(Project $project)
