@@ -34,8 +34,20 @@
     </div>
 
     <div>
+      <label class="block text-xs font-medium text-stone-600 mb-1">Slug (URL)</label>
+      <input name="slug" value="{{ old('slug', $project->slug) }}" placeholder="auto-generated from name if left blank" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
+      @if ($project->exists && $project->slug)
+        <p class="text-xs text-stone-400 mt-1">{{ url('/work/'.$project->slug) }}</p>
+      @endif
+    </div>
+    <div>
       <label class="block text-xs font-medium text-stone-600 mb-1">Description (one line result)</label>
       <textarea name="description" rows="3" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">{{ old('description', $project->description) }}</textarea>
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-stone-600 mb-1">Case study body (optional, shown on the project's own page)</label>
+      <textarea name="body" rows="8" class="w-full border border-stone-300 rounded px-3 py-2 text-sm font-mono">{{ old('body', $project->body) }}</textarea>
+      <p class="text-xs text-stone-400 mt-1">Plain text or basic HTML. Leave blank to skip the dedicated project page.</p>
     </div>
     <div>
       <label class="block text-xs font-medium text-stone-600 mb-1">Tags (comma-separated)</label>

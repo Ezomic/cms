@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 
 // Public site
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/work/{project:slug}', [HomeController::class, 'project'])->name('project.show');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store')->middleware('throttle:contact');
 
 // Admin auth

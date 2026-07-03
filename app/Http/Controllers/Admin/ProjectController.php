@@ -7,6 +7,7 @@ use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Intervention\Image\ImageManager;
 
 class ProjectController extends Controller
@@ -25,7 +26,7 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
-        $data = $this->validated($request);
+        $data = $this->validated($request, new Project());
         $data['published'] = $request->boolean('published');
 
         if ($request->hasFile('image')) {
@@ -44,7 +45,7 @@ class ProjectController extends Controller
 
     public function update(Request $request, Project $project)
     {
-        $data = $this->validated($request);
+        $data = $this->validated($request, $project);
         $data['published'] = $request->boolean('published');
 
         if ($request->hasFile('image')) {
@@ -84,14 +85,16 @@ class ProjectController extends Controller
         return response()->noContent();
     }
 
-    private function validated(Request $request): array
+    private function validated(Request $request, Project $project): array
     {
         return $request->validate([
             'name'        => ['required', 'string', 'max:255'],
             'image'       => ['nullable', 'image', 'max:4096'],
+            'slug'        => ['nullable', 'string', 'max:255', 'alpha_dash', Rule::unique('projects', 'slug')->ignore($project->id)],
             'client_name' => ['nullable', 'string', 'max:255'],
             'year'        => ['nullable', 'string', 'max:4'],
             'description' => ['nullable', 'string'],
+            'body'        => ['nullable', 'string'],
             'tags'        => ['nullable', 'string', 'max:255'],
             'sort_order'  => ['nullable', 'integer'],
         ]);

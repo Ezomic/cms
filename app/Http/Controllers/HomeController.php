@@ -18,4 +18,14 @@ class HomeController extends Controller
             'testimonial'  => Testimonial::where('featured', true)->latest()->first(),
         ]);
     }
+
+    public function project(Project $project)
+    {
+        abort_unless($project->published, 404);
+
+        return view('project', [
+            'profile' => Profile::current(),
+            'project' => $project,
+        ]);
+    }
 }
