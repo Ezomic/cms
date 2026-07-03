@@ -62,6 +62,6 @@ class TestimonialTest extends TestCase
         $response = $this->actingAs($user)->delete("/admin/testimonials/{$testimonial->id}");
 
         $response->assertRedirect();
-        $this->assertDatabaseMissing('testimonials', ['id' => $testimonial->id]);
+        $this->assertSoftDeleted('testimonials', ['id' => $testimonial->id]);
     }
 }

@@ -67,6 +67,6 @@ class ProjectTest extends TestCase
         $response = $this->actingAs($user)->delete("/admin/projects/{$project->id}");
 
         $response->assertRedirect();
-        $this->assertDatabaseMissing('projects', ['id' => $project->id]);
+        $this->assertSoftDeleted('projects', ['id' => $project->id]);
     }
 }

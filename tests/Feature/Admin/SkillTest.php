@@ -62,6 +62,6 @@ class SkillTest extends TestCase
         $response = $this->actingAs($user)->delete("/admin/skills/{$skill->id}");
 
         $response->assertRedirect();
-        $this->assertDatabaseMissing('skills', ['id' => $skill->id]);
+        $this->assertSoftDeleted('skills', ['id' => $skill->id]);
     }
 }
