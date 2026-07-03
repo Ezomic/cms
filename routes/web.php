@@ -21,8 +21,19 @@ Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('adm
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
+    Route::get('/projects/trash', [ProjectController::class, 'trash'])->name('projects.trash');
+    Route::post('/projects/{id}/restore', [ProjectController::class, 'restore'])->name('projects.restore');
+    Route::delete('/projects/{id}/force', [ProjectController::class, 'forceDelete'])->name('projects.forceDelete');
     Route::resource('projects', ProjectController::class)->except(['show']);
+
+    Route::get('/testimonials/trash', [TestimonialController::class, 'trash'])->name('testimonials.trash');
+    Route::post('/testimonials/{id}/restore', [TestimonialController::class, 'restore'])->name('testimonials.restore');
+    Route::delete('/testimonials/{id}/force', [TestimonialController::class, 'forceDelete'])->name('testimonials.forceDelete');
     Route::resource('testimonials', TestimonialController::class)->except(['show']);
+
+    Route::get('/skills/trash', [SkillController::class, 'trash'])->name('skills.trash');
+    Route::post('/skills/{id}/restore', [SkillController::class, 'restore'])->name('skills.restore');
+    Route::delete('/skills/{id}/force', [SkillController::class, 'forceDelete'])->name('skills.forceDelete');
     Route::resource('skills', SkillController::class)->except(['show']);
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
