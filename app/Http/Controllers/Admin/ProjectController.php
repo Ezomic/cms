@@ -12,10 +12,21 @@ use Intervention\Image\ImageManager;
 
 class ProjectController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->string('search')->trim()->toString();
+
+        $projects = Project::ordered()
+            ->when($search, fn ($query) => $query->where(function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('client_name', 'like', "%{$search}%");
+            }))
+            ->paginate(10)
+            ->withQueryString();
+
         return view('admin.projects.index', [
-            'projects' => Project::ordered()->get(),
+            'projects' => $projects,
+            'search'   => $search,
         ]);
     }
 

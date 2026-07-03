@@ -9,6 +9,11 @@
     </div>
   </div>
 
+  <form method="GET" class="mb-4">
+    <input type="text" name="search" value="{{ $search }}" placeholder="Search by name or category…"
+           class="w-full max-w-sm border border-stone-300 rounded px-3 py-2 text-sm">
+  </form>
+
   @forelse ($skills as $category => $items)
     <div class="mb-6">
       <div class="text-xs font-mono uppercase tracking-wide text-orange-600 mb-2">{{ $category }}</div>
@@ -31,7 +36,9 @@
       </div>
     </div>
   @empty
-    <div class="bg-white border border-stone-200 rounded px-6 py-10 text-center text-sm text-stone-400">No skills yet.</div>
+    <div class="bg-white border border-stone-200 rounded px-6 py-10 text-center text-sm text-stone-400">
+      {{ $search ? 'No skills match your search.' : 'No skills yet.' }}
+    </div>
   @endforelse
 
   <script>

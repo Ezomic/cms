@@ -9,8 +9,13 @@
     </div>
   </div>
 
+  <form method="GET" class="mb-4">
+    <input type="text" name="search" value="{{ $search }}" placeholder="Search by name or client…"
+           class="w-full max-w-sm border border-stone-300 rounded px-3 py-2 text-sm">
+  </form>
+
   @if ($projects->count() > 1)
-    <p class="text-xs text-stone-400 mb-2">Drag the handle to reorder.</p>
+    <p class="text-xs text-stone-400 mb-2">Drag the handle to reorder (within this page).</p>
   @endif
 
   <div id="project-list" class="bg-white border border-stone-200 rounded divide-y divide-stone-200">
@@ -47,8 +52,14 @@
         </div>
       </div>
     @empty
-      <div class="px-6 py-10 text-center text-sm text-stone-400">No projects yet.</div>
+      <div class="px-6 py-10 text-center text-sm text-stone-400">
+        {{ $search ? 'No projects match your search.' : 'No projects yet.' }}
+      </div>
     @endforelse
+  </div>
+
+  <div class="mt-4">
+    {{ $projects->links() }}
   </div>
 
   <script>
