@@ -8,10 +8,21 @@ use Illuminate\Http\Request;
 
 class TestimonialController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->string('search')->trim()->toString();
+
+        $testimonials = Testimonial::latest()
+            ->when($search, fn ($query) => $query->where(function ($query) use ($search) {
+                $query->where('quote', 'like', "%{$search}%")
+                    ->orWhere('author_name', 'like', "%{$search}%");
+            }))
+            ->paginate(10)
+            ->withQueryString();
+
         return view('admin.testimonials.index', [
-            'testimonials' => Testimonial::latest()->get(),
+            'testimonials' => $testimonials,
+            'search'       => $search,
         ]);
     }
 

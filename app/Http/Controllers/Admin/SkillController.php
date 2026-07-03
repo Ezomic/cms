@@ -8,10 +8,21 @@ use Illuminate\Http\Request;
 
 class SkillController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->string('search')->trim()->toString();
+
+        $skills = Skill::ordered()
+            ->when($search, fn ($query) => $query->where(function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('category', 'like', "%{$search}%");
+            }))
+            ->get()
+            ->groupBy('category');
+
         return view('admin.skills.index', [
-            'skills' => Skill::ordered()->get()->groupBy('category'),
+            'skills' => $skills,
+            'search' => $search,
         ]);
     }
 

@@ -6,6 +6,11 @@
     <a href="{{ route('admin.testimonials.create') }}" class="text-sm bg-stone-900 text-white rounded px-4 py-2 hover:bg-orange-600 transition">+ New testimonial</a>
   </div>
 
+  <form method="GET" class="mb-4">
+    <input type="text" name="search" value="{{ $search }}" placeholder="Search by quote or author…"
+           class="w-full max-w-sm border border-stone-300 rounded px-3 py-2 text-sm">
+  </form>
+
   <div class="bg-white border border-stone-200 rounded divide-y divide-stone-200">
     @forelse ($testimonials as $t)
       <div class="flex items-center justify-between px-6 py-4">
@@ -22,7 +27,13 @@
         </div>
       </div>
     @empty
-      <div class="px-6 py-10 text-center text-sm text-stone-400">No testimonials yet.</div>
+      <div class="px-6 py-10 text-center text-sm text-stone-400">
+        {{ $search ? 'No testimonials match your search.' : 'No testimonials yet.' }}
+      </div>
     @endforelse
+  </div>
+
+  <div class="mt-4">
+    {{ $testimonials->links() }}
   </div>
 @endsection
