@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PageView;
 use App\Models\Profile;
 use App\Models\Project;
 use App\Models\Skill;
@@ -11,6 +12,8 @@ class HomeController extends Controller
 {
     public function index()
     {
+        PageView::create(['path' => '/']);
+
         return view('home', [
             'profile'      => Profile::current(),
             'skills'       => Skill::ordered()->get()->groupBy('category'),
