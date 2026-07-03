@@ -15,20 +15,34 @@ class HomeController extends Controller
     {
         PageView::create(['path' => '/']);
 
-        // Caches the rendered HTML rather than the raw model data: caching
-        // Eloquent instances directly proved unreliable to unserialize
-        // reliably across requests, and rendering to a string sidesteps
-        // that entirely while also skipping view compilation on cache hits.
-        $html = Cache::rememberForever('home.page.html', function () {
-            return view('home', [
-                'profile'      => Profile::current(),
-                'skills'       => Skill::ordered()->get()->groupBy('category'),
-                'projects'     => Project::published()->ordered()->get(),
-                'testimonial'  => Testimonial::where('featured', true)->latest()->first(),
-            ])->render();
+        // Cached as plain arrays rather than raw Eloquent instances: caching
+        // model objects directly proved unreliable to unserialize reliably
+        // across requests in this environment (__PHP_Incomplete_Class),
+        // and caching the full rendered HTML isn't safe either since it
+        // would bake one visitor's CSRF token into every other visitor's
+        // page. Arrays cache and restore cleanly; we cast them back to
+        // stdClass so the view's property access keeps working unchanged.
+        $data = Cache::rememberForever('home.page.data', function () {
+            return [
+                'profile' => Profile::current()->toArray(),
+                'skills'  => Skill::ordered()->get()->groupBy('category')
+                    ->map(fn ($items) => $items->map(fn ($skill) => $skill->toArray())->all())
+                    ->all(),
+                'projects' => Project::published()->ordered()->get()->map(fn ($project) => [
+                    ...$project->toArray(),
+                    'tag_list'  => $project->tagList(),
+                    'image_url' => $project->imageUrl(),
+                ])->all(),
+                'testimonial' => Testimonial::where('featured', true)->latest()->first()?->toArray(),
+            ];
         });
 
-        return response($html);
+        return view('home', [
+            'profile'     => (object) $data['profile'],
+            'skills'      => collect($data['skills'])->map(fn ($items) => collect($items)->map(fn ($s) => (object) $s)),
+            'projects'    => collect($data['projects'])->map(fn ($p) => (object) $p),
+            'testimonial' => $data['testimonial'] ? (object) $data['testimonial'] : null,
+        ]);
     }
 
     public function project(Project $project)

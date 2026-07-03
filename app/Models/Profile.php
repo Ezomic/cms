@@ -26,10 +26,21 @@ class Profile extends Model
     /**
      * There is always exactly one profile row (id = 1).
      * This creates it with defaults the first time it's needed.
+     *
+     * Refreshes after a fresh creation so every column is present in the
+     * model's attributes (not just 'id'); otherwise code that reads the
+     * model as a plain array (e.g. for caching) sees missing keys instead
+     * of nulls, since Eloquent only refetches attributes on ->refresh().
      */
     public static function current(): self
     {
-        return static::firstOrCreate(['id' => 1]);
+        $profile = static::firstOrCreate(['id' => 1]);
+
+        if ($profile->wasRecentlyCreated) {
+            $profile->refresh();
+        }
+
+        return $profile;
     }
 
     public function activityLabel(): string

@@ -176,11 +176,11 @@
           <div class="work-year">{{ $project->year }} — {{ $project->client_name }}</div>
           <div>
             @if ($project->image)
-              <img class="work-image" src="{{ $project->imageUrl() }}" alt="{{ $project->name }}">
+              <img class="work-image" src="{{ $project->image_url }}" alt="{{ $project->name }}">
             @endif
             <div class="work-name">
               @if ($project->body)
-                <a href="{{ route('project.show', $project) }}">{{ $project->name }} →</a>
+                <a href="{{ route('project.show', $project->slug) }}">{{ $project->name }} →</a>
               @else
                 {{ $project->name }}
               @endif
@@ -188,7 +188,7 @@
             <div class="work-desc">{{ $project->description }}</div>
           </div>
           <div class="work-tags">
-            @foreach ($project->tagList() as $tag)
+            @foreach ($project->tag_list as $tag)
               <span class="tag">{{ $tag }}</span>
             @endforeach
           </div>
