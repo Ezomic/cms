@@ -26,6 +26,8 @@ class HomeController extends Controller
     {
         abort_unless($project->published, 404);
 
+        PageView::create(['path' => '/work/'.$project->slug]);
+
         return view('project', [
             'profile' => Profile::current(),
             'project' => $project,
