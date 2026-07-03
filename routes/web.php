@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Route;
 
 // Public site
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store')->middleware('throttle:contact');
 
 // Admin auth
 Route::get('/admin/login', [AdminLoginController::class, 'show'])->name('admin.login');
-Route::post('/admin/login', [AdminLoginController::class, 'login'])->name('admin.login.attempt');
+Route::post('/admin/login', [AdminLoginController::class, 'login'])->name('admin.login.attempt')->middleware('throttle:login');
 Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
 
 // Admin panel (CMS)
