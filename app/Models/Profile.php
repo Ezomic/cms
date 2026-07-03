@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Concerns\BustsHomeCache;
 use Illuminate\Database\Eloquent\Model;
 
 class Profile extends Model
 {
+    use BustsHomeCache;
+
     protected $table = 'profile';
 
     protected $fillable = [

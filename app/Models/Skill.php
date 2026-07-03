@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Concerns\BustsHomeCache;
 use Illuminate\Database\Eloquent\Model;
 
 class Skill extends Model
 {
+    use BustsHomeCache;
+
     protected $fillable = ['category', 'name', 'sort_order'];
 
     public function scopeOrdered($query)
