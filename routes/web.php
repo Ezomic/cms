@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
@@ -47,4 +48,6 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+
+    Route::resource('users', UserController::class)->except(['show']);
 });
