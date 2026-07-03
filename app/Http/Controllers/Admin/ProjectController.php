@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
@@ -22,7 +23,13 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
-        Project::create($this->validated($request));
+        $data = $this->validated($request);
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('projects', 'public');
+        }
+
+        Project::create($data);
 
         return redirect()->route('admin.projects.index')->with('status', 'Project created.');
     }
@@ -34,13 +41,26 @@ class ProjectController extends Controller
 
     public function update(Request $request, Project $project)
     {
-        $project->update($this->validated($request));
+        $data = $this->validated($request);
+
+        if ($request->hasFile('image')) {
+            if ($project->image) {
+                Storage::disk('public')->delete($project->image);
+            }
+            $data['image'] = $request->file('image')->store('projects', 'public');
+        }
+
+        $project->update($data);
 
         return redirect()->route('admin.projects.index')->with('status', 'Project updated.');
     }
 
     public function destroy(Project $project)
     {
+        if ($project->image) {
+            Storage::disk('public')->delete($project->image);
+        }
+
         $project->delete();
 
         return back()->with('status', 'Project deleted.');
@@ -50,6 +70,7 @@ class ProjectController extends Controller
     {
         return $request->validate([
             'name'        => ['required', 'string', 'max:255'],
+            'image'       => ['nullable', 'image', 'max:4096'],
             'client_name' => ['nullable', 'string', 'max:255'],
             'year'        => ['nullable', 'string', 'max:4'],
             'description' => ['nullable', 'string'],

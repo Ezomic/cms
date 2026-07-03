@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Project extends Model
 {
     protected $fillable = [
-        'name', 'client_name', 'year', 'description', 'tags', 'sort_order',
+        'name', 'image', 'client_name', 'year', 'description', 'tags', 'sort_order',
     ];
 
     public function scopeOrdered($query)
@@ -22,5 +22,10 @@ class Project extends Model
         }
 
         return array_map('trim', explode(',', $this->tags));
+    }
+
+    public function imageUrl(): ?string
+    {
+        return $this->image ? asset('storage/'.$this->image) : null;
     }
 }

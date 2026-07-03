@@ -9,9 +9,16 @@
   <div class="bg-white border border-stone-200 rounded divide-y divide-stone-200">
     @forelse ($projects as $project)
       <div class="flex items-center justify-between px-6 py-4">
-        <div>
-          <div class="font-medium">{{ $project->name }}</div>
-          <div class="text-xs text-stone-500">{{ $project->year }} — {{ $project->client_name }}</div>
+        <div class="flex items-center gap-4">
+          @if ($project->image)
+            <img src="{{ $project->imageUrl() }}" alt="" class="w-14 h-10 object-cover rounded border border-stone-200">
+          @else
+            <div class="w-14 h-10 rounded border border-dashed border-stone-200"></div>
+          @endif
+          <div>
+            <div class="font-medium">{{ $project->name }}</div>
+            <div class="text-xs text-stone-500">{{ $project->year }} — {{ $project->client_name }}</div>
+          </div>
         </div>
         <div class="flex gap-3 text-sm">
           <a href="{{ route('admin.projects.edit', $project) }}" class="text-stone-600 hover:text-orange-600">Edit</a>

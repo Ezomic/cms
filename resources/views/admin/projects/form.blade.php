@@ -4,6 +4,7 @@
   <h1 class="text-2xl font-semibold mb-8">{{ $project->exists ? 'Edit project' : 'New project' }}</h1>
 
   <form method="POST" action="{{ $project->exists ? route('admin.projects.update', $project) : route('admin.projects.store') }}"
+        enctype="multipart/form-data"
         class="bg-white border border-stone-200 rounded p-8 space-y-5 max-w-xl">
     @csrf
     @if ($project->exists) @method('PUT') @endif
@@ -22,6 +23,16 @@
         <input name="year" value="{{ old('year', $project->year) }}" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
       </div>
     </div>
+
+    <div>
+      <label class="block text-xs font-medium text-stone-600 mb-1">Image</label>
+      @if ($project->image)
+        <img src="{{ $project->imageUrl() }}" alt="" class="w-40 h-28 object-cover rounded border border-stone-200 mb-2">
+      @endif
+      <input type="file" name="image" accept="image/*" class="w-full border border-stone-300 rounded px-3 py-2 text-sm bg-white">
+      <p class="text-xs text-stone-400 mt-1">{{ $project->image ? 'Uploading a new image replaces the current one.' : 'JPG, PNG, or WebP, up to 4MB.' }}</p>
+    </div>
+
     <div>
       <label class="block text-xs font-medium text-stone-600 mb-1">Description (one line result)</label>
       <textarea name="description" rows="3" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">{{ old('description', $project->description) }}</textarea>
