@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Concerns\BustsHomeCache;
 use App\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -9,7 +10,7 @@ use Illuminate\Support\Str;
 
 class Project extends Model
 {
-    use LogsActivity, SoftDeletes;
+    use BustsHomeCache, LogsActivity, SoftDeletes;
 
     protected $fillable = [
         'name', 'image', 'slug', 'client_name', 'year', 'description', 'body', 'published', 'tags', 'sort_order',

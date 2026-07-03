@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Concerns\BustsHomeCache;
 use App\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Skill extends Model
 {
-    use LogsActivity, SoftDeletes;
+    use BustsHomeCache, LogsActivity, SoftDeletes;
 
     protected $fillable = ['category', 'name', 'sort_order'];
 

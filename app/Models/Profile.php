@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Concerns\BustsHomeCache;
 use App\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 
 class Profile extends Model
 {
-    use LogsActivity;
+    use BustsHomeCache, LogsActivity;
 
     protected $table = 'profile';
 
