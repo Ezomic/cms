@@ -46,6 +46,27 @@ class TestimonialController extends Controller
         return back()->with('status', 'Testimonial deleted.');
     }
 
+    public function trash()
+    {
+        return view('admin.testimonials.trash', [
+            'testimonials' => Testimonial::onlyTrashed()->latest()->get(),
+        ]);
+    }
+
+    public function restore(int $id)
+    {
+        Testimonial::onlyTrashed()->findOrFail($id)->restore();
+
+        return back()->with('status', 'Testimonial restored.');
+    }
+
+    public function forceDelete(int $id)
+    {
+        Testimonial::onlyTrashed()->findOrFail($id)->forceDelete();
+
+        return back()->with('status', 'Testimonial permanently deleted.');
+    }
+
     private function validated(Request $request): array
     {
         $data = $request->validate([

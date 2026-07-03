@@ -3,7 +3,10 @@
 @section('content')
   <div class="flex items-center justify-between mb-8">
     <h1 class="text-2xl font-semibold">Skills</h1>
-    <a href="{{ route('admin.skills.create') }}" class="text-sm bg-stone-900 text-white rounded px-4 py-2 hover:bg-orange-600 transition">+ New skill</a>
+    <div class="flex items-center gap-4">
+      <a href="{{ route('admin.skills.trash') }}" class="text-sm text-stone-500 hover:text-orange-600">Trash</a>
+      <a href="{{ route('admin.skills.create') }}" class="text-sm bg-stone-900 text-white rounded px-4 py-2 hover:bg-orange-600 transition">+ New skill</a>
+    </div>
   </div>
 
   @forelse ($skills as $category => $items)

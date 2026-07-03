@@ -3,7 +3,10 @@
 @section('content')
   <div class="flex items-center justify-between mb-8">
     <h1 class="text-2xl font-semibold">Testimonials</h1>
-    <a href="{{ route('admin.testimonials.create') }}" class="text-sm bg-stone-900 text-white rounded px-4 py-2 hover:bg-orange-600 transition">+ New testimonial</a>
+    <div class="flex items-center gap-4">
+      <a href="{{ route('admin.testimonials.trash') }}" class="text-sm text-stone-500 hover:text-orange-600">Trash</a>
+      <a href="{{ route('admin.testimonials.create') }}" class="text-sm bg-stone-900 text-white rounded px-4 py-2 hover:bg-orange-600 transition">+ New testimonial</a>
+    </div>
   </div>
 
   <div class="bg-white border border-stone-200 rounded divide-y divide-stone-200">

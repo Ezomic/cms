@@ -85,6 +85,27 @@ class ProjectController extends Controller
         return response()->noContent();
     }
 
+    public function trash()
+    {
+        return view('admin.projects.trash', [
+            'projects' => Project::onlyTrashed()->ordered()->get(),
+        ]);
+    }
+
+    public function restore(int $id)
+    {
+        Project::onlyTrashed()->findOrFail($id)->restore();
+
+        return back()->with('status', 'Project restored.');
+    }
+
+    public function forceDelete(int $id)
+    {
+        Project::onlyTrashed()->findOrFail($id)->forceDelete();
+
+        return back()->with('status', 'Project permanently deleted.');
+    }
+
     private function validated(Request $request, Project $project): array
     {
         return $request->validate([

@@ -60,6 +60,27 @@ class SkillController extends Controller
         return response()->noContent();
     }
 
+    public function trash()
+    {
+        return view('admin.skills.trash', [
+            'skills' => Skill::onlyTrashed()->ordered()->get()->groupBy('category'),
+        ]);
+    }
+
+    public function restore(int $id)
+    {
+        Skill::onlyTrashed()->findOrFail($id)->restore();
+
+        return back()->with('status', 'Skill restored.');
+    }
+
+    public function forceDelete(int $id)
+    {
+        Skill::onlyTrashed()->findOrFail($id)->forceDelete();
+
+        return back()->with('status', 'Skill permanently deleted.');
+    }
+
     private function validated(Request $request): array
     {
         return $request->validate([
