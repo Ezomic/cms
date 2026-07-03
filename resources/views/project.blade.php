@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ $project->name }} — {{ $profile->name }}</title>
+<meta property="og:title" content="{{ $project->name }}">
+<meta property="og:description" content="{{ $project->description }}">
+<meta property="og:type" content="article">
+@if ($project->image)
+<meta property="og:image" content="{{ $project->imageUrl() }}">
+@endif
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -28,6 +34,7 @@
   .meta-row{display:flex;gap:24px;flex-wrap:wrap;font-family:var(--mono);font-size:13px;color:var(--ink-soft);margin-bottom:24px;}
   .work-tags{display:flex;flex-wrap:wrap;gap:8px;}
   .tag{font-family:var(--mono);font-size:12px;color:var(--ink-soft);border:1px solid var(--line);padding:4px 10px;border-radius:20px;white-space:nowrap;}
+  .cover{width:100%;max-height:480px;object-fit:cover;border:1px solid var(--line);margin:40px 0;}
   .body-content{padding:24px 0 96px;font-size:17px;color:var(--ink);}
   .body-content p{margin-bottom:1.2em;white-space:pre-line;}
   footer{padding:32px 0;font-family:var(--mono);font-size:12px;color:var(--ink-soft);border-top:1px solid var(--line);}
@@ -60,6 +67,10 @@
 </header>
 
 <div class="wrap">
+  @if ($project->image)
+    <img class="cover" src="{{ $project->imageUrl() }}" alt="{{ $project->name }}">
+  @endif
+
   <div class="body-content">
     <p>{{ $project->body }}</p>
   </div>
