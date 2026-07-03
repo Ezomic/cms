@@ -23,6 +23,7 @@
         <a href="{{ route('admin.profile.edit') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.profile.*') ? 'bg-stone-100 font-medium' : '' }}">Profile</a>
         <a href="{{ route('admin.settings.edit') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.settings.*') ? 'bg-stone-100 font-medium' : '' }}">Settings</a>
         <a href="{{ route('admin.users.index') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.users.*') ? 'bg-stone-100 font-medium' : '' }}">Admins</a>
+        <a href="{{ route('admin.two-factor.show') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.two-factor.show') ? 'bg-stone-100 font-medium' : '' }}">Security</a>
       </nav>
     </div>
     <div class="space-y-3">
