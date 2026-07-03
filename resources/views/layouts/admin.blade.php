@@ -19,6 +19,7 @@
         <a href="{{ route('admin.testimonials.index') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.testimonials.*') ? 'bg-stone-100 font-medium' : '' }}">Testimonials</a>
         <a href="{{ route('admin.skills.index') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.skills.*') ? 'bg-stone-100 font-medium' : '' }}">Skills</a>
         <a href="{{ route('admin.profile.edit') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.profile.*') ? 'bg-stone-100 font-medium' : '' }}">Profile</a>
+        <a href="{{ route('admin.two-factor.show') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.two-factor.show') ? 'bg-stone-100 font-medium' : '' }}">Security</a>
       </nav>
     </div>
     <div class="space-y-3">
