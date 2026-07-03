@@ -7,11 +7,13 @@ use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Auth\AdminLoginController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 // Public site
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 // Admin auth
 Route::get('/admin/login', [AdminLoginController::class, 'show'])->name('admin.login');
