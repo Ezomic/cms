@@ -126,6 +126,7 @@ class ProjectController extends Controller
             'client_name' => ['nullable', 'string', 'max:255'],
             'year'        => ['nullable', 'string', 'max:4'],
             'description' => ['nullable', 'string'],
+            'outcome'     => ['nullable', 'string', 'max:255'],
             'body'        => ['nullable', 'string'],
             'tags'        => ['nullable', 'string', 'max:255'],
             'sort_order'  => ['nullable', 'integer'],
