@@ -3,8 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Work — {{ $profile->name }}</title>
-<meta name="description" content="All projects by {{ $profile->name }}.">
+<title>@if($activeTag){{ $activeTag }} projects@else Work@endif — {{ $profile->name }}</title>
+<meta name="description" content="@if($activeTag)Projects using {{ $activeTag }} by {{ $profile->name }}.@else All projects by {{ $profile->name }}.@endif">
+@if($activeTag)
+<link rel="canonical" href="{{ route('work.tag', $activeTag) }}">
+<link rel="alternate" hreflang="nl" href="{{ route('work.tag', $activeTag) }}">
+<link rel="alternate" hreflang="en" href="{{ route('work.tag', $activeTag) }}">
+<link rel="alternate" hreflang="x-default" href="{{ route('work.tag', $activeTag) }}">
+@else
+<link rel="canonical" href="{{ route('work.index') }}">
+<link rel="alternate" hreflang="nl" href="{{ route('work.index') }}">
+<link rel="alternate" hreflang="en" href="{{ route('work.index') }}">
+<link rel="alternate" hreflang="x-default" href="{{ route('work.index') }}">
+@endif
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -73,9 +84,9 @@
   @if ($tags->isNotEmpty())
   <div class="filters">
     <span class="filter-label">{{ __('site.work_filter_label') }}</span>
-    <button class="filter-btn active" data-tag="all">{{ __('site.work_filter_all') }}</button>
+    <a class="filter-btn {{ !$activeTag ? 'active' : '' }}" href="{{ route('work.index') }}" data-tag="all">{{ __('site.work_filter_all') }}</a>
     @foreach ($tags as $tag)
-      <button class="filter-btn" data-tag="{{ $tag }}">{{ $tag }}</button>
+      <a class="filter-btn {{ $activeTag === $tag ? 'active' : '' }}" href="{{ route('work.tag', $tag) }}" data-tag="{{ $tag }}">{{ $tag }}</a>
     @endforeach
   </div>
   @endif
@@ -127,7 +138,8 @@
   var empty = document.getElementById('empty-state');
 
   btns.forEach(function(btn) {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
       var tag = btn.dataset.tag;
       btns.forEach(function(b){ b.classList.remove('active'); });
       btn.classList.add('active');
@@ -140,6 +152,8 @@
         if (show) visible++;
       });
       empty.style.display = visible === 0 ? 'block' : 'none';
+
+      history.replaceState(null, '', btn.href);
     });
   });
 </script>
