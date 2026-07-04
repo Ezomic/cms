@@ -120,8 +120,11 @@
   .field-hint{font-family:var(--mono);font-size:11px;color:var(--ink-soft);margin-bottom:16px;}
   .response-note{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin-top:12px;}
   .honeypot{position:absolute;left:-9999px;top:-9999px;}
-  .form-status{font-family:var(--mono);font-size:13px;padding:12px 16px;margin-bottom:20px;border:1px solid var(--accent);color:var(--accent);}
-  .form-errors{font-family:var(--mono);font-size:13px;padding:12px 16px;margin-bottom:20px;border:1px solid #C0392B;color:#C0392B;}
+  .form-status{font-family:var(--mono);font-size:13px;padding:12px 16px;margin-bottom:20px;border:1px solid #2E9E4B;color:#20713A;background:rgba(46,158,75,.06);}
+  .contact-form input.has-error,.contact-form textarea.has-error{border-color:#C0392B;}
+  .field-error{font-family:var(--mono);font-size:12px;color:#C0392B;margin-top:6px;}
+  .contact-form-grid > div{margin-bottom:0;}
+  .contact-form-grid .field-error{margin-bottom:0;}
   @media (max-width:560px){.contact-form-grid{grid-template-columns:1fr;}}
   footer{padding:32px 0;font-family:var(--mono);font-size:12px;color:var(--ink-soft);}
   footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
@@ -370,12 +373,7 @@
         <h3>{{ __('site.contact_form_title') }}</h3>
 
         @if (session('status'))
-          <div class="form-status">{{ session('status') }}</div>
-        @endif
-        @if ($errors->any())
-          <div class="form-errors">
-            @foreach ($errors->all() as $error)<div>{{ $error }}</div>@endforeach
-          </div>
+          <div class="form-status" role="status" id="form-feedback">{{ session('status') }}</div>
         @endif
 
         <form method="POST" action="{{ route('contact.store') }}">
@@ -384,11 +382,13 @@
           <div class="contact-form-grid">
             <div>
               <label for="contact-name">{{ __('site.contact_name') }}</label>
-              <input id="contact-name" type="text" name="name" value="{{ old('name') }}" required>
+              <input id="contact-name" type="text" name="name" value="{{ old('name') }}" required @error('name') class="has-error" aria-invalid="true" aria-describedby="error-name" @enderror>
+              @error('name')<div class="field-error" id="error-name">{{ $message }}</div>@enderror
             </div>
             <div>
               <label for="contact-email">{{ __('site.contact_email') }}</label>
-              <input id="contact-email" type="email" name="email" value="{{ old('email') }}" required>
+              <input id="contact-email" type="email" name="email" value="{{ old('email') }}" required @error('email') class="has-error" aria-invalid="true" aria-describedby="error-email" @enderror>
+              @error('email')<div class="field-error" id="error-email">{{ $message }}</div>@enderror
             </div>
           </div>
           <div class="contact-form-grid">
@@ -406,7 +406,8 @@
             </div>
           </div>
           <label for="contact-message">{{ __('site.contact_message') }}</label>
-          <textarea id="contact-message" name="message" rows="5" required placeholder="{{ __('site.contact_message_hint') }}">{{ old('message') }}</textarea>
+          <textarea id="contact-message" name="message" rows="5" required placeholder="{{ __('site.contact_message_hint') }}" @error('message') class="has-error" aria-invalid="true" aria-describedby="error-message" @enderror>{{ old('message') }}</textarea>
+          @error('message')<div class="field-error" id="error-message" style="margin-top:0;margin-bottom:12px;">{{ $message }}</div>@enderror
           <div class="field-hint">{{ __('site.contact_message_hint') }}</div>
           <button class="btn-primary" type="submit" style="border:none;cursor:pointer;">{{ __('site.contact_submit') }}</button>
           <p class="response-note">{{ __('site.contact_response_time') }}</p>
@@ -432,6 +433,10 @@
 </footer>
 
 <script>
+  @if (session('status') || $errors->any())
+  document.getElementById('contact').scrollIntoView({ behavior: 'instant', block: 'start' });
+  @endif
+
   (function(){
     var burger = document.querySelector('.nav-burger');
     var menu = document.getElementById('mobile-menu');
