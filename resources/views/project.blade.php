@@ -18,6 +18,7 @@
     ['name' => $project->name, 'url' => localized_route('project.show', $project->slug)],
 ]])
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -26,15 +27,24 @@
     --display:'Space Grotesk',sans-serif; --body:'Inter',sans-serif; --mono:'IBM Plex Mono',monospace;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
+  @media (prefers-reduced-motion:reduce){*{transition-duration:.01ms !important;animation-duration:.01ms !important;}}
   body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.6;-webkit-font-smoothing:antialiased;}
   a{color:inherit;}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .skip-link{position:absolute;left:-9999px;top:0;z-index:100;background:var(--ink);color:var(--white);font-family:var(--mono);font-size:13px;padding:10px 16px;text-decoration:none;}
+  .skip-link:focus{left:0;}
   .wrap{max-width:820px;margin:0 auto;padding:0 32px;}
   nav{position:sticky;top:0;z-index:50;background:rgba(247,247,244,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
   nav .wrap{max-width:1120px;display:flex;align-items:center;justify-content:space-between;height:64px;}
-  .logo{font-family:var(--mono);font-weight:500;font-size:14px;display:flex;align-items:center;gap:8px;}
-  .logo .dot{width:6px;height:6px;background:var(--accent);border-radius:50%;}
+  .logo{font-family:var(--mono);font-weight:500;font-size:14px;display:flex;align-items:center;gap:8px;white-space:nowrap;}
+  .logo .dot{width:6px;height:6px;background:var(--accent);border-radius:50%;flex-shrink:0;}
+  nav .wrap{flex-wrap:wrap;height:auto;min-height:64px;row-gap:8px;}
+  @media (max-width:420px){.logo .locale-suffix{display:none;}}
   .back-link{font-family:var(--mono);font-size:13px;text-decoration:none;color:var(--ink-soft);}
   .back-link:hover{color:var(--ink);}
+  .nav-right{display:flex;align-items:center;gap:16px;}
+  .lang-toggle{font-family:var(--mono);font-size:12px;color:var(--ink-soft);border:1px solid var(--line);padding:4px 10px;text-decoration:none;transition:color .15s,border-color .15s;}
+  .lang-toggle:hover{color:var(--ink);border-color:var(--ink);}
   header.hero{padding:64px 0 40px;border-bottom:1px solid var(--line);}
   .eyebrow{font-family:var(--mono);font-size:13px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;}
   h1{font-family:var(--display);font-weight:600;font-size:clamp(2rem,5vw,3rem);line-height:1.1;letter-spacing:-.02em;margin-bottom:20px;}
@@ -52,18 +62,27 @@
   .body-content li{margin-bottom:.5em;}
   .body-content code{font-family:var(--mono);font-size:.88em;background:var(--accent-soft);padding:2px 6px;border-radius:3px;}
   .body-content strong{font-weight:600;}
+  .btn-primary{font-family:var(--mono);font-size:14px;background:var(--ink);color:var(--white);padding:14px 24px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s;}
+  .btn-primary:hover{background:var(--accent);}
   footer{padding:32px 0;font-family:var(--mono);font-size:12px;color:var(--ink-soft);border-top:1px solid var(--line);}
   footer .wrap{max-width:1120px;}
 </style>
 </head>
 <body>
 
+<a class="skip-link" href="#main">{{ __('site.skip_to_content') }}</a>
+
 <nav>
   <div class="wrap">
-    <div class="logo"><span class="dot"></span>{{ strtoupper($profile->name) }} / NL</div>
-    <a class="back-link" href="{{ localized_route('home') }}">{{ __('site.back_to_site') }}</a>
+    <div class="logo"><span class="dot"></span>{{ strtoupper($profile->name) }}<span class="locale-suffix"> / NL</span></div>
+    <div class="nav-right">
+      <a class="lang-toggle" href="{{ alternate_locale_url(app()->getLocale() === 'en' ? 'nl' : 'en') }}">{{ __('site.lang_toggle') }}</a>
+      <a class="back-link" href="{{ localized_route('home') }}">{{ __('site.back_to_site') }}</a>
+    </div>
   </div>
 </nav>
+
+<main id="main" tabindex="-1">
 
 <header class="hero">
   <div class="wrap">
@@ -83,12 +102,12 @@
 
 <div class="wrap">
   @if ($project->image)
-    <img class="cover" src="{{ $project->imageUrl() }}" alt="{{ $project->name }}" fetchpriority="high" decoding="async">
+    <img class="cover" src="{{ $project->imageUrl() }}" alt="{{ $project->imageAlt() }}" fetchpriority="high" decoding="async">
   @endif
 
   @if ($project->outcome)
     <div class="outcome-callout">
-      <strong>Result</strong>
+      <strong>{{ __('site.project_result_label') }}</strong>
       {{ $project->outcome }}
     </div>
   @endif
@@ -102,9 +121,11 @@
       <div style="font-family:var(--mono);font-size:13px;color:var(--ink-soft);margin-bottom:8px;">{{ __('site.project_cta_lead') }}</div>
       <div style="font-family:var(--display);font-weight:600;font-size:1.2rem;">{{ __('site.project_cta_headline') }}</div>
     </div>
-    <a href="{{ localized_route('home') }}?ref={{ urlencode($project->slug) }}#contact" style="font-family:var(--mono);font-size:14px;background:var(--ink);color:var(--white);padding:14px 24px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s;" onmouseover="this.style.background='var(--accent)'" onmouseout="this.style.background='var(--ink)'">{{ __('site.project_cta_button') }}</a>
+    <a class="btn-primary" href="{{ localized_route('home') }}?ref={{ urlencode($project->slug) }}#contact">{{ __('site.project_cta_button') }}</a>
   </div>
 </div>
+
+</main>
 
 <footer>
   <div class="wrap">

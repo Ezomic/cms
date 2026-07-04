@@ -35,7 +35,7 @@ class HomeController extends Controller
                     'image_url' => $project->imageUrl(),
                     'outcome' => $project->outcome,
                 ])->all(),
-                'testimonials' => Testimonial::latest()->get()->map->toArray()->all(),
+                'testimonials' => Testimonial::where('featured', true)->latest()->get()->map->toArray()->all(),
             ];
         });
 

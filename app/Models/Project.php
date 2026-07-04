@@ -13,7 +13,7 @@ class Project extends Model
     use BustsHomeCache, LogsActivity, SoftDeletes;
 
     protected $fillable = [
-        'name', 'image', 'slug', 'client_name', 'year', 'description', 'outcome', 'body', 'published', 'tags', 'sort_order', 'meta_title', 'meta_description',
+        'name', 'image', 'image_alt', 'slug', 'client_name', 'year', 'description', 'outcome', 'body', 'published', 'tags', 'sort_order', 'meta_title', 'meta_description',
     ];
 
     protected $casts = [
@@ -51,6 +51,11 @@ class Project extends Model
     public function imageUrl(): ?string
     {
         return $this->image ? asset('storage/'.$this->image) : null;
+    }
+
+    public function imageAlt(): string
+    {
+        return $this->image_alt ?: $this->name;
     }
 
     public function metaTitle(): string

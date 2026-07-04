@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ContactSubmissionController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProjectController;
@@ -73,6 +74,11 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
 
     Route::resource('users', UserController::class)->except(['show']);
+
+    Route::get('/contact-submissions', [ContactSubmissionController::class, 'index'])->name('contact-submissions.index');
+    Route::post('/contact-submissions/{contactSubmission}/read', [ContactSubmissionController::class, 'markRead'])->name('contact-submissions.read');
+    Route::post('/contact-submissions/{contactSubmission}/unread', [ContactSubmissionController::class, 'markUnread'])->name('contact-submissions.unread');
+    Route::delete('/contact-submissions/{contactSubmission}', [ContactSubmissionController::class, 'destroy'])->name('contact-submissions.destroy');
 
     Route::get('/two-factor', [TwoFactorController::class, 'show'])->name('two-factor.show');
     Route::post('/two-factor/enable', [TwoFactorController::class, 'enable'])->name('two-factor.enable');

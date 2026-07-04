@@ -7,6 +7,13 @@ return [
     'nav_docs' => 'Docs',
     'nav_contact' => 'Contact',
     'nav_cta' => 'Get in touch',
+    'nav_menu_label' => 'Menu',
+    'skip_to_content' => 'Skip to content',
+    'lang_toggle_long' => 'Nederlands →',
+
+    'hero_local_time' => 'local time, :city, NL',
+    'testimonial_aria' => 'Testimonial :number',
+    'project_result_label' => 'Result',
 
     'status_available' => 'Available for new projects',
     'status_booked' => 'Currently booked',
@@ -52,6 +59,7 @@ return [
     'contact_message_hint' => 'Describe the project, any technical constraints, and your ideal timeline.',
     'contact_submit' => 'Send message →',
     'contact_response_time' => 'I typically respond within 1 business day.',
+    'contact_success' => 'Thanks — your message has been sent. I typically reply within 1 business day.',
 
     'meta_availability_now' => 'Now',
     'meta_availability_from' => 'From :date',

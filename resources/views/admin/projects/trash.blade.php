@@ -8,7 +8,7 @@
 
   <div class="bg-white border border-stone-200 rounded divide-y divide-stone-200">
     @forelse ($projects as $project)
-      <div class="flex items-center justify-between px-6 py-4">
+      <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-6 py-4">
         <div>
           <div class="font-medium">{{ $project->name }}</div>
           <div class="text-xs text-stone-500">{{ $project->year }} — {{ $project->client_name }}</div>

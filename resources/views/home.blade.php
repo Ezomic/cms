@@ -11,6 +11,7 @@
 @include('partials.schema.person')
 @include('partials.schema.website')
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -20,9 +21,14 @@
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{transition-duration:.01ms !important;animation-duration:.01ms !important;}}
   body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.5;-webkit-font-smoothing:antialiased;}
   ::selection{background:var(--accent);color:var(--white);}
   a{color:inherit;}
+  a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  section[id]{scroll-margin-top:72px;}
+  .skip-link{position:absolute;left:-9999px;top:0;z-index:100;background:var(--ink);color:var(--white);font-family:var(--mono);font-size:13px;padding:10px 16px;text-decoration:none;}
+  .skip-link:focus{left:0;}
   .wrap{max-width:1120px;margin:0 auto;padding:0 32px;}
   nav{position:sticky;top:0;z-index:50;background:rgba(247,247,244,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
   nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;}
@@ -33,7 +39,20 @@
   .nav-links a:hover{color:var(--ink);}
   .nav-cta{font-family:var(--mono);font-size:13px;border:1px solid var(--ink);padding:8px 16px;text-decoration:none;transition:all .15s;}
   .nav-cta:hover{background:var(--ink);color:var(--white);}
-  @media (max-width:720px){.nav-mobile-hide{display:none;}}
+  .lang-toggle{font-family:var(--mono);font-size:12px;color:var(--ink-soft);border:1px solid var(--line);padding:4px 10px;text-decoration:none;transition:color .15s,border-color .15s;}
+  .lang-toggle:hover{color:var(--ink);border-color:var(--ink);}
+  .nav-burger{display:none;background:none;border:1px solid var(--line);width:38px;height:38px;cursor:pointer;padding:0;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:border-color .15s;}
+  .nav-burger:hover{border-color:var(--ink);}
+  .nav-burger span{display:block;width:16px;height:2px;background:var(--ink);transition:transform .2s,opacity .2s;}
+  .nav-burger[aria-expanded="true"] span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+  .nav-burger[aria-expanded="true"] span:nth-child(2){opacity:0;}
+  .nav-burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+  .mobile-menu{display:none;border-top:1px solid var(--line);}
+  .mobile-menu.open{display:block;}
+  .mobile-menu .wrap{display:block;height:auto;padding-top:8px;padding-bottom:8px;}
+  .mobile-menu a{display:block;font-family:var(--mono);font-size:14px;color:var(--ink);text-decoration:none;padding:14px 0;border-bottom:1px solid var(--line);}
+  .mobile-menu a:last-child{border-bottom:none;color:var(--ink-soft);}
+  @media (max-width:720px){.nav-mobile-hide{display:none;}.nav-burger{display:flex;}}
   .hero{position:relative;padding:96px 0 120px;overflow:hidden;border-bottom:1px solid var(--line);}
   .grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:64px 64px;opacity:.35;mask-image:linear-gradient(to bottom,black,transparent 85%);}
   .hero-inner{position:relative;}
@@ -85,6 +104,9 @@
   .service-price{font-family:var(--mono);font-size:13px;color:var(--accent);margin-top:20px;padding-top:20px;border-top:1px solid var(--line);}
   @media (max-width:720px){.services-grid{grid-template-columns:1fr;}}
   blockquote{font-family:var(--display);font-weight:500;font-size:clamp(1.3rem,3vw,2rem);line-height:1.35;letter-spacing:-.01em;max-width:26ch;}
+  .testimonial-slides{display:grid;}
+  .testimonial-slide{grid-area:1/1;visibility:hidden;opacity:0;transition:opacity .4s ease;}
+  .testimonial-slide.active{visibility:visible;opacity:1;}
   .quote-mark{color:var(--accent);font-size:2rem;line-height:0;display:block;margin-bottom:12px;}
   .testimonial-attr{margin-top:28px;font-family:var(--mono);font-size:13px;color:var(--ink-soft);}
   .contact{border-bottom:none;padding-bottom:64px;}
@@ -109,14 +131,19 @@
   .field-hint{font-family:var(--mono);font-size:11px;color:var(--ink-soft);margin-bottom:16px;}
   .response-note{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin-top:12px;}
   .honeypot{position:absolute;left:-9999px;top:-9999px;}
-  .form-status{font-family:var(--mono);font-size:13px;padding:12px 16px;margin-bottom:20px;border:1px solid var(--accent);color:var(--accent);}
-  .form-errors{font-family:var(--mono);font-size:13px;padding:12px 16px;margin-bottom:20px;border:1px solid #C0392B;color:#C0392B;}
+  .form-status{font-family:var(--mono);font-size:13px;padding:12px 16px;margin-bottom:20px;border:1px solid #2E9E4B;color:#20713A;background:rgba(46,158,75,.06);}
+  .contact-form input.has-error,.contact-form textarea.has-error{border-color:#C0392B;}
+  .field-error{font-family:var(--mono);font-size:12px;color:#C0392B;margin-top:6px;}
+  .contact-form-grid > div{margin-bottom:0;}
+  .contact-form-grid .field-error{margin-bottom:0;}
   @media (max-width:560px){.contact-form-grid{grid-template-columns:1fr;}}
   footer{padding:32px 0;font-family:var(--mono);font-size:12px;color:var(--ink-soft);}
   footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
 </style>
 </head>
 <body>
+
+<a class="skip-link" href="#main">{{ __('site.skip_to_content') }}</a>
 
 <nav>
   <div class="wrap">
@@ -129,11 +156,26 @@
       <a href="#contact">{{ __('site.nav_contact') }}</a>
     </div>
     <div style="display:flex;align-items:center;gap:12px;">
-      <a href="{{ alternate_locale_url(app()->getLocale() === 'en' ? 'nl' : 'en') }}" style="font-family:var(--mono);font-size:12px;color:var(--ink-soft);background:none;border:1px solid var(--line);padding:4px 10px;text-decoration:none;transition:all .15s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--ink-soft)'">{{ __('site.lang_toggle') }}</a>
-      <a class="nav-cta" href="#contact">{{ __('site.nav_cta') }}</a>
+      <a class="lang-toggle nav-mobile-hide" href="{{ alternate_locale_url(app()->getLocale() === 'en' ? 'nl' : 'en') }}">{{ __('site.lang_toggle') }}</a>
+      <a class="nav-cta nav-mobile-hide" href="#contact">{{ __('site.nav_cta') }}</a>
+      <button class="nav-burger" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="{{ __('site.nav_menu_label') }}">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <div class="wrap">
+      <a href="{{ localized_route('work.index') }}">{{ __('site.nav_work') }}</a>
+      <a href="#services">{{ __('site.nav_services') }}</a>
+      <a href="#process">{{ __('site.nav_process') }}</a>
+      <a href="{{ localized_route('docs') }}">{{ __('site.nav_docs') }}</a>
+      <a href="#contact">{{ __('site.nav_contact') }}</a>
+      <a href="{{ alternate_locale_url(app()->getLocale() === 'en' ? 'nl' : 'en') }}">{{ __('site.lang_toggle_long') }}</a>
     </div>
   </div>
 </nav>
+
+<main id="main" tabindex="-1">
 
 <header class="hero">
   <div class="grid-bg"></div>
@@ -146,15 +188,12 @@
         <span>{{ __('site.status_booked') }}@if($profile->availability_from) — {{ __('site.status_available_from', ['date' => $profile->availability_from]) }}@endif</span>
       @endif
       <span style="color:var(--line)">·</span>
-      <span id="local-time">--:-- local time, {{ $profile->city }}, NL</span>
+      <span id="local-time">--:-- {{ __('site.hero_local_time', ['city' => $profile->city]) }}</span>
     </div>
 
     <div class="eyebrow">{{ $profile->tagline }}</div>
     <h1>{{ $profile->hero_headline }}</h1>
-    <p class="hero-sub">
-      I'm {{ $profile->name }}, a freelance {{ strtolower($profile->tagline) }} based in
-      {{ $profile->city }}, the Netherlands. {{ $profile->hero_subtext }}
-    </p>
+    <p class="hero-sub">{{ $profile->hero_subtext }}</p>
 
     <div class="hero-actions">
       <a class="btn-primary" href="#contact">{{ __('site.hero_actions_primary') }}</a>
@@ -199,7 +238,7 @@
           <div class="work-year">{{ $project->year }} — {{ $project->client_name }}</div>
           <div>
             @if ($project->image)
-              <img class="work-image" src="{{ $project->image_url }}" alt="{{ $project->name }}" loading="lazy" decoding="async">
+              <img class="work-image" src="{{ $project->image_url }}" alt="{{ $project->image_alt ?: $project->name }}" loading="lazy" decoding="async">
             @endif
             <div class="work-name">
               @if ($project->body)
@@ -220,7 +259,7 @@
           </div>
         </div>
       @empty
-        <p style="color:var(--ink-soft)">Projects will show up here once added in the admin panel.</p>
+        <p style="color:var(--ink-soft)">{{ __('site.work_no_projects') }}</p>
       @endforelse
     </div>
   </div>
@@ -304,17 +343,19 @@
 <section class="testimonial">
   <div class="wrap">
     <div id="testimonial-carousel" style="position:relative;">
-      @foreach ($testimonials as $i => $testimonial)
-        <div class="testimonial-slide" style="{{ $i > 0 ? 'display:none;' : '' }}">
-          <span class="quote-mark">"</span>
-          <blockquote>{{ $testimonial->quote }}</blockquote>
-          <div class="testimonial-attr">— {{ $testimonial->author_name }}{{ $testimonial->author_role ? ', '.$testimonial->author_role : '' }}{{ $testimonial->company_name ? ' · '.$testimonial->company_name : '' }}</div>
-        </div>
-      @endforeach
+      <div class="testimonial-slides">
+        @foreach ($testimonials as $i => $testimonial)
+          <div class="testimonial-slide {{ $i === 0 ? 'active' : '' }}" @if($i > 0) aria-hidden="true" @endif>
+            <span class="quote-mark">"</span>
+            <blockquote>{{ $testimonial->quote }}</blockquote>
+            <div class="testimonial-attr">— {{ $testimonial->author_name }}{{ $testimonial->author_role ? ', '.$testimonial->author_role : '' }}{{ $testimonial->company_name ? ' · '.$testimonial->company_name : '' }}</div>
+          </div>
+        @endforeach
+      </div>
       @if ($testimonials->count() > 1)
         <div style="margin-top:32px;display:flex;gap:8px;align-items:center;">
           @foreach ($testimonials as $i => $t)
-            <button class="carousel-dot {{ $i === 0 ? 'active' : '' }}" data-index="{{ $i }}" aria-label="Testimonial {{ $i + 1 }}" style="width:8px;height:8px;border-radius:50%;border:none;cursor:pointer;padding:0;background:{{ $i === 0 ? 'var(--ink)' : 'var(--line)' }};transition:background .2s;"></button>
+            <button class="carousel-dot {{ $i === 0 ? 'active' : '' }}" data-index="{{ $i }}" aria-label="{{ __('site.testimonial_aria', ['number' => $i + 1]) }}" style="width:8px;height:8px;border-radius:50%;border:none;cursor:pointer;padding:0;background:{{ $i === 0 ? 'var(--ink)' : 'var(--line)' }};transition:background .2s;"></button>
           @endforeach
         </div>
       @endif
@@ -346,12 +387,7 @@
         <h3>{{ __('site.contact_form_title') }}</h3>
 
         @if (session('status'))
-          <div class="form-status">{{ session('status') }}</div>
-        @endif
-        @if ($errors->any())
-          <div class="form-errors">
-            @foreach ($errors->all() as $error)<div>{{ $error }}</div>@endforeach
-          </div>
+          <div class="form-status" role="status" id="form-feedback">{{ session('status') }}</div>
         @endif
 
         <form method="POST" action="{{ route('contact.store') }}">
@@ -360,11 +396,13 @@
           <div class="contact-form-grid">
             <div>
               <label for="contact-name">{{ __('site.contact_name') }}</label>
-              <input id="contact-name" type="text" name="name" value="{{ old('name') }}" required>
+              <input id="contact-name" type="text" name="name" value="{{ old('name') }}" required @error('name') class="has-error" aria-invalid="true" aria-describedby="error-name" @enderror>
+              @error('name')<div class="field-error" id="error-name">{{ $message }}</div>@enderror
             </div>
             <div>
               <label for="contact-email">{{ __('site.contact_email') }}</label>
-              <input id="contact-email" type="email" name="email" value="{{ old('email') }}" required>
+              <input id="contact-email" type="email" name="email" value="{{ old('email') }}" required @error('email') class="has-error" aria-invalid="true" aria-describedby="error-email" @enderror>
+              @error('email')<div class="field-error" id="error-email">{{ $message }}</div>@enderror
             </div>
           </div>
           <div class="contact-form-grid">
@@ -382,7 +420,8 @@
             </div>
           </div>
           <label for="contact-message">{{ __('site.contact_message') }}</label>
-          <textarea id="contact-message" name="message" rows="5" required placeholder="{{ __('site.contact_message_hint') }}">{{ old('message') }}</textarea>
+          <textarea id="contact-message" name="message" rows="5" required placeholder="{{ __('site.contact_message_hint') }}" @error('message') class="has-error" aria-invalid="true" aria-describedby="error-message" @enderror>{{ old('message') }}</textarea>
+          @error('message')<div class="field-error" id="error-message" style="margin-top:0;margin-bottom:12px;">{{ $message }}</div>@enderror
           <div class="field-hint">{{ __('site.contact_message_hint') }}</div>
           <button class="btn-primary" type="submit" style="border:none;cursor:pointer;">{{ __('site.contact_submit') }}</button>
           <p class="response-note">{{ __('site.contact_response_time') }}</p>
@@ -400,14 +439,38 @@
   </div>
 </section>
 
+</main>
+
 <footer>
   <div class="wrap">
     <span>© {{ date('Y') }} {{ $profile->name }}. {{ __('site.footer_built') }}</span>
-    <span>KVK {{ $profile->kvk_number }}</span>
+    @if ($profile->kvk_number)
+      <span>KVK {{ $profile->kvk_number }}</span>
+    @endif
   </div>
 </footer>
 
 <script>
+  @if (session('status') || $errors->any())
+  document.getElementById('contact').scrollIntoView({ behavior: 'instant', block: 'start' });
+  @endif
+
+  (function(){
+    var burger = document.querySelector('.nav-burger');
+    var menu = document.getElementById('mobile-menu');
+    if (!burger || !menu) return;
+    burger.addEventListener('click', function(){
+      var open = menu.classList.toggle('open');
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    menu.querySelectorAll('a').forEach(function(link){
+      link.addEventListener('click', function(){
+        menu.classList.remove('open');
+        burger.setAttribute('aria-expanded', 'false');
+      });
+    });
+  })();
+
   (function(){
     var ref = new URLSearchParams(window.location.search).get('ref');
     if (!ref) return;
@@ -423,22 +486,34 @@
     if (slides.length < 2) return;
     var current = 0;
     function show(n) {
-      slides[current].style.display = 'none';
+      slides[current].classList.remove('active');
+      slides[current].setAttribute('aria-hidden', 'true');
       dots[current].style.background = 'var(--line)';
       current = n;
-      slides[current].style.display = '';
+      slides[current].classList.add('active');
+      slides[current].removeAttribute('aria-hidden');
       dots[current].style.background = 'var(--ink)';
     }
     dots.forEach(function(dot) {
       dot.addEventListener('click', function(){ show(parseInt(dot.dataset.index)); });
     });
-    setInterval(function(){ show((current + 1) % slides.length); }, 6000);
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var timer = setInterval(advance, 6000);
+    function advance(){ show((current + 1) % slides.length); }
+    function pause(){ clearInterval(timer); }
+    function resume(){ clearInterval(timer); timer = setInterval(advance, 6000); }
+    var carousel = document.getElementById('testimonial-carousel');
+    carousel.addEventListener('mouseenter', pause);
+    carousel.addEventListener('mouseleave', resume);
+    carousel.addEventListener('focusin', pause);
+    carousel.addEventListener('focusout', resume);
   })();
 
   function updateClock(){
     const el = document.getElementById('local-time');
     const time = new Intl.DateTimeFormat('en-GB', { hour:'2-digit', minute:'2-digit', timeZone:'Europe/Amsterdam' }).format(new Date());
-    el.textContent = time + ' local time, {{ $profile->city }}, NL';
+    el.textContent = time + ' ' + @json(__('site.hero_local_time', ['city' => $profile->city]));
   }
   updateClock();
   setInterval(updateClock, 30000);

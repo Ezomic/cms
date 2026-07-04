@@ -9,6 +9,7 @@
     'canonicalRoute' => 'docs',
 ])
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -18,9 +19,13 @@
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{transition-duration:.01ms !important;animation-duration:.01ms !important;}}
   body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.6;-webkit-font-smoothing:antialiased;}
   ::selection{background:var(--accent);color:var(--white);}
   a{color:inherit;}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .skip-link{position:absolute;left:-9999px;top:0;z-index:100;background:var(--ink);color:var(--white);font-family:var(--mono);font-size:13px;padding:10px 16px;text-decoration:none;}
+  .skip-link:focus{left:0;}
   .wrap{max-width:1120px;margin:0 auto;padding:0 32px;}
   .wrap-narrow{max-width:720px;margin:0 auto;padding:0 32px;}
   nav{position:sticky;top:0;z-index:50;background:rgba(247,247,244,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
@@ -29,6 +34,9 @@
   .logo .dot{width:6px;height:6px;background:var(--accent);border-radius:50%;}
   .back-link{font-family:var(--mono);font-size:13px;text-decoration:none;color:var(--ink-soft);}
   .back-link:hover{color:var(--ink);}
+  .nav-right{display:flex;align-items:center;gap:16px;}
+  .lang-toggle{font-family:var(--mono);font-size:12px;color:var(--ink-soft);border:1px solid var(--line);padding:4px 10px;text-decoration:none;transition:color .15s,border-color .15s;}
+  .lang-toggle:hover{color:var(--ink);border-color:var(--ink);}
 
   .page-header{padding:72px 0 56px;border-bottom:1px solid var(--line);}
   .eyebrow{font-family:var(--mono);font-size:13px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:20px;}
@@ -41,7 +49,7 @@
   .toc-list a:hover{color:var(--ink);}
   .toc-num{color:var(--accent);min-width:24px;}
 
-  .doc-section{padding:56px 0;border-bottom:1px solid var(--line);}
+  .doc-section{padding:56px 0;border-bottom:1px solid var(--line);scroll-margin-top:72px;}
   .section-num{font-family:var(--mono);font-size:13px;color:var(--accent);margin-bottom:16px;}
   h2{font-family:var(--display);font-weight:600;font-size:1.6rem;margin-bottom:16px;letter-spacing:-.01em;}
   h3{font-family:var(--display);font-weight:600;font-size:1.05rem;margin-bottom:8px;}
@@ -90,6 +98,8 @@
   footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
   .footer-cta{font-family:var(--mono);font-size:13px;background:var(--ink);color:var(--white);padding:10px 20px;text-decoration:none;transition:background .15s;}
   .footer-cta:hover{background:var(--accent);}
+  .btn-primary{font-family:var(--mono);font-size:14px;background:var(--ink);color:var(--white);padding:14px 24px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s;}
+  .btn-primary:hover{background:var(--accent);}
 
   @media(max-width:720px){
     .pricing-grid,.two-col,.stack-grid{grid-template-columns:1fr;}
@@ -99,14 +109,19 @@
 </head>
 <body>
 
+<a class="skip-link" href="#main">{{ __('site.skip_to_content') }}</a>
+
 <nav>
   <div class="inner">
     <a class="logo" href="{{ localized_route('home') }}"><span class="dot"></span>{{ strtoupper($profile->name) }}</a>
-    <a class="back-link" href="{{ localized_route('home') }}">{{ __('docs.back_to_site') }}</a>
+    <div class="nav-right">
+      <a class="lang-toggle" href="{{ alternate_locale_url(app()->getLocale() === 'en' ? 'nl' : 'en') }}">{{ __('site.lang_toggle') }}</a>
+      <a class="back-link" href="{{ localized_route('home') }}">{{ __('docs.back_to_site') }}</a>
+    </div>
   </div>
 </nav>
 
-<div class="wrap-narrow">
+<main id="main" tabindex="-1" class="wrap-narrow">
 
   <div class="page-header">
     <div class="eyebrow">{{ __('docs.page_eyebrow') }}</div>
@@ -460,11 +475,11 @@
     <div style="margin-top:48px;padding-top:48px;border-top:1px solid var(--line);">
       <h3 style="font-family:var(--display);font-weight:600;font-size:1.4rem;margin-bottom:12px;">{{ __('docs.s11_ready_title') }}</h3>
       <p style="margin-bottom:24px;">{{ __('docs.s11_ready_lead') }}</p>
-      <a href="{{ localized_route('home') }}#contact" style="font-family:var(--mono);font-size:14px;background:var(--ink);color:var(--white);padding:14px 24px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s;" onmouseover="this.style.background='var(--accent)'" onmouseout="this.style.background='var(--ink)'">{{ __('docs.s11_ready_cta') }}</a>
+      <a class="btn-primary" href="{{ localized_route('home') }}#contact">{{ __('docs.s11_ready_cta') }}</a>
     </div>
   </div>
 
-</div>
+</main>
 
 <footer>
   <div class="wrap">
