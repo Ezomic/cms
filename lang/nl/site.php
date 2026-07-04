@@ -54,6 +54,7 @@ return [
     'contact_message_hint' => 'Beschrijf het project, eventuele technische vereisten en je gewenste planning.',
     'contact_submit' => 'Verstuur bericht →',
     'contact_response_time' => 'Ik reageer doorgaans binnen één werkdag.',
+    'contact_success' => 'Bedankt — je bericht is verzonden. Ik reageer doorgaans binnen één werkdag.',
 
     'meta_availability_now' => 'Nu',
     'meta_availability_from' => 'Vanaf :date',

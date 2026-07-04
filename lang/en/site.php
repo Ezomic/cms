@@ -54,6 +54,7 @@ return [
     'contact_message_hint' => 'Describe the project, any technical constraints, and your ideal timeline.',
     'contact_submit' => 'Send message →',
     'contact_response_time' => 'I typically respond within 1 business day.',
+    'contact_success' => 'Thanks — your message has been sent. I typically reply within 1 business day.',
 
     'meta_availability_now' => 'Now',
     'meta_availability_from' => 'From :date',
