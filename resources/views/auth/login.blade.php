@@ -24,8 +24,12 @@
       </div>
       <div>
         <label class="block text-xs font-medium text-stone-600 mb-1">Password</label>
-        <input type="password" name="password" required
-               class="w-full border border-stone-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500">
+        <div class="relative">
+          <input id="password" type="password" name="password" required
+                 class="w-full border border-stone-300 rounded px-3 py-2 pr-16 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500">
+          <button type="button" onclick="var i=document.getElementById('password');var v=i.type==='password';i.type=v?'text':'password';this.textContent=v?'Hide':'Show';"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-stone-400 hover:text-stone-700">Show</button>
+        </div>
       </div>
       <button type="submit" class="w-full bg-stone-900 text-white text-sm rounded px-3 py-2 hover:bg-orange-600 transition">
         Log in
