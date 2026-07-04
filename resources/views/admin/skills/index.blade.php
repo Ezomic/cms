@@ -19,7 +19,7 @@
       <div class="text-xs font-mono uppercase tracking-wide text-orange-600 mb-2">{{ $category }}</div>
       <div class="skill-list bg-white border border-stone-200 rounded divide-y divide-stone-200">
         @foreach ($items as $skill)
-          <div class="flex items-center justify-between px-6 py-3" data-id="{{ $skill->id }}">
+          <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-6 py-3" data-id="{{ $skill->id }}">
             <span class="text-sm flex items-center gap-3">
               <span class="drag-handle cursor-grab text-stone-300 select-none">⠿</span>
               {{ $skill->name }}

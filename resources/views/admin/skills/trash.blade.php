@@ -11,7 +11,7 @@
       <div class="text-xs font-mono uppercase tracking-wide text-orange-600 mb-2">{{ $category }}</div>
       <div class="bg-white border border-stone-200 rounded divide-y divide-stone-200">
         @foreach ($items as $skill)
-          <div class="flex items-center justify-between px-6 py-3">
+          <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-6 py-3">
             <span class="text-sm">{{ $skill->name }}</span>
             <div class="flex gap-3 text-sm">
               <form method="POST" action="{{ route('admin.skills.restore', $skill->id) }}">

@@ -8,7 +8,7 @@
 
   <div class="bg-white border border-stone-200 rounded divide-y divide-stone-200">
     @foreach ($users as $user)
-      <div class="flex items-center justify-between px-6 py-4">
+      <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-6 py-4">
         <div>
           <div class="font-medium">{{ $user->name }} @if ($user->id === auth()->id())<span class="text-xs text-stone-400">(you)</span>@endif</div>
           <div class="text-xs text-stone-500">{{ $user->email }}</div>

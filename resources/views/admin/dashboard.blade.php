@@ -4,7 +4,7 @@
   <h1 class="text-2xl font-semibold mb-1">Dashboard</h1>
   <p class="text-stone-500 text-sm mb-8">Manage the content shown on your public site.</p>
 
-  <div class="grid grid-cols-4 gap-4 mb-8">
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
     <a href="{{ route('admin.projects.index') }}" class="border border-stone-200 rounded p-6 bg-white hover:border-orange-400 transition">
       <div class="text-3xl font-semibold">{{ $projectCount }}</div>
       <div class="text-sm text-stone-500 mt-1">Projects</div>

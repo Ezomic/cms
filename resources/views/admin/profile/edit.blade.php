@@ -8,7 +8,7 @@
     @csrf
     @method('PUT')
 
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
         <label class="block text-xs font-medium text-stone-600 mb-1">Name</label>
         <input name="name" value="{{ old('name', $profile->name) }}" required class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
@@ -39,7 +39,7 @@
       Available for new projects
     </label>
 
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
         <label class="block text-xs font-medium text-stone-600 mb-1">Availability start (if booked)</label>
         <input name="availability_from" value="{{ old('availability_from', $profile->availability_from) }}" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
@@ -50,7 +50,7 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
         <label class="block text-xs font-medium text-stone-600 mb-1">Email</label>
         <input name="email" value="{{ old('email', $profile->email) }}" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
@@ -61,7 +61,7 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
         <label class="block text-xs font-medium text-stone-600 mb-1">LinkedIn URL</label>
         <input name="linkedin_url" value="{{ old('linkedin_url', $profile->linkedin_url) }}" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">

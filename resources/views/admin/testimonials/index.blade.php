@@ -16,7 +16,7 @@
 
   <div class="bg-white border border-stone-200 rounded divide-y divide-stone-200">
     @forelse ($testimonials as $t)
-      <div class="flex items-center justify-between px-6 py-4">
+      <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-6 py-4">
         <div class="max-w-lg">
           <div class="text-sm italic">"{{ \Illuminate\Support\Str::limit($t->quote, 90) }}"</div>
           <div class="text-xs text-stone-500 mt-1">{{ $t->author_name }} — {{ $t->featured ? 'Featured on site' : 'Hidden' }}</div>
