@@ -2,6 +2,7 @@
 
 return [
     'nav_work'      => 'Work',
+    'nav_services'  => 'Services',
     'nav_process'   => 'Process',
     'nav_docs'      => 'Docs',
     'nav_contact'   => 'Contact',
@@ -50,6 +51,24 @@ return [
     'meta_availability'      => 'Availability',
     'meta_languages_label'   => 'Languages',
     'meta_remote_label'      => 'Remote / on-site',
+
+    'services_label'    => 'Services',
+    'services_headline' => 'What I build.',
+
+    'service_1_title' => 'Web application',
+    'service_1_body'  => 'Full-stack product builds from design to deployment — Laravel backend, Vue or Blade frontend, tested and production-ready.',
+    'service_1_items' => ['New SaaS product or internal tool', 'Feature additions to existing app', 'Laravel upgrade or refactor'],
+    'service_1_price' => 'Day rate: :rate / fixed-price on request',
+
+    'service_2_title' => 'API & integrations',
+    'service_2_body'  => 'REST or GraphQL APIs, third-party integrations, and backend services that connect the tools you already use.',
+    'service_2_items' => ['Payment & subscription (Stripe, Mollie)', 'CRM / ERP sync', 'Webhooks and event-driven flows'],
+    'service_2_price' => 'Day rate: :rate / fixed-price on request',
+
+    'service_3_title' => 'Advisory & review',
+    'service_3_body'  => 'Code review, architecture advice, or a technical audit — useful before a big migration or when you need a second opinion.',
+    'service_3_items' => ['Architecture review', 'Code quality audit', 'Hiring tech screen'],
+    'service_3_price' => 'Half-day or day rate on request',
 
     'footer_built' => 'Built in the Netherlands.',
 
