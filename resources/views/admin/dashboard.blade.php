@@ -17,10 +17,10 @@
       <div class="text-3xl font-semibold">{{ $skillCount }}</div>
       <div class="text-sm text-stone-500 mt-1">Skills</div>
     </a>
-    <div class="border border-stone-200 rounded p-6 bg-white">
+    <a href="{{ route('admin.contact-submissions.index') }}" class="border border-stone-200 rounded p-6 bg-white hover:border-orange-400 transition">
       <div class="text-3xl font-semibold">{{ $contactCount }}</div>
       <div class="text-sm text-stone-500 mt-1">Contact submissions</div>
-    </div>
+    </a>
   </div>
 
   {{-- Page views sparkline --}}
