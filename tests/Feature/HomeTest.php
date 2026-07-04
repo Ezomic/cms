@@ -35,4 +35,15 @@ class HomeTest extends TestCase
         $response->assertSee('Acme Rebuild');
         $response->assertSee('Great to work with.');
     }
+
+    public function test_home_page_only_shows_featured_testimonials(): void
+    {
+        Testimonial::create(['quote' => 'This one should show.', 'author_name' => 'Featured Client', 'featured' => true]);
+        Testimonial::create(['quote' => 'This one should stay hidden.', 'author_name' => 'Unfeatured Client', 'featured' => false]);
+
+        $response = $this->get('/');
+
+        $response->assertSee('This one should show.');
+        $response->assertDontSee('This one should stay hidden.');
+    }
 }

@@ -32,7 +32,7 @@
     </div>
     <label class="flex items-center gap-2 text-sm">
       <input type="checkbox" name="featured" value="1" {{ old('featured', $testimonial->featured ?? true) ? 'checked' : '' }}>
-      Show on live site (only one featured testimonial is displayed at a time)
+      Show on live site (appears in the homepage testimonial carousel)
     </label>
 
     <div class="flex gap-3 pt-2">
