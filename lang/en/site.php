@@ -54,4 +54,18 @@ return [
     'footer_built' => 'Built in the Netherlands.',
 
     'lang_toggle' => 'NL',
+
+    'back_to_site' => '← Back to site',
+
+    'work_page_label'    => 'Selected work',
+    'work_page_headline' => 'All projects.',
+    'work_filter_label'  => 'Filter by tag:',
+    'work_filter_all'    => 'All',
+    'work_no_projects'   => 'No projects yet.',
+    'work_no_match'      => 'No projects match that filter.',
+
+    'project_eyebrow'      => 'Case study',
+    'project_cta_lead'     => 'Interested in this kind of work?',
+    'project_cta_headline' => 'Let\'s talk about your project.',
+    'project_cta_button'   => 'Start a similar project →',
 ];
