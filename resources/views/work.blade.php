@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>@if($activeTag){{ $activeTag }} projects@else Work@endif — {{ $profile->name }}</title>
-<meta name="description" content="@if($activeTag)Projects using {{ $activeTag }} by {{ $profile->name }}.@else All projects by {{ $profile->name }}.@endif">
+<title>{{ $activeTag ? $activeTag.' projects' : 'Work' }} — {{ $profile->name }}</title>
+<meta name="description" content="{{ $activeTag ? 'Projects using '.$activeTag.' by '.$profile->name.'.' : 'All projects by '.$profile->name.'.' }}">
 @if($activeTag)
 <link rel="canonical" href="{{ route('work.tag', $activeTag) }}">
 <link rel="alternate" hreflang="nl" href="{{ route('work.tag', $activeTag) }}">
