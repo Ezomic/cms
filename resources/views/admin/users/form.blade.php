@@ -10,26 +10,32 @@
 
     <div>
       <label class="block text-xs font-medium text-stone-600 mb-1">Name</label>
-      <input name="name" value="{{ old('name', $user->name) }}" required class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
+      <input name="name" value="{{ old('name', $user->name) }}" required class="w-full border rounded px-3 py-2 text-sm @error('name') border-red-400 @else border-stone-300 @enderror">
+      @error('name')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
     </div>
     <div>
       <label class="block text-xs font-medium text-stone-600 mb-1">Email</label>
-      <input type="email" name="email" value="{{ old('email', $user->email) }}" required class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
+      <input type="email" name="email" value="{{ old('email', $user->email) }}" required class="w-full border rounded px-3 py-2 text-sm @error('email') border-red-400 @else border-stone-300 @enderror">
+      @error('email')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
     </div>
     <div>
       <label class="block text-xs font-medium text-stone-600 mb-1">Password</label>
       <div class="relative">
-        <input id="password" type="password" name="password" {{ $user->exists ? '' : 'required' }} minlength="8" class="w-full border border-stone-300 rounded px-3 py-2 pr-16 text-sm">
+        <input id="password" type="password" name="password" {{ $user->exists ? '' : 'required' }} minlength="8" class="w-full border rounded px-3 py-2 pr-16 text-sm @error('password') border-red-400 @else border-stone-300 @enderror">
         <button type="button" onclick="var p=document.getElementById('password'),c=document.getElementById('password_confirmation');var v=p.type==='password';p.type=c.type=v?'text':'password';this.textContent=v?'Hide':'Show';"
                 class="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-stone-400 hover:text-stone-700">Show</button>
       </div>
-      @if ($user->exists)
-        <p class="text-xs text-stone-400 mt-1">Leave blank to keep the current password.</p>
-      @endif
+      @error('password')
+        <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+      @else
+        @if ($user->exists)
+          <p class="text-xs text-stone-400 mt-1">Leave blank to keep the current password.</p>
+        @endif
+      @enderror
     </div>
     <div>
       <label class="block text-xs font-medium text-stone-600 mb-1">Confirm password</label>
-      <input id="password_confirmation" type="password" name="password_confirmation" {{ $user->exists ? '' : 'required' }} minlength="8" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
+      <input id="password_confirmation" type="password" name="password_confirmation" {{ $user->exists ? '' : 'required' }} minlength="8" class="w-full border rounded px-3 py-2 text-sm border-stone-300">
     </div>
 
     <div class="flex gap-3 pt-2">

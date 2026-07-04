@@ -10,21 +10,25 @@
 
     <div>
       <label class="block text-xs font-medium text-stone-600 mb-1">Quote</label>
-      <textarea name="quote" rows="3" required class="w-full border border-stone-300 rounded px-3 py-2 text-sm">{{ old('quote', $testimonial->quote) }}</textarea>
+      <textarea name="quote" rows="3" required class="w-full border rounded px-3 py-2 text-sm @error('quote') border-red-400 @else border-stone-300 @enderror">{{ old('quote', $testimonial->quote) }}</textarea>
+      @error('quote')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
         <label class="block text-xs font-medium text-stone-600 mb-1">Author name</label>
-        <input name="author_name" value="{{ old('author_name', $testimonial->author_name) }}" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
+        <input name="author_name" value="{{ old('author_name', $testimonial->author_name) }}" class="w-full border rounded px-3 py-2 text-sm @error('author_name') border-red-400 @else border-stone-300 @enderror">
+        @error('author_name')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
       </div>
       <div>
         <label class="block text-xs font-medium text-stone-600 mb-1">Author role</label>
-        <input name="author_role" value="{{ old('author_role', $testimonial->author_role) }}" placeholder="CTO" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
+        <input name="author_role" value="{{ old('author_role', $testimonial->author_role) }}" placeholder="CTO" class="w-full border rounded px-3 py-2 text-sm @error('author_role') border-red-400 @else border-stone-300 @enderror">
+        @error('author_role')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
       </div>
     </div>
     <div>
       <label class="block text-xs font-medium text-stone-600 mb-1">Company name</label>
-      <input name="company_name" value="{{ old('company_name', $testimonial->company_name) }}" placeholder="Acme BV" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
+      <input name="company_name" value="{{ old('company_name', $testimonial->company_name) }}" placeholder="Acme BV" class="w-full border rounded px-3 py-2 text-sm @error('company_name') border-red-400 @else border-stone-300 @enderror">
+      @error('company_name')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
     </div>
     <label class="flex items-center gap-2 text-sm">
       <input type="checkbox" name="featured" value="1" {{ old('featured', $testimonial->featured ?? true) ? 'checked' : '' }}>
