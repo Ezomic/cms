@@ -105,6 +105,15 @@ if ($sameAs) { $jsonLd['sameAs'] = $sameAs; }
   .process-step p{font-size:14px;color:var(--ink-soft);}
   @media (max-width:900px){.process-grid{grid-template-columns:1fr 1fr;}}
   @media (max-width:560px){.process-grid{grid-template-columns:1fr;}}
+  .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);}
+  .service-card{background:var(--bg);padding:32px;}
+  .service-card h3{font-family:var(--display);font-weight:600;font-size:18px;margin-bottom:12px;}
+  .service-card p{font-size:14px;color:var(--ink-soft);margin-bottom:20px;}
+  .service-card ul{list-style:none;}
+  .service-card ul li{font-size:13px;color:var(--ink-soft);padding:6px 0;border-top:1px solid var(--line);}
+  .service-card ul li:first-of-type{border-top:none;}
+  .service-price{font-family:var(--mono);font-size:13px;color:var(--accent);margin-top:20px;padding-top:20px;border-top:1px solid var(--line);}
+  @media (max-width:720px){.services-grid{grid-template-columns:1fr;}}
   blockquote{font-family:var(--display);font-weight:500;font-size:clamp(1.3rem,3vw,2rem);line-height:1.35;letter-spacing:-.01em;max-width:26ch;}
   .quote-mark{color:var(--accent);font-size:2rem;line-height:0;display:block;margin-bottom:12px;}
   .testimonial-attr{margin-top:28px;font-family:var(--mono);font-size:13px;color:var(--ink-soft);}
@@ -142,6 +151,7 @@ if ($sameAs) { $jsonLd['sameAs'] = $sameAs; }
     <div class="logo"><span class="dot"></span>{{ strtoupper($profile->name) }} / NL</div>
     <div class="nav-links nav-mobile-hide">
       <a href="{{ route('work.index') }}">{{ __('site.nav_work') }}</a>
+      <a href="#services">{{ __('site.nav_services') }}</a>
       <a href="#process">{{ __('site.nav_process') }}</a>
       <a href="{{ route('docs') }}">{{ __('site.nav_docs') }}</a>
       <a href="#contact">{{ __('site.nav_contact') }}</a>
@@ -274,6 +284,48 @@ if ($sameAs) { $jsonLd['sameAs'] = $sameAs; }
         <div class="process-num">04</div>
         <h3>{{ __('site.process_4_title') }}</h3>
         <p>{{ __('site.process_4_body') }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-label">{{ __('site.services_label') }}</div>
+      <h2>{{ __('site.services_headline') }}</h2>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <h3>{{ __('site.service_1_title') }}</h3>
+        <p>{{ __('site.service_1_body') }}</p>
+        <ul>
+          @foreach (__('site.service_1_items') as $item)
+            <li>{{ $item }}</li>
+          @endforeach
+        </ul>
+        <div class="service-price">{{ __('site.service_1_price', ['rate' => $profile->rate]) }}</div>
+      </div>
+      <div class="service-card">
+        <h3>{{ __('site.service_2_title') }}</h3>
+        <p>{{ __('site.service_2_body') }}</p>
+        <ul>
+          @foreach (__('site.service_2_items') as $item)
+            <li>{{ $item }}</li>
+          @endforeach
+        </ul>
+        <div class="service-price">{{ __('site.service_2_price', ['rate' => $profile->rate]) }}</div>
+      </div>
+      <div class="service-card">
+        <h3>{{ __('site.service_3_title') }}</h3>
+        <p>{{ __('site.service_3_body') }}</p>
+        <ul>
+          @foreach (__('site.service_3_items') as $item)
+            <li>{{ $item }}</li>
+          @endforeach
+        </ul>
+        <div class="service-price">{{ __('site.service_3_price') }}</div>
       </div>
     </div>
   </div>

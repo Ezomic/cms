@@ -2,6 +2,7 @@
 
 return [
     'nav_work'      => 'Werk',
+    'nav_services'  => 'Diensten',
     'nav_process'   => 'Aanpak',
     'nav_docs'      => 'Docs',
     'nav_contact'   => 'Contact',
@@ -50,6 +51,24 @@ return [
     'meta_availability'      => 'Beschikbaarheid',
     'meta_languages_label'   => 'Talen',
     'meta_remote_label'      => 'Remote / op locatie',
+
+    'services_label'    => 'Diensten',
+    'services_headline' => 'Wat ik bouw.',
+
+    'service_1_title' => 'Webapplicatie',
+    'service_1_body'  => 'Full-stack productbuilds van ontwerp tot deployment — Laravel backend, Vue of Blade frontend, getest en productie-gereed.',
+    'service_1_items' => ['Nieuw SaaS-product of intern tool', 'Functies toevoegen aan bestaande app', 'Laravel upgrade of refactor'],
+    'service_1_price' => 'Dagtarief: :rate / vaste prijs op aanvraag',
+
+    'service_2_title' => 'API & integraties',
+    'service_2_body'  => 'REST- of GraphQL-APIs, koppelingen met externe partijen en backend-services die de tools verbinden die je al gebruikt.',
+    'service_2_items' => ['Betaling & abonnement (Stripe, Mollie)', 'CRM / ERP-synchronisatie', 'Webhooks en event-driven flows'],
+    'service_2_price' => 'Dagtarief: :rate / vaste prijs op aanvraag',
+
+    'service_3_title' => 'Advies & review',
+    'service_3_body'  => 'Code review, architectuuradvies of een technische audit — nuttig voor een grote migratie of als je een tweede mening wilt.',
+    'service_3_items' => ['Architectuurreview', 'Code-kwaliteitsaudit', 'Technische sollicitatiescreen'],
+    'service_3_price' => 'Halve dag of dagtarief op aanvraag',
 
     'footer_built' => 'Gebouwd in Nederland.',
 
