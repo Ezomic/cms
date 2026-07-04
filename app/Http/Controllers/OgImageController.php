@@ -71,7 +71,7 @@ class OgImageController extends Controller
 
         // Dot + owner label top-left
         imagefilledellipse($img, 52, 52, 10, 10, $accent);
-        imagestring($img, 3, 68, 46, strtoupper($owner).' / NL', $soft);
+        imagestring($img, 3, 68, 46, strtoupper($owner), $soft);
 
         // Title — wrap long text manually
         $titleLines = $this->wrapText($title, 36);

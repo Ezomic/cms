@@ -27,7 +27,7 @@ class ContactController extends Controller
 
         $profileEmail = Profile::current()->email;
         if ($profileEmail) {
-            Mail::to($profileEmail)->queue(new ContactFormSubmitted($submission));
+            Mail::to($profileEmail)->send(new ContactFormSubmitted($submission));
         }
 
         return back()->with('status', 'Thanks — your message has been sent.');
