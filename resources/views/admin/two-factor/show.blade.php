@@ -30,21 +30,50 @@
       </form>
     </div>
   @elseif ($otpAuthUri)
-    <div class="bg-white border border-stone-200 rounded p-8 max-w-lg space-y-4">
-      <p class="text-sm">Add this account to your authenticator app (Google Authenticator, 1Password, Authy…), then enter the 6-digit code it shows to confirm.</p>
+    <div class="bg-white border border-stone-200 rounded p-8 max-w-lg space-y-6">
       <div>
-        <label class="block text-xs font-medium text-stone-600 mb-1">Manual entry URI</label>
-        <input type="text" readonly value="{{ $otpAuthUri }}" class="w-full border border-stone-300 rounded px-3 py-2 text-xs font-mono bg-stone-50">
-      </div>
-      <form method="POST" action="{{ route('admin.two-factor.confirm') }}" class="space-y-4">
-        @csrf
-        <div>
-          <label class="block text-xs font-medium text-stone-600 mb-1">6-digit code</label>
-          <input type="text" name="code" required autofocus class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-orange-100 text-orange-600 text-xs font-bold font-mono">1</span>
+          <span class="text-sm font-medium">Scan the QR code with your authenticator app</span>
         </div>
-        <button class="bg-stone-900 text-white text-sm rounded px-4 py-2 hover:bg-orange-600 transition">Confirm and enable</button>
-      </form>
+        <p class="text-xs text-stone-500 mb-4">Use Google Authenticator, 1Password, Authy, or any TOTP-compatible app.</p>
+        <div class="flex gap-6 items-start">
+          <canvas id="qr-canvas" width="160" height="160" class="border border-stone-200 rounded flex-shrink-0"></canvas>
+          <div class="flex-1">
+            <p class="text-xs text-stone-500 mb-2">Can't scan? Enter this key manually:</p>
+            <div class="font-mono text-xs bg-stone-50 border border-stone-200 rounded p-3 break-all select-all">{{ $user->two_factor_secret }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="flex items-center gap-2 mb-4">
+          <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-orange-100 text-orange-600 text-xs font-bold font-mono">2</span>
+          <span class="text-sm font-medium">Enter the 6-digit code to confirm</span>
+        </div>
+        <form method="POST" action="{{ route('admin.two-factor.confirm') }}" class="space-y-4">
+          @csrf
+          <input type="text" name="code" required autofocus inputmode="numeric" pattern="[0-9]{6}" maxlength="6"
+            placeholder="000000"
+            class="w-32 border border-stone-300 rounded px-3 py-2 text-sm font-mono tracking-widest text-center">
+          @error('code')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
+          <div>
+            <button class="bg-stone-900 text-white text-sm rounded px-4 py-2 hover:bg-orange-600 transition">Confirm and enable →</button>
+          </div>
+        </form>
+      </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+    <script>
+      new QRious({
+        element: document.getElementById('qr-canvas'),
+        value: {{ Js::from($otpAuthUri) }},
+        size: 160,
+        background: '#ffffff',
+        foreground: '#17181A',
+        level: 'M',
+      });
+    </script>
   @else
     <div class="bg-white border border-stone-200 rounded p-8 max-w-lg">
       <p class="text-sm text-stone-500 mb-4">Two-factor authentication is currently disabled.</p>
