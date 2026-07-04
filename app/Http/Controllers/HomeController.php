@@ -34,15 +34,15 @@ class HomeController extends Controller
                     'tag_list'  => $project->tagList(),
                     'image_url' => $project->imageUrl(),
                 ])->all(),
-                'testimonial' => Testimonial::where('featured', true)->latest()->first()?->toArray(),
+                'testimonials' => Testimonial::latest()->get()->map->toArray()->all(),
             ];
         });
 
         return view('home', [
-            'profile'     => (object) $data['profile'],
-            'skills'      => collect($data['skills'])->map(fn ($items) => collect($items)->map(fn ($s) => (object) $s)),
-            'projects'    => collect($data['projects'])->map(fn ($p) => (object) $p),
-            'testimonial' => $data['testimonial'] ? (object) $data['testimonial'] : null,
+            'profile'      => (object) $data['profile'],
+            'skills'       => collect($data['skills'])->map(fn ($items) => collect($items)->map(fn ($s) => (object) $s)),
+            'projects'     => collect($data['projects'])->map(fn ($p) => (object) $p),
+            'testimonials' => collect($data['testimonials'])->map(fn ($t) => (object) $t),
         ]);
     }
 
