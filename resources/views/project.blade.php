@@ -30,6 +30,8 @@
   body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.6;-webkit-font-smoothing:antialiased;}
   a{color:inherit;}
   a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .skip-link{position:absolute;left:-9999px;top:0;z-index:100;background:var(--ink);color:var(--white);font-family:var(--mono);font-size:13px;padding:10px 16px;text-decoration:none;}
+  .skip-link:focus{left:0;}
   .wrap{max-width:820px;margin:0 auto;padding:0 32px;}
   nav{position:sticky;top:0;z-index:50;background:rgba(247,247,244,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
   nav .wrap{max-width:1120px;display:flex;align-items:center;justify-content:space-between;height:64px;}
@@ -63,6 +65,8 @@
 </head>
 <body>
 
+<a class="skip-link" href="#main">{{ __('site.skip_to_content') }}</a>
+
 <nav>
   <div class="wrap">
     <div class="logo"><span class="dot"></span>{{ strtoupper($profile->name) }} / NL</div>
@@ -72,6 +76,8 @@
     </div>
   </div>
 </nav>
+
+<main id="main" tabindex="-1">
 
 <header class="hero">
   <div class="wrap">
@@ -113,6 +119,8 @@
     <a href="{{ localized_route('home') }}?ref={{ urlencode($project->slug) }}#contact" style="font-family:var(--mono);font-size:14px;background:var(--ink);color:var(--white);padding:14px 24px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s;" onmouseover="this.style.background='var(--accent)'" onmouseout="this.style.background='var(--ink)'">{{ __('site.project_cta_button') }}</a>
   </div>
 </div>
+
+</main>
 
 <footer>
   <div class="wrap">
