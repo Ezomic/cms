@@ -7,6 +7,8 @@ return [
     'nav_docs' => 'Docs',
     'nav_contact' => 'Contact',
     'nav_cta' => 'Get in touch',
+    'nav_menu_label' => 'Menu',
+    'lang_toggle_long' => 'Nederlands →',
 
     'status_available' => 'Available for new projects',
     'status_booked' => 'Currently booked',

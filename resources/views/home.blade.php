@@ -33,7 +33,18 @@
   .nav-links a:hover{color:var(--ink);}
   .nav-cta{font-family:var(--mono);font-size:13px;border:1px solid var(--ink);padding:8px 16px;text-decoration:none;transition:all .15s;}
   .nav-cta:hover{background:var(--ink);color:var(--white);}
-  @media (max-width:720px){.nav-mobile-hide{display:none;}}
+  .nav-burger{display:none;background:none;border:1px solid var(--line);width:38px;height:38px;cursor:pointer;padding:0;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:border-color .15s;}
+  .nav-burger:hover{border-color:var(--ink);}
+  .nav-burger span{display:block;width:16px;height:2px;background:var(--ink);transition:transform .2s,opacity .2s;}
+  .nav-burger[aria-expanded="true"] span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+  .nav-burger[aria-expanded="true"] span:nth-child(2){opacity:0;}
+  .nav-burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+  .mobile-menu{display:none;border-top:1px solid var(--line);}
+  .mobile-menu.open{display:block;}
+  .mobile-menu .wrap{display:block;height:auto;padding-top:8px;padding-bottom:8px;}
+  .mobile-menu a{display:block;font-family:var(--mono);font-size:14px;color:var(--ink);text-decoration:none;padding:14px 0;border-bottom:1px solid var(--line);}
+  .mobile-menu a:last-child{border-bottom:none;color:var(--ink-soft);}
+  @media (max-width:720px){.nav-mobile-hide{display:none;}.nav-burger{display:flex;}}
   .hero{position:relative;padding:96px 0 120px;overflow:hidden;border-bottom:1px solid var(--line);}
   .grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:64px 64px;opacity:.35;mask-image:linear-gradient(to bottom,black,transparent 85%);}
   .hero-inner{position:relative;}
@@ -129,8 +140,21 @@
       <a href="#contact">{{ __('site.nav_contact') }}</a>
     </div>
     <div style="display:flex;align-items:center;gap:12px;">
-      <a href="{{ alternate_locale_url(app()->getLocale() === 'en' ? 'nl' : 'en') }}" style="font-family:var(--mono);font-size:12px;color:var(--ink-soft);background:none;border:1px solid var(--line);padding:4px 10px;text-decoration:none;transition:all .15s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--ink-soft)'">{{ __('site.lang_toggle') }}</a>
-      <a class="nav-cta" href="#contact">{{ __('site.nav_cta') }}</a>
+      <a class="nav-mobile-hide" href="{{ alternate_locale_url(app()->getLocale() === 'en' ? 'nl' : 'en') }}" style="font-family:var(--mono);font-size:12px;color:var(--ink-soft);background:none;border:1px solid var(--line);padding:4px 10px;text-decoration:none;transition:all .15s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--ink-soft)'">{{ __('site.lang_toggle') }}</a>
+      <a class="nav-cta nav-mobile-hide" href="#contact">{{ __('site.nav_cta') }}</a>
+      <button class="nav-burger" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="{{ __('site.nav_menu_label') }}">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <div class="wrap">
+      <a href="{{ localized_route('work.index') }}">{{ __('site.nav_work') }}</a>
+      <a href="#services">{{ __('site.nav_services') }}</a>
+      <a href="#process">{{ __('site.nav_process') }}</a>
+      <a href="{{ localized_route('docs') }}">{{ __('site.nav_docs') }}</a>
+      <a href="#contact">{{ __('site.nav_contact') }}</a>
+      <a href="{{ alternate_locale_url(app()->getLocale() === 'en' ? 'nl' : 'en') }}">{{ __('site.lang_toggle_long') }}</a>
     </div>
   </div>
 </nav>
@@ -408,6 +432,22 @@
 </footer>
 
 <script>
+  (function(){
+    var burger = document.querySelector('.nav-burger');
+    var menu = document.getElementById('mobile-menu');
+    if (!burger || !menu) return;
+    burger.addEventListener('click', function(){
+      var open = menu.classList.toggle('open');
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    menu.querySelectorAll('a').forEach(function(link){
+      link.addEventListener('click', function(){
+        menu.classList.remove('open');
+        burger.setAttribute('aria-expanded', 'false');
+      });
+    });
+  })();
+
   (function(){
     var ref = new URLSearchParams(window.location.search).get('ref');
     if (!ref) return;
