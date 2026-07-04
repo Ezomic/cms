@@ -10,6 +10,10 @@ return [
     'nav_menu_label' => 'Menu',
     'lang_toggle_long' => 'Nederlands →',
 
+    'hero_local_time' => 'local time, :city, NL',
+    'testimonial_aria' => 'Testimonial :number',
+    'project_result_label' => 'Result',
+
     'status_available' => 'Available for new projects',
     'status_booked' => 'Currently booked',
     'status_available_from' => 'available from :date',

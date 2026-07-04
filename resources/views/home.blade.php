@@ -176,15 +176,12 @@
         <span>{{ __('site.status_booked') }}@if($profile->availability_from) — {{ __('site.status_available_from', ['date' => $profile->availability_from]) }}@endif</span>
       @endif
       <span style="color:var(--line)">·</span>
-      <span id="local-time">--:-- local time, {{ $profile->city }}, NL</span>
+      <span id="local-time">--:-- {{ __('site.hero_local_time', ['city' => $profile->city]) }}</span>
     </div>
 
     <div class="eyebrow">{{ $profile->tagline }}</div>
     <h1>{{ $profile->hero_headline }}</h1>
-    <p class="hero-sub">
-      I'm {{ $profile->name }}, a freelance {{ strtolower($profile->tagline) }} based in
-      {{ $profile->city }}, the Netherlands. {{ $profile->hero_subtext }}
-    </p>
+    <p class="hero-sub">{{ $profile->hero_subtext }}</p>
 
     <div class="hero-actions">
       <a class="btn-primary" href="#contact">{{ __('site.hero_actions_primary') }}</a>
@@ -250,7 +247,7 @@
           </div>
         </div>
       @empty
-        <p style="color:var(--ink-soft)">Projects will show up here once added in the admin panel.</p>
+        <p style="color:var(--ink-soft)">{{ __('site.work_no_projects') }}</p>
       @endforelse
     </div>
   </div>
@@ -344,7 +341,7 @@
       @if ($testimonials->count() > 1)
         <div style="margin-top:32px;display:flex;gap:8px;align-items:center;">
           @foreach ($testimonials as $i => $t)
-            <button class="carousel-dot {{ $i === 0 ? 'active' : '' }}" data-index="{{ $i }}" aria-label="Testimonial {{ $i + 1 }}" style="width:8px;height:8px;border-radius:50%;border:none;cursor:pointer;padding:0;background:{{ $i === 0 ? 'var(--ink)' : 'var(--line)' }};transition:background .2s;"></button>
+            <button class="carousel-dot {{ $i === 0 ? 'active' : '' }}" data-index="{{ $i }}" aria-label="{{ __('site.testimonial_aria', ['number' => $i + 1]) }}" style="width:8px;height:8px;border-radius:50%;border:none;cursor:pointer;padding:0;background:{{ $i === 0 ? 'var(--ink)' : 'var(--line)' }};transition:background .2s;"></button>
           @endforeach
         </div>
       @endif
@@ -496,7 +493,7 @@
   function updateClock(){
     const el = document.getElementById('local-time');
     const time = new Intl.DateTimeFormat('en-GB', { hour:'2-digit', minute:'2-digit', timeZone:'Europe/Amsterdam' }).format(new Date());
-    el.textContent = time + ' local time, {{ $profile->city }}, NL';
+    el.textContent = time + ' ' + @json(__('site.hero_local_time', ['city' => $profile->city]));
   }
   updateClock();
   setInterval(updateClock, 30000);
