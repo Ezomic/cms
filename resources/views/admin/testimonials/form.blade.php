@@ -12,7 +12,7 @@
       <label class="block text-xs font-medium text-stone-600 mb-1">Quote</label>
       <textarea name="quote" rows="3" required class="w-full border border-stone-300 rounded px-3 py-2 text-sm">{{ old('quote', $testimonial->quote) }}</textarea>
     </div>
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
         <label class="block text-xs font-medium text-stone-600 mb-1">Author name</label>
         <input name="author_name" value="{{ old('author_name', $testimonial->author_name) }}" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">

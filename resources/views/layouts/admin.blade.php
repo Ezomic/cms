@@ -11,11 +11,14 @@
 </head>
 <body class="bg-stone-50 text-stone-900">
 
-<div class="flex min-h-screen">
-  <aside class="w-56 border-r border-stone-200 bg-white p-6 flex flex-col justify-between">
+<div class="flex min-h-screen flex-col md:flex-row">
+  <aside class="w-full md:w-56 border-b md:border-b-0 md:border-r border-stone-200 bg-white p-4 md:p-6 flex flex-col md:justify-between">
     <div>
-      <div class="font-mono text-sm font-medium mb-8">■ Portfolio CMS</div>
-      <nav class="space-y-1 text-sm">
+      <div class="flex items-center justify-between md:mb-8">
+        <div class="font-mono text-sm font-medium">■ Portfolio CMS</div>
+        <button id="admin-nav-toggle" type="button" class="md:hidden border border-stone-300 rounded px-3 py-1.5 text-sm text-stone-600" aria-expanded="false" aria-controls="admin-nav">Menu</button>
+      </div>
+      <nav id="admin-nav" class="hidden md:block space-y-1 text-sm mt-4 md:mt-0">
         <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.dashboard') ? 'bg-stone-100 font-medium' : '' }}">Dashboard</a>
         <a href="{{ route('admin.projects.index') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.projects.*') ? 'bg-stone-100 font-medium' : '' }}">Projects</a>
         <a href="{{ route('admin.testimonials.index') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.testimonials.*') ? 'bg-stone-100 font-medium' : '' }}">Testimonials</a>
@@ -26,7 +29,7 @@
         <a href="{{ route('admin.two-factor.show') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.two-factor.show') ? 'bg-stone-100 font-medium' : '' }}">Security</a>
       </nav>
     </div>
-    <div class="space-y-3">
+    <div id="admin-nav-footer" class="hidden md:block space-y-3 mt-4 md:mt-0 pt-4 md:pt-0 border-t md:border-t-0 border-stone-200">
       <a href="{{ route('home') }}" target="_blank" class="block text-xs text-stone-500 hover:text-orange-600">View live site →</a>
       <form method="POST" action="{{ route('admin.logout') }}">
         @csrf
@@ -35,7 +38,7 @@
     </div>
   </aside>
 
-  <main class="flex-1 p-10">
+  <main class="flex-1 p-4 sm:p-6 md:p-10">
     @if (session('status'))
       <div class="mb-6 rounded border border-green-200 bg-green-50 text-green-800 text-sm px-4 py-3">{{ session('status') }}</div>
     @endif
@@ -50,6 +53,19 @@
     @yield('content')
   </main>
 </div>
+
+<script>
+  (function(){
+    var toggle = document.getElementById('admin-nav-toggle');
+    var nav = document.getElementById('admin-nav');
+    var footer = document.getElementById('admin-nav-footer');
+    toggle.addEventListener('click', function(){
+      var open = nav.classList.toggle('hidden') === false;
+      footer.classList.toggle('hidden', !open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  })();
+</script>
 
 </body>
 </html>

@@ -20,7 +20,7 @@
 
   <div id="project-list" class="bg-white border border-stone-200 rounded divide-y divide-stone-200">
     @forelse ($projects as $project)
-      <div class="flex items-center justify-between px-6 py-4" data-id="{{ $project->id }}">
+      <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-6 py-4" data-id="{{ $project->id }}">
         <div class="flex items-center gap-4">
           <span class="drag-handle cursor-grab text-stone-300 select-none">⠿</span>
           @if ($project->image)

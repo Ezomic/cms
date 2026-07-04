@@ -13,7 +13,7 @@
       <label class="block text-xs font-medium text-stone-600 mb-1">Project name</label>
       <input name="name" value="{{ old('name', $project->name) }}" required class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
     </div>
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
         <label class="block text-xs font-medium text-stone-600 mb-1">Client name</label>
         <input name="client_name" value="{{ old('client_name', $project->client_name) }}" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
