@@ -112,7 +112,7 @@
   <div class="page-header">
     <div class="eyebrow">{{ __('docs.page_eyebrow') }}</div>
     <h1>{{ __('docs.page_headline') }}</h1>
-    <p class="lead">{{ __('docs.page_lead') }}</p>
+    <p class="lead">{{ $profile->docs_intro ?: __('docs.page_lead') }}</p>
   </div>
 
   <div class="toc">
@@ -143,7 +143,7 @@
         <p>{{ __('docs.s01_fixed_body') }}</p>
       </div>
       <div class="pricing-cell">
-        <div class="label">{{ __('docs.s01_day_label') }}</div>
+        <div class="label">{{ __('docs.s01_day_label') }}{{ $profile->rate ? ' — '.$profile->rate : '' }}</div>
         <h3>{{ __('docs.s01_day_title') }}</h3>
         <p>{{ __('docs.s01_day_body') }}</p>
       </div>

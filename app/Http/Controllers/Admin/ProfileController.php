@@ -32,6 +32,7 @@ class ProfileController extends Controller
             'kvk_number'        => ['nullable', 'string', 'max:50'],
             'meta_title'        => ['nullable', 'string', 'max:255'],
             'meta_description'  => ['nullable', 'string', 'max:255'],
+            'docs_intro'        => ['nullable', 'string'],
         ]);
 
         $data['available'] = $request->boolean('available');
