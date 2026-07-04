@@ -109,7 +109,7 @@
   <div class="wrap">
     <div class="logo"><span class="dot"></span>{{ strtoupper($profile->name) }} / NL</div>
     <div class="nav-links nav-mobile-hide">
-      <a href="#work">Work</a>
+      <a href="{{ route('work.index') }}">Work</a>
       <a href="#process">Process</a>
       <a href="#contact">Contact</a>
     </div>

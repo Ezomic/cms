@@ -45,6 +45,25 @@ class HomeController extends Controller
         ]);
     }
 
+    public function work()
+    {
+        PageView::create(['path' => '/work']);
+
+        $projects = Project::published()->ordered()->get()->map(fn ($p) => (object) [
+            ...$p->toArray(),
+            'tag_list'  => $p->tagList(),
+            'image_url' => $p->imageUrl(),
+        ]);
+
+        $tags = $projects->flatMap(fn ($p) => $p->tag_list)->unique()->sort()->values();
+
+        return view('work', [
+            'profile'  => Profile::current(),
+            'projects' => $projects,
+            'tags'     => $tags,
+        ]);
+    }
+
     public function project(Project $project)
     {
         abort_unless($project->published, 404);
