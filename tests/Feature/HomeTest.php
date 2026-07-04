@@ -46,4 +46,22 @@ class HomeTest extends TestCase
         $response->assertSee('This one should show.');
         $response->assertDontSee('This one should stay hidden.');
     }
+
+    public function test_footer_hides_kvk_number_when_blank(): void
+    {
+        Profile::current()->update(['kvk_number' => null]);
+
+        $response = $this->get('/');
+
+        $response->assertDontSee('KVK');
+    }
+
+    public function test_footer_shows_kvk_number_when_set(): void
+    {
+        Profile::current()->update(['kvk_number' => '12345678']);
+
+        $response = $this->get('/');
+
+        $response->assertSee('KVK 12345678');
+    }
 }
