@@ -35,6 +35,9 @@
   .logo .dot{width:6px;height:6px;background:var(--accent);border-radius:50%;}
   .back-link{font-family:var(--mono);font-size:13px;text-decoration:none;color:var(--ink-soft);}
   .back-link:hover{color:var(--ink);}
+  .nav-right{display:flex;align-items:center;gap:16px;}
+  .lang-toggle{font-family:var(--mono);font-size:12px;color:var(--ink-soft);border:1px solid var(--line);padding:4px 10px;text-decoration:none;transition:color .15s,border-color .15s;}
+  .lang-toggle:hover{color:var(--ink);border-color:var(--ink);}
   header.hero{padding:64px 0 40px;border-bottom:1px solid var(--line);}
   .eyebrow{font-family:var(--mono);font-size:13px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;}
   h1{font-family:var(--display);font-weight:600;font-size:clamp(2rem,5vw,3rem);line-height:1.1;letter-spacing:-.02em;margin-bottom:20px;}
@@ -61,7 +64,10 @@
 <nav>
   <div class="wrap">
     <div class="logo"><span class="dot"></span>{{ strtoupper($profile->name) }} / NL</div>
-    <a class="back-link" href="{{ localized_route('home') }}">{{ __('site.back_to_site') }}</a>
+    <div class="nav-right">
+      <a class="lang-toggle" href="{{ alternate_locale_url(app()->getLocale() === 'en' ? 'nl' : 'en') }}">{{ __('site.lang_toggle') }}</a>
+      <a class="back-link" href="{{ localized_route('home') }}">{{ __('site.back_to_site') }}</a>
+    </div>
   </div>
 </nav>
 
