@@ -37,6 +37,8 @@
   .work-tags{display:flex;flex-wrap:wrap;gap:8px;}
   .tag{font-family:var(--mono);font-size:12px;color:var(--ink-soft);border:1px solid var(--line);padding:4px 10px;border-radius:20px;white-space:nowrap;}
   .cover{width:100%;max-height:480px;object-fit:cover;border:1px solid var(--line);margin:40px 0;}
+  .outcome-callout{background:var(--accent-soft);border-left:3px solid var(--accent);padding:20px 24px;margin:32px 0;font-family:var(--mono);font-size:14px;color:var(--ink);}
+  .outcome-callout strong{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:6px;}
   .body-content{padding:24px 0 96px;font-size:17px;color:var(--ink);}
   .body-content p{margin-bottom:1.2em;white-space:pre-line;}
   footer{padding:32px 0;font-family:var(--mono);font-size:12px;color:var(--ink-soft);border-top:1px solid var(--line);}
@@ -71,6 +73,13 @@
 <div class="wrap">
   @if ($project->image)
     <img class="cover" src="{{ $project->imageUrl() }}" alt="{{ $project->name }}">
+  @endif
+
+  @if ($project->outcome)
+    <div class="outcome-callout">
+      <strong>Result</strong>
+      {{ $project->outcome }}
+    </div>
   @endif
 
   <div class="body-content">
