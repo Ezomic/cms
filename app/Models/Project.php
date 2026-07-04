@@ -13,7 +13,7 @@ class Project extends Model
     use BustsHomeCache, LogsActivity, SoftDeletes;
 
     protected $fillable = [
-        'name', 'image', 'slug', 'client_name', 'year', 'description', 'body', 'published', 'tags', 'sort_order',
+        'name', 'image', 'slug', 'client_name', 'year', 'description', 'outcome', 'body', 'published', 'tags', 'sort_order',
     ];
 
     protected $casts = [

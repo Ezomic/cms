@@ -45,6 +45,11 @@
       <textarea name="description" rows="3" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">{{ old('description', $project->description) }}</textarea>
     </div>
     <div>
+      <label class="block text-xs font-medium text-stone-600 mb-1">Outcome (measurable result, shown as a callout)</label>
+      <input name="outcome" value="{{ old('outcome', $project->outcome) }}" placeholder="e.g. Reduced load time by 60%, launched 2 weeks early" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
+      <p class="text-xs text-stone-400 mt-1">One line. Shown on the project page and work archive. Leave blank to hide.</p>
+    </div>
+    <div>
       <label class="block text-xs font-medium text-stone-600 mb-1">Case study body (optional, shown on the project's own page)</label>
       <textarea name="body" rows="8" class="w-full border border-stone-300 rounded px-3 py-2 text-sm font-mono">{{ old('body', $project->body) }}</textarea>
       <p class="text-xs text-stone-400 mt-1">Plain text or basic HTML. Leave blank to skip the dedicated project page.</p>
