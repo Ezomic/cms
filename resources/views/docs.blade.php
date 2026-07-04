@@ -129,6 +129,8 @@
       <a href="#payment"><span class="toc-num">07</span>Payment</a>
       <a href="#privacy"><span class="toc-num">08</span>Privacy</a>
       <a href="#faq"><span class="toc-num">09</span>FAQ</a>
+      <a href="#communication"><span class="toc-num">10</span>Communication</a>
+      <a href="#start"><span class="toc-num">11</span>Getting started</a>
     </div>
   </div>
 
@@ -441,6 +443,66 @@
         <p>Yes. I can connect you with two or three past clients who have agreed to take reference calls. Some projects are under NDA and those clients can confirm the engagement but not discuss details. Ask during the scoping call.</p>
       </div>
     </div>
+  </div>
+
+  <!-- 10 Communication -->
+  <div class="doc-section" id="communication">
+    <div class="section-num">10</div>
+    <h2>Working hours &amp; communication</h2>
+    <p>I'm based in the Netherlands (CET/CEST, UTC+1/+2). Most project communication happens asynchronously — I prefer written over calls for routine updates so there's always a clear record.</p>
+
+    <div style="margin-top:32px;">
+      <div class="stack-row">
+        <span><strong>Working hours</strong></span>
+        <span class="why">Mon–Fri, 09:00–18:00 CET</span>
+      </div>
+      <div class="stack-row">
+        <span><strong>Response time</strong></span>
+        <span class="why">Same day during working hours; urgent issues acknowledged within 2 hours</span>
+      </div>
+      <div class="stack-row">
+        <span><strong>Project updates</strong></span>
+        <span class="why">Written summary every Friday covering what landed, what's next, and any blockers</span>
+      </div>
+      <div class="stack-row">
+        <span><strong>Preferred channels</strong></span>
+        <span class="why">Email for async, Slack or Teams if you have it, video call for scoping and reviews</span>
+      </div>
+      <div class="stack-row">
+        <span><strong>Project tracking</strong></span>
+        <span class="why">Linear or Notion — your preference, or I set one up as part of kick-off</span>
+      </div>
+      <div class="stack-row">
+        <span><strong>Code review</strong></span>
+        <span class="why">All work in a private GitHub repo; PRs linked in weekly updates</span>
+      </div>
+      <div class="stack-row">
+        <span><strong>Languages</strong></span>
+        <span class="why">Dutch and English — your call</span>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p>I don't do same-day turnarounds on new features or scope changes — everything is planned. If something is genuinely urgent, flag it and we'll find a solution together.</p>
+    </div>
+  </div>
+
+  <!-- 11 Getting started -->
+  <div class="doc-section" id="start">
+    <div class="section-num">11</div>
+    <h2>Getting started</h2>
+    <p>Once we've agreed on scope and signed the contract, here's what I need from you to kick off without delay. Most delays happen while waiting on access or approvals — the faster this list is complete, the sooner work starts.</p>
+
+    <ul class="check-list" style="margin-top:32px;">
+      <li><span class="check">→</span>A short brief: what you're building, what problem it solves, and who uses it</li>
+      <li><span class="check">→</span>Access to any existing codebase (GitHub/GitLab invite) — if applicable</li>
+      <li><span class="check">→</span>Staging server credentials, or confirmation that I should provision one</li>
+      <li><span class="check">→</span>A domain or subdomain for staging (e.g. <code style="font-family:var(--mono);font-size:13px;background:var(--accent-soft);padding:2px 6px;">staging.yourproject.nl</code>)</li>
+      <li><span class="check">→</span>Any third-party API credentials the project depends on (Stripe, Mailgun, etc.)</li>
+      <li><span class="check">→</span>Design files in Figma, or a written brief if there are no designs yet</li>
+      <li><span class="check">→</span>One named contact on your side who can answer product questions and approve deliverables</li>
+      <li><span class="check">→</span>50% upfront invoice paid — work starts once payment clears (see section 07)</li>
+    </ul>
 
     <div style="margin-top:48px;padding-top:48px;border-top:1px solid var(--line);">
       <h3 style="font-family:var(--display);font-weight:600;font-size:1.4rem;margin-bottom:12px;">Ready to start?</h3>
