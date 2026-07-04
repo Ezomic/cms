@@ -13,7 +13,7 @@ class Project extends Model
     use BustsHomeCache, LogsActivity, SoftDeletes;
 
     protected $fillable = [
-        'name', 'image', 'slug', 'client_name', 'year', 'description', 'outcome', 'body', 'published', 'tags', 'sort_order',
+        'name', 'image', 'slug', 'client_name', 'year', 'description', 'outcome', 'body', 'published', 'tags', 'sort_order', 'meta_title', 'meta_description',
     ];
 
     protected $casts = [
@@ -51,6 +51,24 @@ class Project extends Model
     public function imageUrl(): ?string
     {
         return $this->image ? asset('storage/'.$this->image) : null;
+    }
+
+    public function metaTitle(): string
+    {
+        return $this->meta_title ?: $this->name;
+    }
+
+    public function metaDescription(): string
+    {
+        if ($this->meta_description) {
+            return $this->meta_description;
+        }
+
+        if ($this->description) {
+            return $this->description;
+        }
+
+        return $this->body ? Str::limit(trim(strip_tags($this->body)), 160) : '';
     }
 
     protected function uniqueSlugFrom(string $name): string

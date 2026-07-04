@@ -3,43 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ $profile->meta_title ?: $profile->name.' — '.$profile->tagline }}</title>
-<meta name="description" content="{{ $profile->meta_description ?: $profile->hero_subtext }}">
-<meta property="og:title" content="{{ $profile->meta_title ?: $profile->name.' — '.$profile->tagline }}">
-<meta property="og:description" content="{{ $profile->meta_description ?: $profile->hero_subtext }}">
-<meta property="og:type" content="website">
-<meta property="og:image" content="{{ route('og.home') }}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="{{ route('og.home') }}">
-<link rel="canonical" href="{{ route('home') }}">
-<link rel="alternate" hreflang="nl" href="{{ route('home') }}">
-<link rel="alternate" hreflang="en" href="{{ route('home') }}">
-<link rel="alternate" hreflang="x-default" href="{{ route('home') }}">
-@php
-$jsonLd = [
-    '@context' => 'https://schema.org',
-    '@type'    => 'Person',
-    'name'     => $profile->name,
-    'jobTitle' => $profile->tagline,
-    'url'      => route('home'),
-    'email'    => $profile->email,
-    'address'  => ['@type' => 'PostalAddress', 'addressLocality' => $profile->city, 'addressCountry' => 'NL'],
-    'hasOfferCatalog' => [
-        '@type' => 'OfferCatalog',
-        'name'  => 'Freelance web development services',
-        'itemListElement' => [
-            ['@type' => 'Offer', 'itemOffered' => ['@type' => 'Service', 'name' => 'Full-stack web application development']],
-            ['@type' => 'Offer', 'itemOffered' => ['@type' => 'Service', 'name' => 'API design and integration']],
-            ['@type' => 'Offer', 'itemOffered' => ['@type' => 'Service', 'name' => 'Technical advisory and code review']],
-        ],
-    ],
-];
-$sameAs = array_values(array_filter([$profile->linkedin_url, $profile->github_url]));
-if ($sameAs) { $jsonLd['sameAs'] = $sameAs; }
-@endphp
-<script type="application/ld+json">{!! json_encode($jsonLd, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}</script>
+@include('partials.seo', [
+    'title' => $profile->meta_title ?: $profile->name.' — '.$profile->tagline,
+    'description' => $profile->meta_description ?: $profile->hero_subtext,
+    'canonicalRoute' => 'home',
+])
+@include('partials.schema.person')
+@include('partials.schema.website')
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -232,7 +202,7 @@ if ($sameAs) { $jsonLd['sameAs'] = $sameAs; }
           <div class="work-year">{{ $project->year }} — {{ $project->client_name }}</div>
           <div>
             @if ($project->image)
-              <img class="work-image" src="{{ $project->image_url }}" alt="{{ $project->name }}">
+              <img class="work-image" src="{{ $project->image_url }}" alt="{{ $project->name }}" loading="lazy" decoding="async">
             @endif
             <div class="work-name">
               @if ($project->body)

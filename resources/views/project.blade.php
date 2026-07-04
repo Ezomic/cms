@@ -3,19 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ $project->name }} — {{ $profile->name }}</title>
-<meta property="og:title" content="{{ $project->name }}">
-<meta property="og:description" content="{{ $project->description }}">
-<meta property="og:type" content="article">
-<meta property="og:image" content="{{ route('og.project', $project->slug) }}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="{{ route('og.project', $project->slug) }}">
-<link rel="canonical" href="{{ route('project.show', $project->slug) }}">
-<link rel="alternate" hreflang="nl" href="{{ route('project.show', $project->slug) }}">
-<link rel="alternate" hreflang="en" href="{{ route('project.show', $project->slug) }}">
-<link rel="alternate" hreflang="x-default" href="{{ route('project.show', $project->slug) }}">
+@include('partials.seo', [
+    'title' => $project->metaTitle().' — '.$profile->name,
+    'description' => $project->metaDescription(),
+    'canonicalRoute' => 'project.show',
+    'canonicalParams' => ['project' => $project->slug],
+    'ogType' => 'article',
+    'ogImage' => route('og.project', $project->slug),
+])
+@include('partials.schema.creative-work')
+@include('partials.schema.breadcrumbs', ['items' => [
+    ['name' => __('site.breadcrumb_home'), 'url' => route('home')],
+    ['name' => __('site.breadcrumb_work'), 'url' => route('work.index')],
+    ['name' => $project->name, 'url' => route('project.show', $project->slug)],
+]])
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -40,7 +41,7 @@
   .meta-row{display:flex;gap:24px;flex-wrap:wrap;font-family:var(--mono);font-size:13px;color:var(--ink-soft);margin-bottom:24px;}
   .work-tags{display:flex;flex-wrap:wrap;gap:8px;}
   .tag{font-family:var(--mono);font-size:12px;color:var(--ink-soft);border:1px solid var(--line);padding:4px 10px;border-radius:20px;white-space:nowrap;}
-  .cover{width:100%;max-height:480px;object-fit:cover;border:1px solid var(--line);margin:40px 0;}
+  .cover{width:100%;aspect-ratio:16/10;max-height:480px;object-fit:cover;border:1px solid var(--line);margin:40px 0;}
   .outcome-callout{background:var(--accent-soft);border-left:3px solid var(--accent);padding:20px 24px;margin:32px 0;font-family:var(--mono);font-size:14px;color:var(--ink);}
   .outcome-callout strong{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:6px;}
   .body-content{padding:24px 0 96px;font-size:17px;color:var(--ink);}
@@ -82,7 +83,7 @@
 
 <div class="wrap">
   @if ($project->image)
-    <img class="cover" src="{{ $project->imageUrl() }}" alt="{{ $project->name }}">
+    <img class="cover" src="{{ $project->imageUrl() }}" alt="{{ $project->name }}" fetchpriority="high" decoding="async">
   @endif
 
   @if ($project->outcome)

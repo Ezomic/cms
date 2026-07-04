@@ -26,18 +26,18 @@ class ProjectController extends Controller
 
         return view('admin.projects.index', [
             'projects' => $projects,
-            'search'   => $search,
+            'search' => $search,
         ]);
     }
 
     public function create()
     {
-        return view('admin.projects.form', ['project' => new Project()]);
+        return view('admin.projects.form', ['project' => new Project]);
     }
 
     public function store(Request $request)
     {
-        $data = $this->validated($request, new Project());
+        $data = $this->validated($request, new Project);
         $data['published'] = $request->boolean('published');
 
         if ($request->hasFile('image')) {
@@ -85,7 +85,7 @@ class ProjectController extends Controller
     public function reorder(Request $request)
     {
         $data = $request->validate([
-            'ids'   => ['required', 'array'],
+            'ids' => ['required', 'array'],
             'ids.*' => ['integer', 'exists:projects,id'],
         ]);
 
@@ -120,16 +120,18 @@ class ProjectController extends Controller
     private function validated(Request $request, Project $project): array
     {
         return $request->validate([
-            'name'        => ['required', 'string', 'max:255'],
-            'image'       => ['nullable', 'image', 'max:4096'],
-            'slug'        => ['nullable', 'string', 'max:255', 'alpha_dash', Rule::unique('projects', 'slug')->ignore($project->id)],
+            'name' => ['required', 'string', 'max:255'],
+            'image' => ['nullable', 'image', 'max:4096'],
+            'slug' => ['nullable', 'string', 'max:255', 'alpha_dash', Rule::unique('projects', 'slug')->ignore($project->id)],
             'client_name' => ['nullable', 'string', 'max:255'],
-            'year'        => ['nullable', 'string', 'max:4'],
+            'year' => ['nullable', 'string', 'max:4'],
             'description' => ['nullable', 'string'],
-            'outcome'     => ['nullable', 'string', 'max:255'],
-            'body'        => ['nullable', 'string'],
-            'tags'        => ['nullable', 'string', 'max:255'],
-            'sort_order'  => ['nullable', 'integer'],
+            'outcome' => ['nullable', 'string', 'max:255'],
+            'body' => ['nullable', 'string'],
+            'tags' => ['nullable', 'string', 'max:255'],
+            'sort_order' => ['nullable', 'integer'],
+            'meta_title' => ['nullable', 'string', 'max:255'],
+            'meta_description' => ['nullable', 'string', 'max:255'],
         ]);
     }
 

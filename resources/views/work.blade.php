@@ -3,18 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ $activeTag ? $activeTag.' projects' : 'Work' }} — {{ $profile->name }}</title>
-<meta name="description" content="{{ $activeTag ? 'Projects using '.$activeTag.' by '.$profile->name.'.' : 'All projects by '.$profile->name.'.' }}">
+@include('partials.seo', [
+    'title' => ($activeTag ? __('site.work_meta_title_tag', ['tag' => $activeTag]) : __('site.work_meta_title')).' — '.$profile->name,
+    'description' => $activeTag
+        ? __('site.work_meta_description_tag', ['tag' => $activeTag, 'name' => $profile->name])
+        : __('site.work_meta_description', ['name' => $profile->name]),
+    'canonicalRoute' => $activeTag ? 'work.tag' : 'work.index',
+    'canonicalParams' => $activeTag ? ['tag' => $activeTag] : [],
+])
 @if($activeTag)
-<link rel="canonical" href="{{ route('work.tag', $activeTag) }}">
-<link rel="alternate" hreflang="nl" href="{{ route('work.tag', $activeTag) }}">
-<link rel="alternate" hreflang="en" href="{{ route('work.tag', $activeTag) }}">
-<link rel="alternate" hreflang="x-default" href="{{ route('work.tag', $activeTag) }}">
-@else
-<link rel="canonical" href="{{ route('work.index') }}">
-<link rel="alternate" hreflang="nl" href="{{ route('work.index') }}">
-<link rel="alternate" hreflang="en" href="{{ route('work.index') }}">
-<link rel="alternate" hreflang="x-default" href="{{ route('work.index') }}">
+@include('partials.schema.breadcrumbs', ['items' => [
+    ['name' => __('site.breadcrumb_home'), 'url' => route('home')],
+    ['name' => __('site.breadcrumb_work'), 'url' => route('work.index')],
+    ['name' => $activeTag, 'url' => route('work.tag', $activeTag)],
+]])
 @endif
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -100,7 +102,7 @@
         </div>
         <div>
           @if ($project->image_url)
-            <img class="work-image" src="{{ $project->image_url }}" alt="{{ $project->name }}">
+            <img class="work-image" src="{{ $project->image_url }}" alt="{{ $project->name }}" loading="lazy" decoding="async">
           @endif
           <div class="work-name">
             @if ($project->body)
