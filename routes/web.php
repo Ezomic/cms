@@ -15,22 +15,22 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OgImageController;
 use Illuminate\Support\Facades\Route;
 
-// Public site
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/docs', [HomeController::class, 'docs'])->name('docs');
+// Public site — registered twice: unprefixed English (default) and Dutch under /nl
+$publicRoutes = function (): void {
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::get('/docs', [HomeController::class, 'docs'])->name('docs');
+    Route::get('/work', [HomeController::class, 'work'])->name('work.index');
+    Route::get('/work/tag/{tag}', [HomeController::class, 'workTag'])->name('work.tag');
+    Route::get('/work/{project:slug}', [HomeController::class, 'project'])->name('project.show');
+};
+
+Route::group([], $publicRoutes);
+Route::prefix('nl')->name('nl.')->group($publicRoutes);
+
 Route::get('/cv.pdf', [HomeController::class, 'cv'])->name('cv');
-Route::get('/work', [HomeController::class, 'work'])->name('work.index');
-Route::get('/work/tag/{tag}', [HomeController::class, 'workTag'])->name('work.tag');
-Route::get('/work/{project:slug}', [HomeController::class, 'project'])->name('project.show');
 Route::get('/og/home.png', [OgImageController::class, 'home'])->name('og.home');
 Route::get('/og/work/{project:slug}.png', [OgImageController::class, 'project'])->name('og.project');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store')->middleware('throttle:contact');
-Route::post('/locale/{locale}', function (string $locale) {
-    abort_unless(in_array($locale, ['en', 'nl']), 404);
-    session(['locale' => $locale]);
-
-    return back();
-})->name('locale.switch');
 
 // Admin auth
 Route::get('/admin/login', [AdminLoginController::class, 'show'])->name('admin.login');

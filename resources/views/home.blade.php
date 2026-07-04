@@ -122,17 +122,14 @@
   <div class="wrap">
     <div class="logo"><span class="dot"></span>{{ strtoupper($profile->name) }} / NL</div>
     <div class="nav-links nav-mobile-hide">
-      <a href="{{ route('work.index') }}">{{ __('site.nav_work') }}</a>
+      <a href="{{ localized_route('work.index') }}">{{ __('site.nav_work') }}</a>
       <a href="#services">{{ __('site.nav_services') }}</a>
       <a href="#process">{{ __('site.nav_process') }}</a>
-      <a href="{{ route('docs') }}">{{ __('site.nav_docs') }}</a>
+      <a href="{{ localized_route('docs') }}">{{ __('site.nav_docs') }}</a>
       <a href="#contact">{{ __('site.nav_contact') }}</a>
     </div>
     <div style="display:flex;align-items:center;gap:12px;">
-      <form method="POST" action="{{ route('locale.switch', app()->getLocale() === 'en' ? 'nl' : 'en') }}" style="display:inline;">
-        @csrf
-        <button type="submit" style="font-family:var(--mono);font-size:12px;color:var(--ink-soft);background:none;border:1px solid var(--line);padding:4px 10px;cursor:pointer;transition:all .15s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--ink-soft)'">{{ __('site.lang_toggle') }}</button>
-      </form>
+      <a href="{{ alternate_locale_url(app()->getLocale() === 'en' ? 'nl' : 'en') }}" style="font-family:var(--mono);font-size:12px;color:var(--ink-soft);background:none;border:1px solid var(--line);padding:4px 10px;text-decoration:none;transition:all .15s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--ink-soft)'">{{ __('site.lang_toggle') }}</a>
       <a class="nav-cta" href="#contact">{{ __('site.nav_cta') }}</a>
     </div>
   </div>
@@ -161,7 +158,7 @@
 
     <div class="hero-actions">
       <a class="btn-primary" href="#contact">{{ __('site.hero_actions_primary') }}</a>
-      <a class="btn-secondary" href="{{ route('work.index') }}">{{ __('site.hero_actions_secondary') }}</a>
+      <a class="btn-secondary" href="{{ localized_route('work.index') }}">{{ __('site.hero_actions_secondary') }}</a>
       <a class="btn-secondary" href="{{ route('cv') }}" style="margin-left:8px;">{{ __('site.hero_download_cv') }}</a>
     </div>
   </div>
@@ -206,7 +203,7 @@
             @endif
             <div class="work-name">
               @if ($project->body)
-                <a href="{{ route('project.show', $project->slug) }}">{{ $project->name }} →</a>
+                <a href="{{ localized_route('project.show', $project->slug) }}">{{ $project->name }} →</a>
               @else
                 {{ $project->name }}
               @endif

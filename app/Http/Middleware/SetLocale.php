@@ -10,13 +10,7 @@ class SetLocale
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $locale = $request->session()->get('locale', config('app.locale'));
-
-        if (! in_array($locale, ['en', 'nl'])) {
-            $locale = 'en';
-        }
-
-        app()->setLocale($locale);
+        app()->setLocale($request->segment(1) === 'nl' ? 'nl' : config()->string('app.locale'));
 
         return $next($request);
     }
