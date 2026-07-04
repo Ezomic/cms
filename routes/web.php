@@ -13,6 +13,7 @@ use App\Http\Controllers\Auth\TwoFactorChallengeController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OgImageController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 // Public site — registered twice: unprefixed English (default) and Dutch under /nl
@@ -28,6 +29,8 @@ Route::group([], $publicRoutes);
 Route::prefix('nl')->name('nl.')->group($publicRoutes);
 
 Route::get('/cv.pdf', [HomeController::class, 'cv'])->name('cv');
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
+Route::get('/robots.txt', fn () => response("User-agent: *\nDisallow: /admin\n\nSitemap: ".route('sitemap')."\n", 200, ['Content-Type' => 'text/plain']))->name('robots');
 Route::get('/og/home.png', [OgImageController::class, 'home'])->name('og.home');
 Route::get('/og/work/{project:slug}.png', [OgImageController::class, 'project'])->name('og.project');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store')->middleware('throttle:contact');
