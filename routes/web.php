@@ -12,10 +12,13 @@ use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\TwoFactorChallengeController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OgImageController;
 use Illuminate\Support\Facades\Route;
 
 // Public site
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/og/home.png', [OgImageController::class, 'home'])->name('og.home');
+Route::get('/og/work/{project:slug}.png', [OgImageController::class, 'project'])->name('og.project');
 Route::get('/work/{project:slug}', [HomeController::class, 'project'])->name('project.show');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store')->middleware('throttle:contact');
 
