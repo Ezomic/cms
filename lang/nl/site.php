@@ -10,6 +10,10 @@ return [
     'nav_menu_label' => 'Menu',
     'lang_toggle_long' => 'English →',
 
+    'hero_local_time' => 'lokale tijd, :city, NL',
+    'testimonial_aria' => 'Referentie :number',
+    'project_result_label' => 'Resultaat',
+
     'status_available' => 'Beschikbaar voor nieuwe projecten',
     'status_booked' => 'Momenteel volgeboekt',
     'status_available_from' => 'beschikbaar vanaf :date',

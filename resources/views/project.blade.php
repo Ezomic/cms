@@ -96,7 +96,7 @@
 
   @if ($project->outcome)
     <div class="outcome-callout">
-      <strong>Result</strong>
+      <strong>{{ __('site.project_result_label') }}</strong>
       {{ $project->outcome }}
     </div>
   @endif
