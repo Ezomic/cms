@@ -37,6 +37,7 @@ php artisan storage:link     # once after fresh install
 |-------|------|-------------------|-------|
 | `GET /` | `home` | `HomeController@index` | Data cached forever under `home.page.data` |
 | `GET /work` | `work.index` | `HomeController@work` | Archive with client-side JS tag filter |
+| `GET /work/tag/{tag}` | `work.tag` | `HomeController@workTag` | Server-rendered tag filter page for SEO; 404 if tag doesn't exist |
 | `GET /work/{project:slug}` | `project.show` | `HomeController@project` | 404 if not published |
 | `GET /docs` | `docs` | `HomeController@docs` | Client-facing "Working with me" page |
 | `GET /cv.pdf` | `cv` | `HomeController@cv` | Streams PDF via dompdf |
@@ -238,3 +239,11 @@ php artisan test --filter ProjectTest
 
 7. **dompdf layout** — use `<table>` and inline styles only inside `cv.blade.php`. CSS Grid
    and Flexbox are not supported by dompdf.
+
+## Linear
+
+Team: **THI** (Thijssen Software) — `3b1bf7b2-5ff4-4e70-9ca5-a1efb1280839`
+
+Branch format: `feature/thi-{number}-{description}` or `fix/thi-{number}-{description}`
+
+Follow the full workflow in `~/.claude/CLAUDE.md`. See parent context in `~/Projects/cms/CLAUDE.md`.

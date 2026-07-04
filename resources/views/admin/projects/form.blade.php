@@ -59,6 +59,16 @@
       <input name="tags" value="{{ old('tags', $project->tags) }}" placeholder="Next.js, Stripe" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
     </div>
     <div>
+      <label class="block text-xs font-medium text-stone-600 mb-1">Meta title (SEO)</label>
+      <input name="meta_title" value="{{ old('meta_title', $project->meta_title) }}" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
+      <p class="text-xs text-stone-400 mt-1">Falls back to the project name.</p>
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-stone-600 mb-1">Meta description (SEO)</label>
+      <textarea name="meta_description" rows="2" maxlength="255" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">{{ old('meta_description', $project->meta_description) }}</textarea>
+      <p class="text-xs text-stone-400 mt-1">Falls back to the description, then a body excerpt. Aim for 150–160 characters.</p>
+    </div>
+    <div>
       <label class="block text-xs font-medium text-stone-600 mb-1">Sort order</label>
       <input type="number" name="sort_order" value="{{ old('sort_order', $project->sort_order ?? 0) }}" class="w-32 border border-stone-300 rounded px-3 py-2 text-sm">
     </div>
