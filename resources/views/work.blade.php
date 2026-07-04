@@ -13,9 +13,9 @@
 ])
 @if($activeTag)
 @include('partials.schema.breadcrumbs', ['items' => [
-    ['name' => __('site.breadcrumb_home'), 'url' => route('home')],
-    ['name' => __('site.breadcrumb_work'), 'url' => route('work.index')],
-    ['name' => $activeTag, 'url' => route('work.tag', $activeTag)],
+    ['name' => __('site.breadcrumb_home'), 'url' => localized_route('home')],
+    ['name' => __('site.breadcrumb_work'), 'url' => localized_route('work.index')],
+    ['name' => $activeTag, 'url' => localized_route('work.tag', $activeTag)],
 ]])
 @endif
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -72,8 +72,8 @@
 
 <nav>
   <div class="wrap">
-    <a class="logo" href="{{ route('home') }}"><span class="dot"></span>{{ strtoupper($profile->name) }} / NL</a>
-    <a class="back-link" href="{{ route('home') }}">{{ __('site.back_to_site') }}</a>
+    <a class="logo" href="{{ localized_route('home') }}"><span class="dot"></span>{{ strtoupper($profile->name) }} / NL</a>
+    <a class="back-link" href="{{ localized_route('home') }}">{{ __('site.back_to_site') }}</a>
   </div>
 </nav>
 
@@ -86,9 +86,9 @@
   @if ($tags->isNotEmpty())
   <div class="filters">
     <span class="filter-label">{{ __('site.work_filter_label') }}</span>
-    <a class="filter-btn {{ !$activeTag ? 'active' : '' }}" href="{{ route('work.index') }}" data-tag="all">{{ __('site.work_filter_all') }}</a>
+    <a class="filter-btn {{ !$activeTag ? 'active' : '' }}" href="{{ localized_route('work.index') }}" data-tag="all">{{ __('site.work_filter_all') }}</a>
     @foreach ($tags as $tag)
-      <a class="filter-btn {{ $activeTag === $tag ? 'active' : '' }}" href="{{ route('work.tag', $tag) }}" data-tag="{{ $tag }}">{{ $tag }}</a>
+      <a class="filter-btn {{ $activeTag === $tag ? 'active' : '' }}" href="{{ localized_route('work.tag', $tag) }}" data-tag="{{ $tag }}">{{ $tag }}</a>
     @endforeach
   </div>
   @endif
@@ -106,7 +106,7 @@
           @endif
           <div class="work-name">
             @if ($project->body)
-              <a href="{{ route('project.show', $project->slug) }}">{{ $project->name }} →</a>
+              <a href="{{ localized_route('project.show', $project->slug) }}">{{ $project->name }} →</a>
             @else
               {{ $project->name }}
             @endif
@@ -130,7 +130,7 @@
 <footer>
   <div class="wrap">
     <span>© {{ date('Y') }} {{ $profile->name }}. {{ __('site.footer_built') }}</span>
-    <a href="{{ route('home') }}" style="font-family:var(--mono);font-size:12px;color:var(--ink-soft);text-decoration:none;">{{ __('site.back_to_site') }}</a>
+    <a href="{{ localized_route('home') }}" style="font-family:var(--mono);font-size:12px;color:var(--ink-soft);text-decoration:none;">{{ __('site.back_to_site') }}</a>
   </div>
 </footer>
 

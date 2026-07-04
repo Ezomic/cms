@@ -13,9 +13,9 @@
 ])
 @include('partials.schema.creative-work')
 @include('partials.schema.breadcrumbs', ['items' => [
-    ['name' => __('site.breadcrumb_home'), 'url' => route('home')],
-    ['name' => __('site.breadcrumb_work'), 'url' => route('work.index')],
-    ['name' => $project->name, 'url' => route('project.show', $project->slug)],
+    ['name' => __('site.breadcrumb_home'), 'url' => localized_route('home')],
+    ['name' => __('site.breadcrumb_work'), 'url' => localized_route('work.index')],
+    ['name' => $project->name, 'url' => localized_route('project.show', $project->slug)],
 ]])
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -61,7 +61,7 @@
 <nav>
   <div class="wrap">
     <div class="logo"><span class="dot"></span>{{ strtoupper($profile->name) }} / NL</div>
-    <a class="back-link" href="{{ route('home') }}">{{ __('site.back_to_site') }}</a>
+    <a class="back-link" href="{{ localized_route('home') }}">{{ __('site.back_to_site') }}</a>
   </div>
 </nav>
 
@@ -102,14 +102,14 @@
       <div style="font-family:var(--mono);font-size:13px;color:var(--ink-soft);margin-bottom:8px;">{{ __('site.project_cta_lead') }}</div>
       <div style="font-family:var(--display);font-weight:600;font-size:1.2rem;">{{ __('site.project_cta_headline') }}</div>
     </div>
-    <a href="{{ route('home') }}?ref={{ urlencode($project->slug) }}#contact" style="font-family:var(--mono);font-size:14px;background:var(--ink);color:var(--white);padding:14px 24px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s;" onmouseover="this.style.background='var(--accent)'" onmouseout="this.style.background='var(--ink)'">{{ __('site.project_cta_button') }}</a>
+    <a href="{{ localized_route('home') }}?ref={{ urlencode($project->slug) }}#contact" style="font-family:var(--mono);font-size:14px;background:var(--ink);color:var(--white);padding:14px 24px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s;" onmouseover="this.style.background='var(--accent)'" onmouseout="this.style.background='var(--ink)'">{{ __('site.project_cta_button') }}</a>
   </div>
 </div>
 
 <footer>
   <div class="wrap">
     <span>© {{ date('Y') }} {{ $profile->name }}.</span>
-    <a class="footer-cta" href="{{ route('home') }}?ref={{ urlencode($project->slug) }}#contact">{{ __('site.project_cta_button') }}</a>
+    <a class="footer-cta" href="{{ localized_route('home') }}?ref={{ urlencode($project->slug) }}#contact">{{ __('site.project_cta_button') }}</a>
   </div>
 </footer>
 <style>
