@@ -1,0 +1,25 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('profile', function (Blueprint $table) {
+            $table->text('docs_intro')->nullable()->after('bio');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('profile', function (Blueprint $table) {
+            $table->dropColumn('docs_intro');
+        });
+    }
+};
