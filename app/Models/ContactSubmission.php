@@ -7,4 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class ContactSubmission extends Model
 {
     protected $fillable = ['name', 'email', 'company', 'budget', 'message'];
+
+    protected $casts = [
+        'read_at' => 'datetime',
+    ];
 }

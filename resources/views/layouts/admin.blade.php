@@ -22,6 +22,13 @@
         <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.dashboard') ? 'bg-stone-100 font-medium' : '' }}">Dashboard</a>
         <a href="{{ route('admin.projects.index') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.projects.*') ? 'bg-stone-100 font-medium' : '' }}">Projects</a>
         <a href="{{ route('admin.testimonials.index') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.testimonials.*') ? 'bg-stone-100 font-medium' : '' }}">Testimonials</a>
+        <a href="{{ route('admin.contact-submissions.index') }}" class="flex items-center justify-between px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.contact-submissions.*') ? 'bg-stone-100 font-medium' : '' }}">
+          Messages
+          @php($unread = \App\Models\ContactSubmission::whereNull('read_at')->count())
+          @if ($unread)
+            <span class="text-[10px] font-mono bg-orange-600 text-white rounded-full px-1.5 py-0.5 leading-none">{{ $unread }}</span>
+          @endif
+        </a>
         <a href="{{ route('admin.skills.index') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.skills.*') ? 'bg-stone-100 font-medium' : '' }}">Skills</a>
         <a href="{{ route('admin.profile.edit') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.profile.*') ? 'bg-stone-100 font-medium' : '' }}">Profile</a>
         <a href="{{ route('admin.settings.edit') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.settings.*') ? 'bg-stone-100 font-medium' : '' }}">Settings</a>
