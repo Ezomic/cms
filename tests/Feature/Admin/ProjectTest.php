@@ -88,6 +88,32 @@ class ProjectTest extends TestCase
         $this->assertDatabaseHas('projects', ['id' => $project->id, 'name' => 'Updated Name']);
     }
 
+    public function test_admin_can_set_image_alt_text(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->post('/admin/projects', [
+            'name' => 'Accessible Project',
+            'image_alt' => 'Dashboard screenshot showing the invoice list',
+        ]);
+
+        $this->assertDatabaseHas('projects', [
+            'name' => 'Accessible Project',
+            'image_alt' => 'Dashboard screenshot showing the invoice list',
+        ]);
+    }
+
+    public function test_image_alt_falls_back_to_project_name(): void
+    {
+        $project = Project::create(['name' => 'Fallback Project', 'sort_order' => 0]);
+
+        $this->assertSame('Fallback Project', $project->imageAlt());
+
+        $project->update(['image_alt' => 'A custom description']);
+
+        $this->assertSame('A custom description', $project->fresh()->imageAlt());
+    }
+
     public function test_admin_can_delete_a_project(): void
     {
         $user = User::factory()->create();

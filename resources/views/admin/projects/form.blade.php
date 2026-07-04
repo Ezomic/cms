@@ -41,6 +41,16 @@
     </div>
 
     <div>
+      <label class="block text-xs font-medium text-stone-600 mb-1">Image alt text</label>
+      <input name="image_alt" value="{{ old('image_alt', $project->image_alt) }}" placeholder="Describe what the image shows, e.g. &quot;Dashboard screenshot showing the invoice list&quot;" class="w-full border rounded px-3 py-2 text-sm @error('image_alt') border-red-400 @else border-stone-300 @enderror">
+      @error('image_alt')
+        <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+      @else
+        <p class="text-xs text-stone-400 mt-1">Read by screen readers. Falls back to the project name if left blank.</p>
+      @enderror
+    </div>
+
+    <div>
       <label class="block text-xs font-medium text-stone-600 mb-1">Slug (URL)</label>
       <input name="slug" value="{{ old('slug', $project->slug) }}" placeholder="auto-generated from name if left blank" class="w-full border rounded px-3 py-2 text-sm @error('slug') border-red-400 @else border-stone-300 @enderror">
       @error('slug')

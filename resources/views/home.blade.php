@@ -238,7 +238,7 @@
           <div class="work-year">{{ $project->year }} — {{ $project->client_name }}</div>
           <div>
             @if ($project->image)
-              <img class="work-image" src="{{ $project->image_url }}" alt="{{ $project->name }}" loading="lazy" decoding="async">
+              <img class="work-image" src="{{ $project->image_url }}" alt="{{ $project->image_alt ?: $project->name }}" loading="lazy" decoding="async">
             @endif
             <div class="work-name">
               @if ($project->body)

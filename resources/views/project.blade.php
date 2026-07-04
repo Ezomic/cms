@@ -102,7 +102,7 @@
 
 <div class="wrap">
   @if ($project->image)
-    <img class="cover" src="{{ $project->imageUrl() }}" alt="{{ $project->name }}" fetchpriority="high" decoding="async">
+    <img class="cover" src="{{ $project->imageUrl() }}" alt="{{ $project->imageAlt() }}" fetchpriority="high" decoding="async">
   @endif
 
   @if ($project->outcome)
