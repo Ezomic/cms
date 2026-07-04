@@ -28,9 +28,11 @@
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{transition-duration:.01ms !important;animation-duration:.01ms !important;}}
   body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.5;-webkit-font-smoothing:antialiased;}
   ::selection{background:var(--accent);color:var(--white);}
   a{color:inherit;}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
   .wrap{max-width:1120px;margin:0 auto;padding:0 32px;}
   nav{position:sticky;top:0;z-index:50;background:rgba(247,247,244,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
   nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;}
