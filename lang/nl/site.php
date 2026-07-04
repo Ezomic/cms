@@ -54,4 +54,18 @@ return [
     'footer_built' => 'Gebouwd in Nederland.',
 
     'lang_toggle' => 'EN',
+
+    'back_to_site' => '← Terug naar de site',
+
+    'work_page_label'    => 'Geselecteerd werk',
+    'work_page_headline' => 'Alle projecten.',
+    'work_filter_label'  => 'Filter op tag:',
+    'work_filter_all'    => 'Alles',
+    'work_no_projects'   => 'Nog geen projecten.',
+    'work_no_match'      => 'Geen projecten gevonden voor dit filter.',
+
+    'project_eyebrow'      => 'Case study',
+    'project_cta_lead'     => 'Interesse in dit soort werk?',
+    'project_cta_headline' => 'Laten we praten over jouw project.',
+    'project_cta_button'   => 'Start een vergelijkbaar project →',
 ];
