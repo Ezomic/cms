@@ -114,12 +114,18 @@
   <div class="wrap">
     <div class="logo"><span class="dot"></span>{{ strtoupper($profile->name) }} / NL</div>
     <div class="nav-links nav-mobile-hide">
-      <a href="{{ route('work.index') }}">Work</a>
-      <a href="#process">Process</a>
-      <a href="{{ route('docs') }}">Docs</a>
-      <a href="#contact">Contact</a>
+      <a href="{{ route('work.index') }}">{{ __('site.nav_work') }}</a>
+      <a href="#process">{{ __('site.nav_process') }}</a>
+      <a href="{{ route('docs') }}">{{ __('site.nav_docs') }}</a>
+      <a href="#contact">{{ __('site.nav_contact') }}</a>
     </div>
-    <a class="nav-cta" href="#contact">Get in touch</a>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <form method="POST" action="{{ route('locale.switch', app()->getLocale() === 'en' ? 'nl' : 'en') }}" style="display:inline;">
+        @csrf
+        <button type="submit" style="font-family:var(--mono);font-size:12px;color:var(--ink-soft);background:none;border:1px solid var(--line);padding:4px 10px;cursor:pointer;transition:all .15s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--ink-soft)'">{{ __('site.lang_toggle') }}</button>
+      </form>
+      <a class="nav-cta" href="#contact">{{ __('site.nav_cta') }}</a>
+    </div>
   </div>
 </nav>
 
@@ -128,7 +134,11 @@
   <div class="wrap hero-inner">
     <div class="status-row">
       <span class="status-dot {{ $profile->available ? '' : 'away' }}"></span>
-      <span>{{ $profile->available ? 'Available for new projects' : 'Currently booked' }}</span>
+      @if ($profile->available)
+        <span>{{ __('site.status_available') }}</span>
+      @else
+        <span>{{ __('site.status_booked') }}@if($profile->availability_from) — {{ __('site.status_available_from', ['date' => $profile->availability_from]) }}@endif</span>
+      @endif
       <span style="color:var(--line)">·</span>
       <span id="local-time">--:-- local time, {{ $profile->city }}, NL</span>
     </div>
@@ -141,9 +151,9 @@
     </p>
 
     <div class="hero-actions">
-      <a class="btn-primary" href="#contact">Start a project →</a>
-      <a class="btn-secondary" href="#work">See recent work</a>
-      <a class="btn-secondary" href="{{ route('cv') }}" style="margin-left:8px;">Download CV →</a>
+      <a class="btn-primary" href="#contact">{{ __('site.hero_actions_primary') }}</a>
+      <a class="btn-secondary" href="{{ route('work.index') }}">{{ __('site.hero_actions_secondary') }}</a>
+      <a class="btn-secondary" href="{{ route('cv') }}" style="margin-left:8px;">{{ __('site.hero_download_cv') }}</a>
     </div>
   </div>
 </header>
@@ -151,8 +161,8 @@
 <section id="stack">
   <div class="wrap">
     <div class="section-head">
-      <div class="section-label">Capabilities</div>
-      <h2>One developer, the whole stack.</h2>
+      <div class="section-label">{{ __('site.stack_label') }}</div>
+      <h2>{{ __('site.stack_headline') }}</h2>
     </div>
 
     <div class="stack-grid">
@@ -173,8 +183,8 @@
 <section id="work">
   <div class="wrap">
     <div class="section-head">
-      <div class="section-label">Selected work</div>
-      <h2>Recent projects.</h2>
+      <div class="section-label">{{ __('site.work_label') }}</div>
+      <h2>{{ __('site.work_headline') }}</h2>
     </div>
 
     <div class="work-list">
@@ -210,41 +220,54 @@
 <section id="process">
   <div class="wrap">
     <div class="section-head">
-      <div class="section-label">How I work</div>
-      <h2>Four steps, no surprises.</h2>
+      <div class="section-label">{{ __('site.process_label') }}</div>
+      <h2>{{ __('site.process_headline') }}</h2>
     </div>
 
     <div class="process-grid">
       <div class="process-step">
         <div class="process-num">01</div>
-        <h3>Scope</h3>
-        <p>A short call to understand the problem, then a clear proposal with fixed price or day rate.</p>
+        <h3>{{ __('site.process_1_title') }}</h3>
+        <p>{{ __('site.process_1_body') }}</p>
       </div>
       <div class="process-step">
         <div class="process-num">02</div>
-        <h3>Plan</h3>
-        <p>Technical approach, milestones, and a realistic timeline — agreed before any code is written.</p>
+        <h3>{{ __('site.process_2_title') }}</h3>
+        <p>{{ __('site.process_2_body') }}</p>
       </div>
       <div class="process-step">
         <div class="process-num">03</div>
-        <h3>Build</h3>
-        <p>Weekly check-ins and a staging link you can follow along with, so nothing arrives as a surprise.</p>
+        <h3>{{ __('site.process_3_title') }}</h3>
+        <p>{{ __('site.process_3_body') }}</p>
       </div>
       <div class="process-step">
         <div class="process-num">04</div>
-        <h3>Ship</h3>
-        <p>Deployed, documented, and handed over — plus a support window for anything after launch.</p>
+        <h3>{{ __('site.process_4_title') }}</h3>
+        <p>{{ __('site.process_4_body') }}</p>
       </div>
     </div>
   </div>
 </section>
 
-@if ($testimonial)
+@if ($testimonials->isNotEmpty())
 <section class="testimonial">
   <div class="wrap">
-    <span class="quote-mark">"</span>
-    <blockquote>{{ $testimonial->quote }}</blockquote>
-    <div class="testimonial-attr">— {{ $testimonial->author_name }}@if($testimonial->author_role), {{ $testimonial->author_role }}@endif</div>
+    <div id="testimonial-carousel" style="position:relative;">
+      @foreach ($testimonials as $i => $testimonial)
+        <div class="testimonial-slide" style="{{ $i > 0 ? 'display:none;' : '' }}">
+          <span class="quote-mark">"</span>
+          <blockquote>{{ $testimonial->quote }}</blockquote>
+          <div class="testimonial-attr">— {{ $testimonial->author_name }}@if($testimonial->author_role), {{ $testimonial->author_role }}@endif</div>
+        </div>
+      @endforeach
+      @if ($testimonials->count() > 1)
+        <div style="margin-top:32px;display:flex;gap:8px;align-items:center;">
+          @foreach ($testimonials as $i => $t)
+            <button class="carousel-dot {{ $i === 0 ? 'active' : '' }}" data-index="{{ $i }}" aria-label="Testimonial {{ $i + 1 }}" style="width:8px;height:8px;border-radius:50%;border:none;cursor:pointer;padding:0;background:{{ $i === 0 ? 'var(--ink)' : 'var(--line)' }};transition:background .2s;"></button>
+          @endforeach
+        </div>
+      @endif
+    </div>
   </div>
 </section>
 @endif
@@ -252,9 +275,9 @@
 <section id="contact" class="contact">
   <div class="wrap contact-inner">
     <div>
-      <div class="section-label" style="margin-bottom:16px;">Get in touch</div>
-      <h2>Have a project in mind?</h2>
-      <p class="lead">Tell me what you're building and what's not working yet. I usually reply within one business day.</p>
+      <div class="section-label" style="margin-bottom:16px;">{{ __('site.contact_label') }}</div>
+      <h2>{{ __('site.contact_headline') }}</h2>
+      <p class="lead">{{ __('site.contact_lead') }}</p>
 
       <div class="contact-links">
         @if ($profile->email)
@@ -269,7 +292,7 @@
       </div>
 
       <div class="contact-form">
-        <h3>Or send a message directly</h3>
+        <h3>{{ __('site.contact_form_title') }}</h3>
 
         @if (session('status'))
           <div class="form-status">{{ session('status') }}</div>
@@ -285,39 +308,66 @@
           <input type="text" name="website" class="honeypot" tabindex="-1" autocomplete="off">
           <div class="contact-form-grid">
             <div>
-              <label for="contact-name">Name</label>
+              <label for="contact-name">{{ __('site.contact_name') }}</label>
               <input id="contact-name" type="text" name="name" value="{{ old('name') }}" required>
             </div>
             <div>
-              <label for="contact-email">Email</label>
+              <label for="contact-email">{{ __('site.contact_email') }}</label>
               <input id="contact-email" type="email" name="email" value="{{ old('email') }}" required>
             </div>
           </div>
-          <label for="contact-message">Message</label>
+          <label for="contact-message">{{ __('site.contact_message') }}</label>
           <textarea id="contact-message" name="message" rows="4" required>{{ old('message') }}</textarea>
-          <button class="btn-primary" type="submit" style="border:none;cursor:pointer;">Send message →</button>
+          <button class="btn-primary" type="submit" style="border:none;cursor:pointer;">{{ __('site.contact_submit') }}</button>
         </form>
       </div>
     </div>
 
     <div class="meta-box">
-      <div><span>Based in</span><strong>{{ $profile->city }}, NL</strong></div>
-      <div><span>Rate</span><strong>{{ $profile->rate }}</strong></div>
-      <div><span>Availability</span><strong>{{ $profile->available ? 'Now' : 'From ' . $profile->availability_from }}</strong></div>
-      <div><span>Languages</span><strong>NL / EN</strong></div>
-      <div><span>Remote / on-site</span><strong>Both, EU-wide</strong></div>
+      <div><span>{{ __('site.meta_based_in') }}</span><strong>{{ $profile->city }}, NL</strong></div>
+      <div><span>{{ __('site.meta_rate') }}</span><strong>{{ $profile->rate }}</strong></div>
+      <div><span>{{ __('site.meta_availability') }}</span><strong>{{ $profile->available ? __('site.meta_availability_now') : __('site.meta_availability_from', ['date' => $profile->availability_from]) }}</strong></div>
+      <div><span>{{ __('site.meta_languages_label') }}</span><strong>{{ __('site.meta_languages') }}</strong></div>
+      <div><span>{{ __('site.meta_remote_label') }}</span><strong>{{ __('site.meta_remote') }}</strong></div>
     </div>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
-    <span>© {{ date('Y') }} {{ $profile->name }}. Built in the Netherlands.</span>
+    <span>© {{ date('Y') }} {{ $profile->name }}. {{ __('site.footer_built') }}</span>
     <span>KVK {{ $profile->kvk_number }}</span>
   </div>
 </footer>
 
 <script>
+  (function(){
+    var ref = new URLSearchParams(window.location.search).get('ref');
+    if (!ref) return;
+    var ta = document.getElementById('contact-message');
+    if (ta && !ta.value) {
+      ta.value = "I’m interested in something similar to your “" + ref.replace(/-/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); }) + "” work.";
+    }
+  })();
+
+  (function(){
+    var slides = document.querySelectorAll('.testimonial-slide');
+    var dots = document.querySelectorAll('.carousel-dot');
+    if (slides.length < 2) return;
+    var current = 0;
+    function show(n) {
+      slides[current].style.display = 'none';
+      dots[current].style.background = 'var(--line)';
+      current = n;
+      slides[current].style.display = '';
+      dots[current].style.background = 'var(--ink)';
+    }
+    dots.forEach(function(dot) {
+      dot.addEventListener('click', function(){ show(parseInt(dot.dataset.index)); });
+    });
+    setInterval(function(){ show((current + 1) % slides.length); }, 6000);
+  })();
+
   function updateClock(){
     const el = document.getElementById('local-time');
     const time = new Intl.DateTimeFormat('en-GB', { hour:'2-digit', minute:'2-digit', timeZone:'Europe/Amsterdam' }).format(new Date());
