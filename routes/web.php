@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 // Public site
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/docs', [HomeController::class, 'docs'])->name('docs');
 Route::get('/og/home.png', [OgImageController::class, 'home'])->name('og.home');
 Route::get('/og/work/{project:slug}.png', [OgImageController::class, 'project'])->name('og.project');
 Route::get('/work/{project:slug}', [HomeController::class, 'project'])->name('project.show');
