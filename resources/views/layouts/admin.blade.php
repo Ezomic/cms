@@ -54,7 +54,17 @@
   </main>
 </div>
 
+<div id="admin-toast" role="status" aria-live="polite" class="hidden fixed bottom-4 right-4 z-50 rounded px-4 py-2 text-sm shadow-lg"></div>
+
 <script>
+  window.adminToast = function(msg, isError){
+    var t = document.getElementById('admin-toast');
+    t.textContent = msg;
+    t.className = 'fixed bottom-4 right-4 z-50 rounded px-4 py-2 text-sm shadow-lg text-white ' + (isError ? 'bg-red-600' : 'bg-stone-900');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function(){ t.classList.add('hidden'); }, isError ? 6000 : 2500);
+  };
+
   (function(){
     var toggle = document.getElementById('admin-nav-toggle');
     var nav = document.getElementById('admin-nav');

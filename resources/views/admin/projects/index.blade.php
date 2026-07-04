@@ -77,7 +77,9 @@
               'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
             },
             body: JSON.stringify({ ids }),
-          });
+          })
+            .then(r => { if (!r.ok) throw new Error(); adminToast('Order saved'); })
+            .catch(() => adminToast('Could not save the new order — reload the page and try again.', true));
         },
       });
     }
