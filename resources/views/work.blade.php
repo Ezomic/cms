@@ -39,8 +39,10 @@
   .wrap{max-width:1120px;margin:0 auto;padding:0 32px;}
   nav{position:sticky;top:0;z-index:50;background:rgba(247,247,244,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
   nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;}
-  .logo{font-family:var(--mono);font-weight:500;font-size:14px;display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);}
-  .logo .dot{width:6px;height:6px;background:var(--accent);border-radius:50%;}
+  .logo{font-family:var(--mono);font-weight:500;font-size:14px;display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);white-space:nowrap;}
+  .logo .dot{width:6px;height:6px;background:var(--accent);border-radius:50%;flex-shrink:0;}
+  nav .wrap{flex-wrap:wrap;height:auto;min-height:64px;row-gap:8px;}
+  @media (max-width:420px){.logo .locale-suffix{display:none;}}
   .back-link{font-family:var(--mono);font-size:13px;text-decoration:none;color:var(--ink-soft);}
   .back-link:hover{color:var(--ink);}
   .nav-right{display:flex;align-items:center;gap:16px;}
@@ -82,7 +84,7 @@
 
 <nav>
   <div class="wrap">
-    <a class="logo" href="{{ localized_route('home') }}"><span class="dot"></span>{{ strtoupper($profile->name) }} / NL</a>
+    <a class="logo" href="{{ localized_route('home') }}"><span class="dot"></span>{{ strtoupper($profile->name) }}<span class="locale-suffix"> / NL</span></a>
     <div class="nav-right">
       <a class="lang-toggle" href="{{ alternate_locale_url(app()->getLocale() === 'en' ? 'nl' : 'en') }}">{{ __('site.lang_toggle') }}</a>
       <a class="back-link" href="{{ localized_route('home') }}">{{ __('site.back_to_site') }}</a>
