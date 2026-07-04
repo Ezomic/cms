@@ -230,6 +230,9 @@ if ($sameAs) { $jsonLd['sameAs'] = $sameAs; }
               @endif
             </div>
             <div class="work-desc">{{ $project->description }}</div>
+            @if ($project->outcome)
+              <div style="margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--accent);">↳ {{ $project->outcome }}</div>
+            @endif
           </div>
           <div class="work-tags">
             @foreach ($project->tag_list as $tag)

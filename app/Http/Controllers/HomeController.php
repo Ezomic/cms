@@ -33,6 +33,7 @@ class HomeController extends Controller
                     ...$project->toArray(),
                     'tag_list'  => $project->tagList(),
                     'image_url' => $project->imageUrl(),
+                    'outcome'   => $project->outcome,
                 ])->all(),
                 'testimonials' => Testimonial::latest()->get()->map->toArray()->all(),
             ];
