@@ -35,10 +35,12 @@ class OgImageController extends Controller
         $cacheKey = 'og.home.'.$profile->updated_at?->timestamp;
 
         $png = Cache::rememberForever($cacheKey, function () use ($profile) {
+            $availability = $profile->available ? '✓ Available for new projects' : 'Currently booked';
+
             return $this->generate(
                 $profile->name,
                 $profile->tagline,
-                $profile->city.', Netherlands',
+                $profile->city.', Netherlands  ·  '.$availability,
                 $profile->name,
             );
         });
