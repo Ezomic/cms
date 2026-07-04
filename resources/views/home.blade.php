@@ -444,7 +444,9 @@
 <footer>
   <div class="wrap">
     <span>© {{ date('Y') }} {{ $profile->name }}. {{ __('site.footer_built') }}</span>
-    <span>KVK {{ $profile->kvk_number }}</span>
+    @if ($profile->kvk_number)
+      <span>KVK {{ $profile->kvk_number }}</span>
+    @endif
   </div>
 </footer>
 

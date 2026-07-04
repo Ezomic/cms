@@ -97,7 +97,10 @@
   </div>
 
   <div class="footer">
-    KVK {{ $profile->kvk_number }} · Generated {{ date('F Y') }}
+    @if ($profile->kvk_number)
+      KVK {{ $profile->kvk_number }} ·
+    @endif
+    Generated {{ date('F Y') }}
   </div>
 
 </div>
