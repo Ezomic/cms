@@ -101,8 +101,8 @@
 
 <nav>
   <div class="inner">
-    <a class="logo" href="{{ route('home') }}"><span class="dot"></span>{{ strtoupper($profile->name) }}</a>
-    <a class="back-link" href="{{ route('home') }}">{{ __('docs.back_to_site') }}</a>
+    <a class="logo" href="{{ localized_route('home') }}"><span class="dot"></span>{{ strtoupper($profile->name) }}</a>
+    <a class="back-link" href="{{ localized_route('home') }}">{{ __('docs.back_to_site') }}</a>
   </div>
 </nav>
 
@@ -213,7 +213,7 @@
               <div>
                 <div style="font-weight:500;">
                   @if ($project->body)
-                    <a href="{{ route('project.show', $project->slug) }}" style="text-decoration:none;color:var(--ink);">{{ $project->name }}</a>
+                    <a href="{{ localized_route('project.show', $project->slug) }}" style="text-decoration:none;color:var(--ink);">{{ $project->name }}</a>
                   @else
                     {{ $project->name }}
                   @endif
@@ -460,7 +460,7 @@
     <div style="margin-top:48px;padding-top:48px;border-top:1px solid var(--line);">
       <h3 style="font-family:var(--display);font-weight:600;font-size:1.4rem;margin-bottom:12px;">{{ __('docs.s11_ready_title') }}</h3>
       <p style="margin-bottom:24px;">{{ __('docs.s11_ready_lead') }}</p>
-      <a href="{{ route('home') }}#contact" style="font-family:var(--mono);font-size:14px;background:var(--ink);color:var(--white);padding:14px 24px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s;" onmouseover="this.style.background='var(--accent)'" onmouseout="this.style.background='var(--ink)'">{{ __('docs.s11_ready_cta') }}</a>
+      <a href="{{ localized_route('home') }}#contact" style="font-family:var(--mono);font-size:14px;background:var(--ink);color:var(--white);padding:14px 24px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s;" onmouseover="this.style.background='var(--accent)'" onmouseout="this.style.background='var(--ink)'">{{ __('docs.s11_ready_cta') }}</a>
     </div>
   </div>
 
@@ -469,7 +469,7 @@
 <footer>
   <div class="wrap">
     <span>© {{ date('Y') }} {{ $profile->name }}. {{ __('site.footer_built') }}</span>
-    <a class="footer-cta" href="{{ route('home') }}">{{ __('docs.footer_back') }}</a>
+    <a class="footer-cta" href="{{ localized_route('home') }}">{{ __('docs.footer_back') }}</a>
   </div>
 </footer>
 
