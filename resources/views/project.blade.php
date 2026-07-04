@@ -60,6 +60,8 @@
   .body-content li{margin-bottom:.5em;}
   .body-content code{font-family:var(--mono);font-size:.88em;background:var(--accent-soft);padding:2px 6px;border-radius:3px;}
   .body-content strong{font-weight:600;}
+  .btn-primary{font-family:var(--mono);font-size:14px;background:var(--ink);color:var(--white);padding:14px 24px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s;}
+  .btn-primary:hover{background:var(--accent);}
   footer{padding:32px 0;font-family:var(--mono);font-size:12px;color:var(--ink-soft);border-top:1px solid var(--line);}
   footer .wrap{max-width:1120px;}
 </style>
@@ -117,7 +119,7 @@
       <div style="font-family:var(--mono);font-size:13px;color:var(--ink-soft);margin-bottom:8px;">{{ __('site.project_cta_lead') }}</div>
       <div style="font-family:var(--display);font-weight:600;font-size:1.2rem;">{{ __('site.project_cta_headline') }}</div>
     </div>
-    <a href="{{ localized_route('home') }}?ref={{ urlencode($project->slug) }}#contact" style="font-family:var(--mono);font-size:14px;background:var(--ink);color:var(--white);padding:14px 24px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s;" onmouseover="this.style.background='var(--accent)'" onmouseout="this.style.background='var(--ink)'">{{ __('site.project_cta_button') }}</a>
+    <a class="btn-primary" href="{{ localized_route('home') }}?ref={{ urlencode($project->slug) }}#contact">{{ __('site.project_cta_button') }}</a>
   </div>
 </div>
 
