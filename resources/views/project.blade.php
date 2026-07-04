@@ -7,9 +7,11 @@
 <meta property="og:title" content="{{ $project->name }}">
 <meta property="og:description" content="{{ $project->description }}">
 <meta property="og:type" content="article">
-@if ($project->image)
-<meta property="og:image" content="{{ $project->imageUrl() }}">
-@endif
+<meta property="og:image" content="{{ route('og.project', $project->slug) }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{{ route('og.project', $project->slug) }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -74,11 +76,27 @@
   <div class="body-content">
     <p>{{ $project->body }}</p>
   </div>
+
+  <div style="padding:48px 0;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+    <div>
+      <div style="font-family:var(--mono);font-size:13px;color:var(--ink-soft);margin-bottom:8px;">Interested in this kind of work?</div>
+      <div style="font-family:var(--display);font-weight:600;font-size:1.2rem;">Let's talk about your project.</div>
+    </div>
+    <a href="{{ route('home') }}?ref={{ urlencode($project->slug) }}#contact" style="font-family:var(--mono);font-size:14px;background:var(--ink);color:var(--white);padding:14px 24px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s;" onmouseover="this.style.background='var(--accent)'" onmouseout="this.style.background='var(--ink)'">Start a similar project →</a>
+  </div>
 </div>
 
 <footer>
-  <div class="wrap">© {{ date('Y') }} {{ $profile->name }}.</div>
+  <div class="wrap">
+    <span>© {{ date('Y') }} {{ $profile->name }}.</span>
+    <a class="footer-cta" href="{{ route('home') }}?ref={{ urlencode($project->slug) }}#contact">Start a similar project →</a>
+  </div>
 </footer>
+<style>
+  footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+  .footer-cta{font-family:var(--mono);font-size:13px;background:var(--ink);color:var(--white);padding:10px 20px;text-decoration:none;transition:background .15s;}
+  .footer-cta:hover{background:var(--accent);}
+</style>
 
 </body>
 </html>
