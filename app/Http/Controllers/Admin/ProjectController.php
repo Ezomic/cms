@@ -122,6 +122,7 @@ class ProjectController extends Controller
         return $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'image' => ['nullable', 'image', 'max:4096'],
+            'image_alt' => ['nullable', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', 'alpha_dash', Rule::unique('projects', 'slug')->ignore($project->id)],
             'client_name' => ['nullable', 'string', 'max:255'],
             'year' => ['nullable', 'string', 'max:4'],
