@@ -68,9 +68,34 @@ class HomeController extends Controller
         $tags = $projects->flatMap(fn ($p) => $p->tag_list)->unique()->sort()->values();
 
         return view('work', [
-            'profile'  => Profile::current(),
-            'projects' => $projects,
-            'tags'     => $tags,
+            'profile'   => Profile::current(),
+            'projects'  => $projects,
+            'tags'      => $tags,
+            'activeTag' => null,
+        ]);
+    }
+
+    public function workTag(string $tag)
+    {
+        $allProjects = Project::published()->ordered()->get()->map(fn ($p) => (object) [
+            ...$p->toArray(),
+            'tag_list'  => $p->tagList(),
+            'image_url' => $p->imageUrl(),
+        ]);
+
+        $tags = $allProjects->flatMap(fn ($p) => $p->tag_list)->unique()->sort()->values();
+
+        abort_unless($tags->contains($tag), 404);
+
+        PageView::create(['path' => '/work/tag/'.$tag]);
+
+        $projects = $allProjects->filter(fn ($p) => in_array($tag, $p->tag_list))->values();
+
+        return view('work', [
+            'profile'   => Profile::current(),
+            'projects'  => $projects,
+            'tags'      => $tags,
+            'activeTag' => $tag,
         ]);
     }
 
