@@ -20,6 +20,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/docs', [HomeController::class, 'docs'])->name('docs');
 Route::get('/cv.pdf', [HomeController::class, 'cv'])->name('cv');
 Route::get('/work', [HomeController::class, 'work'])->name('work.index');
+Route::get('/work/tag/{tag}', [HomeController::class, 'workTag'])->name('work.tag');
 Route::get('/work/{project:slug}', [HomeController::class, 'project'])->name('project.show');
 Route::get('/og/home.png', [OgImageController::class, 'home'])->name('og.home');
 Route::get('/og/work/{project:slug}.png', [OgImageController::class, 'project'])->name('og.project');
