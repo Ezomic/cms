@@ -2,7 +2,7 @@
 @section('title', 'Profile')
 @section('content')
   <h1 class="text-2xl font-semibold mb-1">Profile & hero content</h1>
-  <p class="text-stone-500 text-sm mb-8">This controls the nav, hero section, and contact card on your live site.</p>
+  <p class="text-stone-500 text-sm mb-8">This controls the nav, hero section, contact card, and docs page on your live site.</p>
 
   <form method="POST" action="{{ route('admin.profile.update') }}" class="bg-white border border-stone-200 rounded p-8 space-y-5 max-w-2xl">
     @csrf
@@ -71,6 +71,14 @@
         <input name="github_url" value="{{ old('github_url', $profile->github_url) }}" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
       </div>
     </div>
+
+    <fieldset class="border border-stone-200 rounded p-4 space-y-4">
+      <legend class="text-xs font-medium text-stone-600 px-1">Docs page</legend>
+      <div>
+        <label class="block text-xs font-medium text-stone-600 mb-1">Intro paragraph <span class="font-normal text-stone-400">(overrides the default lead on /docs)</span></label>
+        <textarea name="docs_intro" rows="4" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">{{ old('docs_intro', $profile->docs_intro) }}</textarea>
+      </div>
+    </fieldset>
 
     <fieldset class="border border-stone-200 rounded p-4 space-y-4">
       <legend class="text-xs font-medium text-stone-600 px-1">SEO</legend>
