@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,13 +48,13 @@
 <nav>
   <div class="wrap">
     <div class="logo"><span class="dot"></span>{{ strtoupper($profile->name) }} / NL</div>
-    <a class="back-link" href="{{ route('home') }}">← Back to site</a>
+    <a class="back-link" href="{{ route('home') }}">{{ __('site.back_to_site') }}</a>
   </div>
 </nav>
 
 <header class="hero">
   <div class="wrap">
-    <div class="eyebrow">Case study</div>
+    <div class="eyebrow">{{ __('site.project_eyebrow') }}</div>
     <h1>{{ $project->name }}</h1>
     <div class="meta-row">
       @if ($project->client_name)<span>{{ $project->client_name }}</span>@endif
@@ -79,17 +79,17 @@
 
   <div style="padding:48px 0;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
     <div>
-      <div style="font-family:var(--mono);font-size:13px;color:var(--ink-soft);margin-bottom:8px;">Interested in this kind of work?</div>
-      <div style="font-family:var(--display);font-weight:600;font-size:1.2rem;">Let's talk about your project.</div>
+      <div style="font-family:var(--mono);font-size:13px;color:var(--ink-soft);margin-bottom:8px;">{{ __('site.project_cta_lead') }}</div>
+      <div style="font-family:var(--display);font-weight:600;font-size:1.2rem;">{{ __('site.project_cta_headline') }}</div>
     </div>
-    <a href="{{ route('home') }}?ref={{ urlencode($project->slug) }}#contact" style="font-family:var(--mono);font-size:14px;background:var(--ink);color:var(--white);padding:14px 24px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s;" onmouseover="this.style.background='var(--accent)'" onmouseout="this.style.background='var(--ink)'">Start a similar project →</a>
+    <a href="{{ route('home') }}?ref={{ urlencode($project->slug) }}#contact" style="font-family:var(--mono);font-size:14px;background:var(--ink);color:var(--white);padding:14px 24px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s;" onmouseover="this.style.background='var(--accent)'" onmouseout="this.style.background='var(--ink)'">{{ __('site.project_cta_button') }}</a>
   </div>
 </div>
 
 <footer>
   <div class="wrap">
     <span>© {{ date('Y') }} {{ $profile->name }}.</span>
-    <a class="footer-cta" href="{{ route('home') }}?ref={{ urlencode($project->slug) }}#contact">Start a similar project →</a>
+    <a class="footer-cta" href="{{ route('home') }}?ref={{ urlencode($project->slug) }}#contact">{{ __('site.project_cta_button') }}</a>
   </div>
 </footer>
 <style>

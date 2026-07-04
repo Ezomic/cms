@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -60,20 +60,20 @@
 <nav>
   <div class="wrap">
     <a class="logo" href="{{ route('home') }}"><span class="dot"></span>{{ strtoupper($profile->name) }} / NL</a>
-    <a class="back-link" href="{{ route('home') }}">← Back to site</a>
+    <a class="back-link" href="{{ route('home') }}">{{ __('site.back_to_site') }}</a>
   </div>
 </nav>
 
 <div class="wrap">
   <div class="page-header">
-    <div class="eyebrow">Selected work</div>
-    <h1>All projects.</h1>
+    <div class="eyebrow">{{ __('site.work_page_label') }}</div>
+    <h1>{{ __('site.work_page_headline') }}</h1>
   </div>
 
   @if ($tags->isNotEmpty())
   <div class="filters">
-    <span class="filter-label">Filter by tag:</span>
-    <button class="filter-btn active" data-tag="all">All</button>
+    <span class="filter-label">{{ __('site.work_filter_label') }}</span>
+    <button class="filter-btn active" data-tag="all">{{ __('site.work_filter_all') }}</button>
     @foreach ($tags as $tag)
       <button class="filter-btn" data-tag="{{ $tag }}">{{ $tag }}</button>
     @endforeach
@@ -107,17 +107,17 @@
         </div>
       </div>
     @empty
-      <p style="padding:48px 0;color:var(--ink-soft);">No projects yet.</p>
+      <p style="padding:48px 0;color:var(--ink-soft);">{{ __('site.work_no_projects') }}</p>
     @endforelse
   </div>
 
-  <p class="empty-state" id="empty-state">No projects match that filter.</p>
+  <p class="empty-state" id="empty-state">{{ __('site.work_no_match') }}</p>
 </div>
 
 <footer>
   <div class="wrap">
-    <span>© {{ date('Y') }} {{ $profile->name }}. Built in the Netherlands.</span>
-    <a href="{{ route('home') }}" style="font-family:var(--mono);font-size:12px;color:var(--ink-soft);text-decoration:none;">← Back to site</a>
+    <span>© {{ date('Y') }} {{ $profile->name }}. {{ __('site.footer_built') }}</span>
+    <a href="{{ route('home') }}" style="font-family:var(--mono);font-size:12px;color:var(--ink-soft);text-decoration:none;">{{ __('site.back_to_site') }}</a>
   </div>
 </footer>
 
