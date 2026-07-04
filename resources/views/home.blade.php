@@ -133,9 +133,11 @@ if ($sameAs) { $jsonLd['sameAs'] = $sameAs; }
   .contact-form h3{font-family:var(--display);font-weight:600;font-size:18px;margin-bottom:20px;}
   .contact-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
   .contact-form label{display:block;font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin-bottom:6px;}
-  .contact-form input,.contact-form textarea{width:100%;border:1px solid var(--line);background:var(--white);padding:12px 14px;font-family:var(--body);font-size:14px;color:var(--ink);}
-  .contact-form input:focus,.contact-form textarea:focus{outline:1px solid var(--ink);}
-  .contact-form textarea{margin-bottom:16px;resize:vertical;}
+  .contact-form input,.contact-form textarea,.contact-form select{width:100%;border:1px solid var(--line);background:var(--white);padding:12px 14px;font-family:var(--body);font-size:14px;color:var(--ink);}
+  .contact-form input:focus,.contact-form textarea:focus,.contact-form select:focus{outline:1px solid var(--ink);}
+  .contact-form textarea{margin-bottom:4px;resize:vertical;}
+  .field-hint{font-family:var(--mono);font-size:11px;color:var(--ink-soft);margin-bottom:16px;}
+  .response-note{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin-top:12px;}
   .honeypot{position:absolute;left:-9999px;top:-9999px;}
   .form-status{font-family:var(--mono);font-size:13px;padding:12px 16px;margin-bottom:20px;border:1px solid var(--accent);color:var(--accent);}
   .form-errors{font-family:var(--mono);font-size:13px;padding:12px 16px;margin-bottom:20px;border:1px solid #C0392B;color:#C0392B;}
@@ -398,9 +400,25 @@ if ($sameAs) { $jsonLd['sameAs'] = $sameAs; }
               <input id="contact-email" type="email" name="email" value="{{ old('email') }}" required>
             </div>
           </div>
+          <div class="contact-form-grid">
+            <div>
+              <label for="contact-company">{{ __('site.contact_company') }}</label>
+              <input id="contact-company" type="text" name="company" value="{{ old('company') }}">
+            </div>
+            <div>
+              <label for="contact-budget">{{ __('site.contact_budget') }}</label>
+              <select id="contact-budget" name="budget">
+                @foreach (__('site.contact_budget_options') as $value => $label)
+                  <option value="{{ $value }}" {{ old('budget') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                @endforeach
+              </select>
+            </div>
+          </div>
           <label for="contact-message">{{ __('site.contact_message') }}</label>
-          <textarea id="contact-message" name="message" rows="4" required>{{ old('message') }}</textarea>
+          <textarea id="contact-message" name="message" rows="5" required placeholder="{{ __('site.contact_message_hint') }}">{{ old('message') }}</textarea>
+          <div class="field-hint">{{ __('site.contact_message_hint') }}</div>
           <button class="btn-primary" type="submit" style="border:none;cursor:pointer;">{{ __('site.contact_submit') }}</button>
+          <p class="response-note">{{ __('site.contact_response_time') }}</p>
         </form>
       </div>
     </div>
