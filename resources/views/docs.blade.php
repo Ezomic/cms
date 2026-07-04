@@ -98,6 +98,8 @@
   footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
   .footer-cta{font-family:var(--mono);font-size:13px;background:var(--ink);color:var(--white);padding:10px 20px;text-decoration:none;transition:background .15s;}
   .footer-cta:hover{background:var(--accent);}
+  .btn-primary{font-family:var(--mono);font-size:14px;background:var(--ink);color:var(--white);padding:14px 24px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s;}
+  .btn-primary:hover{background:var(--accent);}
 
   @media(max-width:720px){
     .pricing-grid,.two-col,.stack-grid{grid-template-columns:1fr;}
@@ -473,7 +475,7 @@
     <div style="margin-top:48px;padding-top:48px;border-top:1px solid var(--line);">
       <h3 style="font-family:var(--display);font-weight:600;font-size:1.4rem;margin-bottom:12px;">{{ __('docs.s11_ready_title') }}</h3>
       <p style="margin-bottom:24px;">{{ __('docs.s11_ready_lead') }}</p>
-      <a href="{{ localized_route('home') }}#contact" style="font-family:var(--mono);font-size:14px;background:var(--ink);color:var(--white);padding:14px 24px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s;" onmouseover="this.style.background='var(--accent)'" onmouseout="this.style.background='var(--ink)'">{{ __('docs.s11_ready_cta') }}</a>
+      <a class="btn-primary" href="{{ localized_route('home') }}#contact">{{ __('docs.s11_ready_cta') }}</a>
     </div>
   </div>
 

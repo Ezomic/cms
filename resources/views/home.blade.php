@@ -39,6 +39,8 @@
   .nav-links a:hover{color:var(--ink);}
   .nav-cta{font-family:var(--mono);font-size:13px;border:1px solid var(--ink);padding:8px 16px;text-decoration:none;transition:all .15s;}
   .nav-cta:hover{background:var(--ink);color:var(--white);}
+  .lang-toggle{font-family:var(--mono);font-size:12px;color:var(--ink-soft);border:1px solid var(--line);padding:4px 10px;text-decoration:none;transition:color .15s,border-color .15s;}
+  .lang-toggle:hover{color:var(--ink);border-color:var(--ink);}
   .nav-burger{display:none;background:none;border:1px solid var(--line);width:38px;height:38px;cursor:pointer;padding:0;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:border-color .15s;}
   .nav-burger:hover{border-color:var(--ink);}
   .nav-burger span{display:block;width:16px;height:2px;background:var(--ink);transition:transform .2s,opacity .2s;}
@@ -154,7 +156,7 @@
       <a href="#contact">{{ __('site.nav_contact') }}</a>
     </div>
     <div style="display:flex;align-items:center;gap:12px;">
-      <a class="nav-mobile-hide" href="{{ alternate_locale_url(app()->getLocale() === 'en' ? 'nl' : 'en') }}" style="font-family:var(--mono);font-size:12px;color:var(--ink-soft);background:none;border:1px solid var(--line);padding:4px 10px;text-decoration:none;transition:all .15s;" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--ink-soft)'">{{ __('site.lang_toggle') }}</a>
+      <a class="lang-toggle nav-mobile-hide" href="{{ alternate_locale_url(app()->getLocale() === 'en' ? 'nl' : 'en') }}">{{ __('site.lang_toggle') }}</a>
       <a class="nav-cta nav-mobile-hide" href="#contact">{{ __('site.nav_cta') }}</a>
       <button class="nav-burger" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="{{ __('site.nav_menu_label') }}">
         <span></span><span></span><span></span>
