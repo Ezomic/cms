@@ -24,16 +24,45 @@ class ProjectTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/admin/projects', [
-            'name'        => 'New Project',
+            'name' => 'New Project',
             'client_name' => 'Acme Inc',
-            'year'        => '2026',
+            'year' => '2026',
             'description' => 'Shipped a thing.',
-            'tags'        => 'Laravel, Vue',
-            'sort_order'  => 1,
+            'tags' => 'Laravel, Vue',
+            'sort_order' => 1,
         ]);
 
         $response->assertRedirect('/admin/projects');
         $this->assertDatabaseHas('projects', ['name' => 'New Project', 'client_name' => 'Acme Inc']);
+    }
+
+    public function test_admin_can_set_project_meta_fields(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->post('/admin/projects', [
+            'name' => 'SEO Project',
+            'meta_title' => 'Custom title',
+            'meta_description' => 'Custom description.',
+        ]);
+
+        $this->assertDatabaseHas('projects', [
+            'name' => 'SEO Project',
+            'meta_title' => 'Custom title',
+            'meta_description' => 'Custom description.',
+        ]);
+    }
+
+    public function test_project_meta_fields_are_limited_to_255_characters(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->post('/admin/projects', [
+            'name' => 'SEO Project',
+            'meta_description' => str_repeat('a', 256),
+        ]);
+
+        $response->assertSessionHasErrors('meta_description');
     }
 
     public function test_creating_a_project_requires_a_name(): void
@@ -51,7 +80,7 @@ class ProjectTest extends TestCase
         $project = Project::create(['name' => 'Old Name', 'sort_order' => 0]);
 
         $response = $this->actingAs($user)->put("/admin/projects/{$project->id}", [
-            'name'       => 'Updated Name',
+            'name' => 'Updated Name',
             'sort_order' => 0,
         ]);
 

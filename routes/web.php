@@ -28,6 +28,7 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 Route::post('/locale/{locale}', function (string $locale) {
     abort_unless(in_array($locale, ['en', 'nl']), 404);
     session(['locale' => $locale]);
+
     return back();
 })->name('locale.switch');
 
@@ -75,3 +76,5 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::post('/two-factor/confirm', [TwoFactorController::class, 'confirm'])->name('two-factor.confirm');
     Route::delete('/two-factor', [TwoFactorController::class, 'disable'])->name('two-factor.disable');
 });
+
+Route::fallback(fn () => abort(404));
