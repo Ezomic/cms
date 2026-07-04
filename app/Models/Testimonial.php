@@ -12,7 +12,7 @@ class Testimonial extends Model
 {
     use BustsHomeCache, LogsActivity, SoftDeletes;
 
-    protected $fillable = ['quote', 'author_name', 'author_role', 'featured'];
+    protected $fillable = ['quote', 'author_name', 'author_role', 'company_name', 'featured'];
 
     protected $casts = [
         'featured' => 'boolean',

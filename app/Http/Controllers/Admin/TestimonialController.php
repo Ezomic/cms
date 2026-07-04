@@ -82,9 +82,10 @@ class TestimonialController extends Controller
     {
         $data = $request->validate([
             'quote'       => ['required', 'string'],
-            'author_name' => ['nullable', 'string', 'max:255'],
-            'author_role' => ['nullable', 'string', 'max:255'],
-            'featured'    => ['nullable', 'boolean'],
+            'author_name'  => ['nullable', 'string', 'max:255'],
+            'author_role'  => ['nullable', 'string', 'max:255'],
+            'company_name' => ['nullable', 'string', 'max:255'],
+            'featured'     => ['nullable', 'boolean'],
         ]);
 
         $data['featured'] = $request->boolean('featured');
