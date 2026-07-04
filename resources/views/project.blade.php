@@ -12,6 +12,10 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="{{ route('og.project', $project->slug) }}">
+<link rel="canonical" href="{{ route('project.show', $project->slug) }}">
+<link rel="alternate" hreflang="nl" href="{{ route('project.show', $project->slug) }}">
+<link rel="alternate" hreflang="en" href="{{ route('project.show', $project->slug) }}">
+<link rel="alternate" hreflang="x-default" href="{{ route('project.show', $project->slug) }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
