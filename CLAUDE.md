@@ -115,7 +115,7 @@ against `['en', 'nl']`, calls `app()->setLocale()`. Appended to the `web` group 
 | `home.blade.php` | `/` | `$profile` (stdClass), `$skills` (Collection of Collections of stdClass), `$projects` (Collection of stdClass), `$testimonials` (Collection of stdClass) |
 | `work.blade.php` | `/work` | `$profile`, `$projects` (Collection of stdClass with `tag_list`, `image_url`), `$tags` |
 | `project.blade.php` | `/work/{slug}` | `$profile`, `$project` (live Eloquent model) |
-| `docs.blade.php` | `/docs` | `$profile`, `$skills` (grouped Collection — live Eloquent), `$projects` (live Eloquent Collection) |
+| `docs.blade.php` | `/docs` | `$profile`, `$skills` (grouped Collection — live Eloquent), `$projects` (live Eloquent Collection) — skills and projects power the tech-defaults and selected-work sections |
 | `cv.blade.php` | `/cv.pdf` | `$profile`, `$skills` (grouped Collection of stdClass), `$projects` (Collection of stdClass with `tag_list`) |
 
 **Admin** — `resources/views/admin/` with layout `resources/views/layouts/admin.blade.php`
@@ -138,12 +138,17 @@ evicted — do not flush the entire cache table to clear them in production.
 
 ### i18n
 
-Session-based locale (`en` / `nl`). Language files: `lang/en/site.php`, `lang/nl/site.php`.
-All home-page user-facing strings use `__('site.key')`. The `locale.switch` route stores
-the choice in `session('locale')`; `SetLocale` middleware applies it on every request.
+Session-based locale (`en` / `nl`). Language files:
 
-**Scope**: translations are only applied on `home.blade.php`. The other public views
-(`docs`, `work`, `project`, `cv`) are English-only.
+| File | Used by |
+|------|---------|
+| `lang/en/site.php` + `lang/nl/site.php` | `home.blade.php`, `work.blade.php`, `project.blade.php` |
+| `lang/en/docs.php` + `lang/nl/docs.php` | `docs.blade.php` |
+
+The `locale.switch` route stores the choice in `session('locale')`; `SetLocale` middleware
+applies it on every request. All four public views (`home`, `work`, `project`, `docs`) use
+`__('*.key')` for every user-facing string and carry a `<html lang="{{ app()->getLocale() }}">`
+attribute. The `cv.blade.php` view is English-only (PDF output has no language toggle).
 
 ### Auth & 2FA
 
@@ -159,8 +164,10 @@ Guest redirect: `bootstrap/app.php` sets it to `/admin/login` (not the default `
 
 ### Queue
 
-Driver: `database`. `ContactFormSubmitted` implements `ShouldQueue` with 3 tries.
-Run `php artisan queue:work` in dev; use Supervisor in production.
+Driver: `database`. `ContactFormSubmitted` implements `ShouldQueue` but `ContactController`
+currently calls `Mail::send()` (synchronous), so the queue worker is not required for emails.
+If you switch back to `Mail::queue()`, run `php artisan queue:work` in dev and configure
+Supervisor in production.
 
 ### Images
 
@@ -225,9 +232,9 @@ php artisan test --filter ProjectTest
    Pruning them requires direct SQL on the `cache` table, not `Cache::flush()` (which would
    also clear `home.page.data` and break the home page until the next request warms it).
 
-6. **i18n scope** — `__('site.*')` is only wired up on `home.blade.php`. Extending i18n to
-   other views requires adding keys to both `lang/en/site.php` and `lang/nl/site.php` and
-   updating the view.
+6. **i18n files** — `__('site.*')` covers `home`, `work`, and `project` views; `__('docs.*')`
+   covers the docs page. Adding a new string requires adding the key to both the `en` and `nl`
+   files, otherwise Blade silently returns the raw `site.key` string as the rendered value.
 
 7. **dompdf layout** — use `<table>` and inline styles only inside `cv.blade.php`. CSS Grid
    and Flexbox are not supported by dompdf.
