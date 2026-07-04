@@ -18,9 +18,13 @@
         <input name="author_name" value="{{ old('author_name', $testimonial->author_name) }}" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
       </div>
       <div>
-        <label class="block text-xs font-medium text-stone-600 mb-1">Author role / company</label>
-        <input name="author_role" value="{{ old('author_role', $testimonial->author_role) }}" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
+        <label class="block text-xs font-medium text-stone-600 mb-1">Author role</label>
+        <input name="author_role" value="{{ old('author_role', $testimonial->author_role) }}" placeholder="CTO" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
       </div>
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-stone-600 mb-1">Company name</label>
+      <input name="company_name" value="{{ old('company_name', $testimonial->company_name) }}" placeholder="Acme BV" class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
     </div>
     <label class="flex items-center gap-2 text-sm">
       <input type="checkbox" name="featured" value="1" {{ old('featured', $testimonial->featured ?? true) ? 'checked' : '' }}>

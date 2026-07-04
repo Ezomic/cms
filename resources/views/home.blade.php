@@ -339,7 +339,7 @@ if ($sameAs) { $jsonLd['sameAs'] = $sameAs; }
         <div class="testimonial-slide" style="{{ $i > 0 ? 'display:none;' : '' }}">
           <span class="quote-mark">"</span>
           <blockquote>{{ $testimonial->quote }}</blockquote>
-          <div class="testimonial-attr">— {{ $testimonial->author_name }}@if($testimonial->author_role), {{ $testimonial->author_role }}@endif</div>
+          <div class="testimonial-attr">— {{ $testimonial->author_name }}{{ $testimonial->author_role ? ', '.$testimonial->author_role : '' }}{{ $testimonial->company_name ? ' · '.$testimonial->company_name : '' }}</div>
         </div>
       @endforeach
       @if ($testimonials->count() > 1)
