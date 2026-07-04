@@ -99,6 +99,9 @@
   .service-price{font-family:var(--mono);font-size:13px;color:var(--accent);margin-top:20px;padding-top:20px;border-top:1px solid var(--line);}
   @media (max-width:720px){.services-grid{grid-template-columns:1fr;}}
   blockquote{font-family:var(--display);font-weight:500;font-size:clamp(1.3rem,3vw,2rem);line-height:1.35;letter-spacing:-.01em;max-width:26ch;}
+  .testimonial-slides{display:grid;}
+  .testimonial-slide{grid-area:1/1;visibility:hidden;opacity:0;transition:opacity .4s ease;}
+  .testimonial-slide.active{visibility:visible;opacity:1;}
   .quote-mark{color:var(--accent);font-size:2rem;line-height:0;display:block;margin-bottom:12px;}
   .testimonial-attr{margin-top:28px;font-family:var(--mono);font-size:13px;color:var(--ink-soft);}
   .contact{border-bottom:none;padding-bottom:64px;}
@@ -331,13 +334,15 @@
 <section class="testimonial">
   <div class="wrap">
     <div id="testimonial-carousel" style="position:relative;">
-      @foreach ($testimonials as $i => $testimonial)
-        <div class="testimonial-slide" style="{{ $i > 0 ? 'display:none;' : '' }}">
-          <span class="quote-mark">"</span>
-          <blockquote>{{ $testimonial->quote }}</blockquote>
-          <div class="testimonial-attr">— {{ $testimonial->author_name }}{{ $testimonial->author_role ? ', '.$testimonial->author_role : '' }}{{ $testimonial->company_name ? ' · '.$testimonial->company_name : '' }}</div>
-        </div>
-      @endforeach
+      <div class="testimonial-slides">
+        @foreach ($testimonials as $i => $testimonial)
+          <div class="testimonial-slide {{ $i === 0 ? 'active' : '' }}" @if($i > 0) aria-hidden="true" @endif>
+            <span class="quote-mark">"</span>
+            <blockquote>{{ $testimonial->quote }}</blockquote>
+            <div class="testimonial-attr">— {{ $testimonial->author_name }}{{ $testimonial->author_role ? ', '.$testimonial->author_role : '' }}{{ $testimonial->company_name ? ' · '.$testimonial->company_name : '' }}</div>
+          </div>
+        @endforeach
+      </div>
       @if ($testimonials->count() > 1)
         <div style="margin-top:32px;display:flex;gap:8px;align-items:center;">
           @foreach ($testimonials as $i => $t)
@@ -468,10 +473,12 @@
     if (slides.length < 2) return;
     var current = 0;
     function show(n) {
-      slides[current].style.display = 'none';
+      slides[current].classList.remove('active');
+      slides[current].setAttribute('aria-hidden', 'true');
       dots[current].style.background = 'var(--line)';
       current = n;
-      slides[current].style.display = '';
+      slides[current].classList.add('active');
+      slides[current].removeAttribute('aria-hidden');
       dots[current].style.background = 'var(--ink)';
     }
     dots.forEach(function(dot) {
