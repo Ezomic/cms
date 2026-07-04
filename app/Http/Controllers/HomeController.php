@@ -45,6 +45,15 @@ class HomeController extends Controller
         ]);
     }
 
+    public function docs()
+    {
+        return view('docs', [
+            'profile'  => Profile::current(),
+            'skills'   => Skill::ordered()->get()->groupBy('category'),
+            'projects' => Project::published()->ordered()->get(),
+        ]);
+    }
+
     public function project(Project $project)
     {
         abort_unless($project->published, 404);
