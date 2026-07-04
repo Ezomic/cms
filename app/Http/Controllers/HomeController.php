@@ -7,6 +7,7 @@ use App\Models\Profile;
 use App\Models\Project;
 use App\Models\Skill;
 use App\Models\Testimonial;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
@@ -43,6 +44,24 @@ class HomeController extends Controller
             'projects'    => collect($data['projects'])->map(fn ($p) => (object) $p),
             'testimonial' => $data['testimonial'] ? (object) $data['testimonial'] : null,
         ]);
+    }
+
+    public function cv()
+    {
+        $profile = Profile::current();
+        $skills  = Skill::ordered()->get()->groupBy('category')
+            ->map(fn ($items) => $items->map(fn ($s) => (object) $s->toArray()));
+        $projects = Project::published()->ordered()->get()->map(fn ($p) => (object) [
+            ...$p->toArray(),
+            'tag_list' => $p->tagList(),
+        ]);
+
+        $pdf = Pdf::loadView('cv', compact('profile', 'skills', 'projects'))
+            ->setPaper('a4');
+
+        $filename = str($profile->name)->slug()->append('-cv.pdf')->toString();
+
+        return $pdf->download($filename);
     }
 
     public function project(Project $project)

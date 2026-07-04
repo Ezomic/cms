@@ -137,6 +137,7 @@
     <div class="hero-actions">
       <a class="btn-primary" href="#contact">Start a project →</a>
       <a class="btn-secondary" href="#work">See recent work</a>
+      <a class="btn-secondary" href="{{ route('cv') }}" style="margin-left:8px;">Download CV →</a>
     </div>
   </div>
 </header>
