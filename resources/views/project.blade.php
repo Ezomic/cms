@@ -44,7 +44,13 @@
   .outcome-callout{background:var(--accent-soft);border-left:3px solid var(--accent);padding:20px 24px;margin:32px 0;font-family:var(--mono);font-size:14px;color:var(--ink);}
   .outcome-callout strong{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:6px;}
   .body-content{padding:24px 0 96px;font-size:17px;color:var(--ink);}
-  .body-content p{margin-bottom:1.2em;white-space:pre-line;}
+  .body-content p{margin-bottom:1.2em;}
+  .body-content h2{font-family:var(--display);font-weight:600;font-size:1.35rem;letter-spacing:-.01em;margin:2.2em 0 .6em;}
+  .body-content h3{font-family:var(--display);font-weight:600;font-size:1.1rem;margin:1.8em 0 .4em;}
+  .body-content ul,.body-content ol{padding-left:1.4em;margin-bottom:1.2em;}
+  .body-content li{margin-bottom:.5em;}
+  .body-content code{font-family:var(--mono);font-size:.88em;background:var(--accent-soft);padding:2px 6px;border-radius:3px;}
+  .body-content strong{font-weight:600;}
   footer{padding:32px 0;font-family:var(--mono);font-size:12px;color:var(--ink-soft);border-top:1px solid var(--line);}
   footer .wrap{max-width:1120px;}
 </style>
@@ -87,7 +93,7 @@
   @endif
 
   <div class="body-content">
-    <p>{{ $project->body }}</p>
+    {!! $project->body !!}
   </div>
 
   <div style="padding:48px 0;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
