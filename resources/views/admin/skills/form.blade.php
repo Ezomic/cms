@@ -10,20 +10,23 @@
 
     <div>
       <label class="block text-xs font-medium text-stone-600 mb-1">Category</label>
-      <input name="category" list="categories" value="{{ old('category', $skill->category) }}" required class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
+      <input name="category" list="categories" value="{{ old('category', $skill->category) }}" required class="w-full border rounded px-3 py-2 text-sm @error('category') border-red-400 @else border-stone-300 @enderror">
       <datalist id="categories">
         <option value="Frontend"></option>
         <option value="Backend"></option>
         <option value="Infra & Ops"></option>
       </datalist>
+      @error('category')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
     </div>
     <div>
       <label class="block text-xs font-medium text-stone-600 mb-1">Skill name</label>
-      <input name="name" value="{{ old('name', $skill->name) }}" required class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
+      <input name="name" value="{{ old('name', $skill->name) }}" required class="w-full border rounded px-3 py-2 text-sm @error('name') border-red-400 @else border-stone-300 @enderror">
+      @error('name')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
     </div>
     <div>
       <label class="block text-xs font-medium text-stone-600 mb-1">Sort order</label>
-      <input type="number" name="sort_order" value="{{ old('sort_order', $skill->sort_order ?? 0) }}" class="w-32 border border-stone-300 rounded px-3 py-2 text-sm">
+      <input type="number" name="sort_order" value="{{ old('sort_order', $skill->sort_order ?? 0) }}" class="w-32 border rounded px-3 py-2 text-sm @error('sort_order') border-red-400 @else border-stone-300 @enderror">
+      @error('sort_order')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
     </div>
 
     <div class="flex gap-3 pt-2">

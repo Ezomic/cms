@@ -22,7 +22,7 @@ class ContactController extends Controller
 
         // Honeypot: real visitors never fill this hidden field.
         if ($request->filled('website')) {
-            return back()->with('status', 'Thanks — your message has been sent.');
+            return back()->with('status', __('site.contact_success'));
         }
 
         $submission = ContactSubmission::create($data);
@@ -32,6 +32,6 @@ class ContactController extends Controller
             Mail::to($profileEmail)->send(new ContactFormSubmitted($submission));
         }
 
-        return back()->with('status', 'Thanks — your message has been sent.');
+        return back()->with('status', __('site.contact_success'));
     }
 }
