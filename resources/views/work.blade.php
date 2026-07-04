@@ -33,6 +33,8 @@
   ::selection{background:var(--accent);color:var(--white);}
   a{color:inherit;}
   a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .skip-link{position:absolute;left:-9999px;top:0;z-index:100;background:var(--ink);color:var(--white);font-family:var(--mono);font-size:13px;padding:10px 16px;text-decoration:none;}
+  .skip-link:focus{left:0;}
   .wrap{max-width:1120px;margin:0 auto;padding:0 32px;}
   nav{position:sticky;top:0;z-index:50;background:rgba(247,247,244,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
   nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;}
@@ -75,6 +77,8 @@
 </head>
 <body>
 
+<a class="skip-link" href="#main">{{ __('site.skip_to_content') }}</a>
+
 <nav>
   <div class="wrap">
     <a class="logo" href="{{ localized_route('home') }}"><span class="dot"></span>{{ strtoupper($profile->name) }} / NL</a>
@@ -85,7 +89,7 @@
   </div>
 </nav>
 
-<div class="wrap">
+<main id="main" tabindex="-1" class="wrap">
   <div class="page-header">
     <div class="eyebrow">{{ __('site.work_page_label') }}</div>
     <h1>{{ __('site.work_page_headline') }}</h1>
@@ -133,7 +137,7 @@
   </div>
 
   <p class="empty-state" id="empty-state">{{ __('site.work_no_match') }}</p>
-</div>
+</main>
 
 <footer>
   <div class="wrap">

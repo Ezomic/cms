@@ -8,6 +8,7 @@ return [
     'nav_contact' => 'Contact',
     'nav_cta' => 'Get in touch',
     'nav_menu_label' => 'Menu',
+    'skip_to_content' => 'Skip to content',
     'lang_toggle_long' => 'Nederlands →',
 
     'hero_local_time' => 'local time, :city, NL',

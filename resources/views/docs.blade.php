@@ -23,6 +23,8 @@
   ::selection{background:var(--accent);color:var(--white);}
   a{color:inherit;}
   a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .skip-link{position:absolute;left:-9999px;top:0;z-index:100;background:var(--ink);color:var(--white);font-family:var(--mono);font-size:13px;padding:10px 16px;text-decoration:none;}
+  .skip-link:focus{left:0;}
   .wrap{max-width:1120px;margin:0 auto;padding:0 32px;}
   .wrap-narrow{max-width:720px;margin:0 auto;padding:0 32px;}
   nav{position:sticky;top:0;z-index:50;background:rgba(247,247,244,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
@@ -104,6 +106,8 @@
 </head>
 <body>
 
+<a class="skip-link" href="#main">{{ __('site.skip_to_content') }}</a>
+
 <nav>
   <div class="inner">
     <a class="logo" href="{{ localized_route('home') }}"><span class="dot"></span>{{ strtoupper($profile->name) }}</a>
@@ -114,7 +118,7 @@
   </div>
 </nav>
 
-<div class="wrap-narrow">
+<main id="main" tabindex="-1" class="wrap-narrow">
 
   <div class="page-header">
     <div class="eyebrow">{{ __('docs.page_eyebrow') }}</div>
@@ -472,7 +476,7 @@
     </div>
   </div>
 
-</div>
+</main>
 
 <footer>
   <div class="wrap">
