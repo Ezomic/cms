@@ -24,7 +24,7 @@
 
 set -euo pipefail
 
-APP_DIR="${APP_DIR:-/var/www/cms}"
+APP_DIR="${APP_DIR:-/home/deploy/cms}"
 PHP="${PHP:-php}"
 
 # ── Remote mode ───────────────────────────────────────────────────────────────
