@@ -71,7 +71,9 @@
         <span class="text-stone-500">{{ $entry->user->name ?? 'Someone' }}</span>
         {{ $entry->action }}
         <span class="font-medium">{{ $entry->subject_type }}</span>
-        "{{ $entry->subject_label }}"
+        @if ($entry->subject_label !== $entry->subject_type)
+          "{{ $entry->subject_label }}"
+        @endif
         <div class="text-xs text-stone-400">{{ $entry->created_at->diffForHumans() }}</div>
       </div>
     @empty
