@@ -420,9 +420,9 @@
             </div>
           </div>
           <label for="contact-message">{{ __('site.contact_message') }}</label>
-          <textarea id="contact-message" name="message" rows="5" required placeholder="{{ __('site.contact_message_hint') }}" @error('message') class="has-error" aria-invalid="true" aria-describedby="error-message" @enderror>{{ old('message') }}</textarea>
+          <textarea id="contact-message" name="message" rows="5" required @error('message') class="has-error" aria-invalid="true" aria-describedby="error-message" @else aria-describedby="message-hint" @enderror>{{ old('message') }}</textarea>
           @error('message')<div class="field-error" id="error-message" style="margin-top:0;margin-bottom:12px;">{{ $message }}</div>@enderror
-          <div class="field-hint">{{ __('site.contact_message_hint') }}</div>
+          <div class="field-hint" id="message-hint">{{ __('site.contact_message_hint') }}</div>
           <button class="btn-primary" type="submit" style="border:none;cursor:pointer;">{{ __('site.contact_submit') }}</button>
           <p class="response-note">{{ __('site.contact_response_time') }}</p>
         </form>
