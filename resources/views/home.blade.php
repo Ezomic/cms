@@ -52,7 +52,7 @@
   .mobile-menu .wrap{display:block;height:auto;padding-top:8px;padding-bottom:8px;}
   .mobile-menu a{display:block;font-family:var(--mono);font-size:14px;color:var(--ink);text-decoration:none;padding:14px 0;border-bottom:1px solid var(--line);}
   .mobile-menu a:last-child{border-bottom:none;color:var(--ink-soft);}
-  @media (max-width:720px){.nav-mobile-hide{display:none;}.nav-burger{display:flex;}}
+  @media (max-width:900px){.nav-mobile-hide{display:none;}.nav-burger{display:flex;}}
   .hero{position:relative;padding:96px 0 120px;overflow:hidden;border-bottom:1px solid var(--line);}
   .grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:64px 64px;opacity:.35;mask-image:linear-gradient(to bottom,black,transparent 85%);}
   .hero-inner{position:relative;}
@@ -420,9 +420,9 @@
             </div>
           </div>
           <label for="contact-message">{{ __('site.contact_message') }}</label>
-          <textarea id="contact-message" name="message" rows="5" required placeholder="{{ __('site.contact_message_hint') }}" @error('message') class="has-error" aria-invalid="true" aria-describedby="error-message" @enderror>{{ old('message') }}</textarea>
+          <textarea id="contact-message" name="message" rows="5" required @error('message') class="has-error" aria-invalid="true" aria-describedby="error-message" @else aria-describedby="message-hint" @enderror>{{ old('message') }}</textarea>
           @error('message')<div class="field-error" id="error-message" style="margin-top:0;margin-bottom:12px;">{{ $message }}</div>@enderror
-          <div class="field-hint">{{ __('site.contact_message_hint') }}</div>
+          <div class="field-hint" id="message-hint">{{ __('site.contact_message_hint') }}</div>
           <button class="btn-primary" type="submit" style="border:none;cursor:pointer;">{{ __('site.contact_submit') }}</button>
           <p class="response-note">{{ __('site.contact_response_time') }}</p>
         </form>

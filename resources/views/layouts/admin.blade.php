@@ -49,13 +49,6 @@
     @if (session('status'))
       <div class="mb-6 rounded border border-green-200 bg-green-50 text-green-800 text-sm px-4 py-3">{{ session('status') }}</div>
     @endif
-    @if ($errors->any())
-      <div class="mb-6 rounded border border-red-200 bg-red-50 text-red-800 text-sm px-4 py-3">
-        <ul class="list-disc pl-4">
-          @foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach
-        </ul>
-      </div>
-    @endif
 
     @yield('content')
   </main>
