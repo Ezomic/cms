@@ -64,4 +64,14 @@ class HomeTest extends TestCase
 
         $response->assertSee('KVK 12345678');
     }
+
+    public function test_work_year_has_no_dangling_separator_when_client_name_is_blank(): void
+    {
+        Project::create(['name' => 'No Client Project', 'year' => '2025', 'client_name' => null, 'published' => true, 'sort_order' => 0]);
+
+        $response = $this->get('/');
+
+        $response->assertSee('2025');
+        $response->assertDontSee('2025 —');
+    }
 }
