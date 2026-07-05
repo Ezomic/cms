@@ -29,7 +29,7 @@
 </style>
 </head>
 <body>
-<div class="wrap">
+<main class="wrap">
   <div class="eyebrow">404</div>
   <h1>{{ __('site.not_found_headline') }}</h1>
   <p>{{ __('site.not_found_body') }}</p>
@@ -37,6 +37,6 @@
     <a class="btn" href="{{ route('home') }}">{{ __('site.not_found_home') }}</a>
     <a class="link" href="{{ route('work.index') }}">{{ __('site.not_found_work') }}</a>
   </div>
-</div>
+</main>
 </body>
 </html>

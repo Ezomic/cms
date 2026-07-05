@@ -52,6 +52,7 @@
     <p class="intro">{{ $profile->hero_subtext }}</p>
   </div>
 
+  @if ($skills->isNotEmpty())
   <div class="section">
     <div class="section-title">Skills &amp; stack</div>
     <div class="skills-grid">
@@ -67,6 +68,7 @@
       @endforeach
     </div>
   </div>
+  @endif
 
   @if ($projects->isNotEmpty())
   <div class="section">
