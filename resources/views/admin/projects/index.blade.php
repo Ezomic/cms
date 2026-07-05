@@ -45,7 +45,7 @@
                 <span class="text-[10px] font-mono uppercase tracking-wide text-stone-500 bg-stone-100 border border-stone-200 rounded px-1.5 py-0.5">Draft</span>
               @endif
             </div>
-            <div class="text-xs text-stone-500">{{ $project->year }} — {{ $project->client_name }}</div>
+            <div class="text-xs text-stone-500">{{ $project->year }}{{ $project->year && $project->client_name ? ' — ' : '' }}{{ $project->client_name }}</div>
           </div>
         </div>
         <div class="flex gap-3 text-sm">

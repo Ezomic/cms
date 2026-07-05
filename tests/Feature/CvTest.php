@@ -40,4 +40,13 @@ class CvTest extends TestCase
 
         $this->assertStringContainsString('KVK 12345678', $html);
     }
+
+    public function test_cv_view_omits_skills_section_when_there_are_no_skills(): void
+    {
+        $profile = Profile::current();
+
+        $html = view('cv', ['profile' => $profile, 'skills' => collect(), 'projects' => collect()])->render();
+
+        $this->assertStringNotContainsString('Skills', $html);
+    }
 }

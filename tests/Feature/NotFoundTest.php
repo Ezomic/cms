@@ -29,4 +29,11 @@ class NotFoundTest extends TestCase
         $response->assertStatus(404);
         $response->assertSee('Page not found.');
     }
+
+    public function test_404_page_has_a_main_landmark(): void
+    {
+        $response = $this->get('/this-page-does-not-exist');
+
+        $response->assertSee('<main class="wrap">', false);
+    }
 }
