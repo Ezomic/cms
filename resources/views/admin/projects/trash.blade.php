@@ -11,7 +11,7 @@
       <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-6 py-4">
         <div>
           <div class="font-medium">{{ $project->name }}</div>
-          <div class="text-xs text-stone-500">{{ $project->year }} — {{ $project->client_name }}</div>
+          <div class="text-xs text-stone-500">{{ $project->year }}{{ $project->year && $project->client_name ? ' — ' : '' }}{{ $project->client_name }}</div>
         </div>
         <div class="flex gap-3 text-sm">
           <form method="POST" action="{{ route('admin.projects.restore', $project->id) }}">

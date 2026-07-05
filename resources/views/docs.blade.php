@@ -241,7 +241,7 @@
                   </div>
                 @endif
               </div>
-              <div class="proj-meta">{{ $project->client_name }}@if($project->year) · {{ $project->year }}@endif</div>
+              <div class="proj-meta">{{ $project->client_name }}{{ $project->client_name && $project->year ? ' · ' : '' }}{{ $project->year }}</div>
             </div>
           @endforeach
         </div>
