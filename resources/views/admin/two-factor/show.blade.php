@@ -24,7 +24,8 @@
         @method('DELETE')
         <div>
           <label class="block text-xs font-medium text-stone-600 mb-1">Confirm your password to disable</label>
-          <input type="password" name="current_password" required class="w-full border border-stone-300 rounded px-3 py-2 text-sm">
+          <input type="password" name="current_password" required class="w-full border rounded px-3 py-2 text-sm @error('current_password') border-red-400 @else border-stone-300 @enderror">
+          @error('current_password')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
         </div>
         <button class="bg-stone-900 text-white text-sm rounded px-4 py-2 hover:bg-red-600 transition">Disable two-factor authentication</button>
       </form>
@@ -55,8 +56,8 @@
           @csrf
           <input type="text" name="code" required autofocus inputmode="numeric" pattern="[0-9]{6}" maxlength="6"
             placeholder="000000"
-            class="w-32 border border-stone-300 rounded px-3 py-2 text-sm font-mono tracking-widest text-center">
-          @error('code')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
+            class="w-32 border rounded px-3 py-2 text-sm font-mono tracking-widest text-center @error('code') border-red-400 @else border-stone-300 @enderror">
+          @error('code')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
           <div>
             <button class="bg-stone-900 text-white text-sm rounded px-4 py-2 hover:bg-orange-600 transition">Confirm and enable →</button>
           </div>
