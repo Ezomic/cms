@@ -150,6 +150,7 @@
     <div class="logo"><span class="dot"></span>{{ strtoupper($profile->name) }} / NL</div>
     <div class="nav-links nav-mobile-hide">
       <a href="{{ localized_route('work.index') }}">{{ __('site.nav_work') }}</a>
+      <a href="{{ localized_route('blog.index') }}">{{ __('site.nav_blog') }}</a>
       <a href="#services">{{ __('site.nav_services') }}</a>
       <a href="#process">{{ __('site.nav_process') }}</a>
       <a href="{{ localized_route('docs') }}">{{ __('site.nav_docs') }}</a>
@@ -166,6 +167,7 @@
   <div class="mobile-menu" id="mobile-menu">
     <div class="wrap">
       <a href="{{ localized_route('work.index') }}">{{ __('site.nav_work') }}</a>
+      <a href="{{ localized_route('blog.index') }}">{{ __('site.nav_blog') }}</a>
       <a href="#services">{{ __('site.nav_services') }}</a>
       <a href="#process">{{ __('site.nav_process') }}</a>
       <a href="{{ localized_route('docs') }}">{{ __('site.nav_docs') }}</a>
