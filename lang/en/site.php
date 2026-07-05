@@ -2,6 +2,7 @@
 
 return [
     'nav_work' => 'Work',
+    'nav_blog' => 'Blog',
     'nav_services' => 'Services',
     'nav_process' => 'Process',
     'nav_docs' => 'Docs',
@@ -102,6 +103,7 @@ return [
 
     'breadcrumb_home' => 'Home',
     'breadcrumb_work' => 'Work',
+    'breadcrumb_blog' => 'Blog',
 
     'not_found_headline' => 'Page not found.',
     'not_found_body' => 'The page you\'re looking for doesn\'t exist or has moved.',
@@ -119,4 +121,12 @@ return [
     'project_cta_lead' => 'Interested in this kind of work?',
     'project_cta_headline' => 'Let\'s talk about your project.',
     'project_cta_button' => 'Start a similar project →',
+
+    'blog_meta_title' => 'Blog',
+    'blog_meta_description' => 'Writing on software, tools, and process by :name.',
+    'blog_page_label' => 'Writing',
+    'blog_page_headline' => 'From the blog.',
+    'blog_no_posts' => 'No posts yet.',
+    'blog_eyebrow' => 'Blog',
+    'blog_back_link' => '← Back to blog',
 ];
