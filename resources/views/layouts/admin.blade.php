@@ -21,6 +21,7 @@
       <nav id="admin-nav" class="hidden md:block space-y-1 text-sm mt-4 md:mt-0">
         <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.dashboard') ? 'bg-stone-100 font-medium' : '' }}">Dashboard</a>
         <a href="{{ route('admin.projects.index') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.projects.*') ? 'bg-stone-100 font-medium' : '' }}">Projects</a>
+        <a href="{{ route('admin.posts.index') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.posts.*') ? 'bg-stone-100 font-medium' : '' }}">Blog</a>
         <a href="{{ route('admin.testimonials.index') }}" class="block px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.testimonials.*') ? 'bg-stone-100 font-medium' : '' }}">Testimonials</a>
         <a href="{{ route('admin.contact-submissions.index') }}" class="flex items-center justify-between px-3 py-2 rounded hover:bg-stone-100 {{ request()->routeIs('admin.contact-submissions.*') ? 'bg-stone-100 font-medium' : '' }}">
           Messages

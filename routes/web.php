@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ContactSubmissionController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\SettingsController;
@@ -24,6 +25,8 @@ $publicRoutes = function (): void {
     Route::get('/work', [HomeController::class, 'work'])->name('work.index');
     Route::get('/work/tag/{tag}', [HomeController::class, 'workTag'])->name('work.tag');
     Route::get('/work/{project:slug}', [HomeController::class, 'project'])->name('project.show');
+    Route::get('/blog', [HomeController::class, 'blog'])->name('blog.index');
+    Route::get('/blog/{post:slug}', [HomeController::class, 'post'])->name('blog.show');
 };
 
 Route::group([], $publicRoutes);
@@ -66,6 +69,11 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::post('/skills/{id}/restore', [SkillController::class, 'restore'])->name('skills.restore');
     Route::delete('/skills/{id}/force', [SkillController::class, 'forceDelete'])->name('skills.forceDelete');
     Route::resource('skills', SkillController::class)->except(['show']);
+
+    Route::get('/posts/trash', [PostController::class, 'trash'])->name('posts.trash');
+    Route::post('/posts/{id}/restore', [PostController::class, 'restore'])->name('posts.restore');
+    Route::delete('/posts/{id}/force', [PostController::class, 'forceDelete'])->name('posts.forceDelete');
+    Route::resource('posts', PostController::class)->except(['show']);
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
