@@ -134,7 +134,7 @@
   </div>
 </footer>
 <style>
-  footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
   .footer-cta{font-family:var(--mono);font-size:13px;background:var(--ink);color:var(--white);padding:10px 20px;text-decoration:none;transition:background .15s;}
   .footer-cta:hover{background:var(--accent);}
 </style>
