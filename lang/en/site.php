@@ -118,6 +118,8 @@ return [
     'work_no_match' => 'No case studies match that filter.',
 
     'project_eyebrow' => 'Case study',
+    'project_github_link' => 'View source on GitHub →',
+    'project_gallery_label' => 'Screens',
     'project_cta_lead' => 'Interested in this kind of work?',
     'project_cta_headline' => 'Let\'s talk about your project.',
     'project_cta_button' => 'Start a similar project →',

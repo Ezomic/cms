@@ -118,6 +118,8 @@ return [
     'work_no_match' => 'Geen case studies gevonden voor dit filter.',
 
     'project_eyebrow' => 'Case study',
+    'project_github_link' => 'Bekijk de code op GitHub →',
+    'project_gallery_label' => 'Schermen',
     'project_cta_lead' => 'Interesse in dit soort werk?',
     'project_cta_headline' => 'Laten we praten over jouw project.',
     'project_cta_button' => 'Start een vergelijkbaar project →',

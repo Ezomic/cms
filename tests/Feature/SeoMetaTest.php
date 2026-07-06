@@ -133,4 +133,48 @@ class SeoMetaTest extends TestCase
 
         $response->assertSee('fetchpriority="high"', false);
     }
+
+    public function test_project_page_shows_github_link_when_set(): void
+    {
+        $project = Project::create([
+            'name' => 'Acme Rebuild',
+            'github_url' => 'https://github.com/example/acme',
+            'published' => true,
+            'sort_order' => 0,
+        ]);
+
+        $response = $this->get("/work/{$project->slug}");
+
+        $response->assertSee('href="https://github.com/example/acme"', false);
+    }
+
+    public function test_project_page_hides_github_link_when_not_set(): void
+    {
+        $project = Project::create(['name' => 'Acme Rebuild', 'published' => true, 'sort_order' => 0]);
+
+        $response = $this->get("/work/{$project->slug}");
+
+        $response->assertDontSee('<a class="github-link"', false);
+    }
+
+    public function test_project_page_shows_gallery_images(): void
+    {
+        $project = Project::create(['name' => 'Acme Rebuild', 'published' => true, 'sort_order' => 0]);
+        $project->images()->create(['path' => 'projects/screen-1.jpg', 'sort_order' => 0]);
+        $project->images()->create(['path' => 'projects/screen-2.jpg', 'sort_order' => 1]);
+
+        $response = $this->get("/work/{$project->slug}");
+
+        $response->assertSee('projects/screen-1.jpg', false);
+        $response->assertSee('projects/screen-2.jpg', false);
+    }
+
+    public function test_project_page_hides_gallery_section_when_no_images(): void
+    {
+        $project = Project::create(['name' => 'Acme Rebuild', 'published' => true, 'sort_order' => 0]);
+
+        $response = $this->get("/work/{$project->slug}");
+
+        $response->assertDontSee('class="gallery"', false);
+    }
 }
