@@ -27,8 +27,8 @@ return [
     'stack_headline' => 'One developer, the whole stack.',
     'stack_label' => 'Capabilities',
 
-    'work_label' => 'Selected work',
-    'work_headline' => 'Recent projects.',
+    'work_label' => 'Case studies',
+    'work_headline' => 'Recent case studies.',
 
     'process_label' => 'How I work',
     'process_headline' => 'Four steps, no surprises.',
@@ -96,13 +96,13 @@ return [
 
     'back_to_site' => '← Back to site',
 
-    'work_meta_title' => 'Work',
-    'work_meta_title_tag' => ':tag projects',
-    'work_meta_description' => 'All projects by :name.',
-    'work_meta_description_tag' => 'Projects using :tag by :name.',
+    'work_meta_title' => 'Case Studies',
+    'work_meta_title_tag' => ':tag case studies',
+    'work_meta_description' => 'Case studies by :name.',
+    'work_meta_description_tag' => 'Case studies using :tag by :name.',
 
     'breadcrumb_home' => 'Home',
-    'breadcrumb_work' => 'Work',
+    'breadcrumb_work' => 'Case studies',
     'breadcrumb_blog' => 'Blog',
 
     'not_found_headline' => 'Page not found.',
@@ -110,12 +110,12 @@ return [
     'not_found_home' => 'Go to homepage →',
     'not_found_work' => 'View work',
 
-    'work_page_label' => 'Selected work',
-    'work_page_headline' => 'All projects.',
+    'work_page_label' => 'Case studies',
+    'work_page_headline' => 'All case studies.',
     'work_filter_label' => 'Filter by tag:',
     'work_filter_all' => 'All',
-    'work_no_projects' => 'No projects yet.',
-    'work_no_match' => 'No projects match that filter.',
+    'work_no_projects' => 'No case studies yet.',
+    'work_no_match' => 'No case studies match that filter.',
 
     'project_eyebrow' => 'Case study',
     'project_cta_lead' => 'Interested in this kind of work?',

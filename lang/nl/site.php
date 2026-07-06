@@ -27,8 +27,8 @@ return [
     'stack_headline' => 'Één ontwikkelaar, de volledige stack.',
     'stack_label' => 'Vaardigheden',
 
-    'work_label' => 'Geselecteerd werk',
-    'work_headline' => 'Recente projecten.',
+    'work_label' => 'Case studies',
+    'work_headline' => 'Recente case studies.',
 
     'process_label' => 'Hoe ik werk',
     'process_headline' => 'Vier stappen, geen verrassingen.',
@@ -96,13 +96,13 @@ return [
 
     'back_to_site' => '← Terug naar de site',
 
-    'work_meta_title' => 'Werk',
-    'work_meta_title_tag' => ':tag-projecten',
-    'work_meta_description' => 'Alle projecten van :name.',
-    'work_meta_description_tag' => 'Projecten met :tag door :name.',
+    'work_meta_title' => 'Case Studies',
+    'work_meta_title_tag' => ':tag-case-studies',
+    'work_meta_description' => 'Case studies van :name.',
+    'work_meta_description_tag' => 'Case studies met :tag door :name.',
 
     'breadcrumb_home' => 'Home',
-    'breadcrumb_work' => 'Werk',
+    'breadcrumb_work' => 'Case studies',
     'breadcrumb_blog' => 'Blog',
 
     'not_found_headline' => 'Pagina niet gevonden.',
@@ -110,12 +110,12 @@ return [
     'not_found_home' => 'Naar de homepage →',
     'not_found_work' => 'Bekijk werk',
 
-    'work_page_label' => 'Geselecteerd werk',
-    'work_page_headline' => 'Alle projecten.',
+    'work_page_label' => 'Case studies',
+    'work_page_headline' => 'Alle case studies.',
     'work_filter_label' => 'Filter op tag:',
     'work_filter_all' => 'Alles',
-    'work_no_projects' => 'Nog geen projecten.',
-    'work_no_match' => 'Geen projecten gevonden voor dit filter.',
+    'work_no_projects' => 'Nog geen case studies.',
+    'work_no_match' => 'Geen case studies gevonden voor dit filter.',
 
     'project_eyebrow' => 'Case study',
     'project_cta_lead' => 'Interesse in dit soort werk?',
