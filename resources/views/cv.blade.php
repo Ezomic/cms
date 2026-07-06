@@ -72,7 +72,7 @@
 
   @if ($projects->isNotEmpty())
   <div class="section">
-    <div class="section-title">Selected work</div>
+    <div class="section-title">Case studies</div>
     @foreach ($projects as $project)
       <div class="project">
         <div class="project-header">
