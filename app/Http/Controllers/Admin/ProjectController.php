@@ -37,6 +37,8 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
+        $this->validateGallery($request);
+
         $data = $this->validated($request, new Project);
         $data['published'] = $request->boolean('published');
 
@@ -44,7 +46,9 @@ class ProjectController extends Controller
             $data['image'] = $this->storeOptimizedImage($request->file('image'));
         }
 
-        Project::create($data);
+        $project = Project::create($data);
+
+        $this->storeGalleryUploads($request, $project);
 
         return redirect()->route('admin.projects.index')->with('status', 'Project created.');
     }
@@ -56,6 +60,8 @@ class ProjectController extends Controller
 
     public function update(Request $request, Project $project)
     {
+        $this->validateGallery($request);
+
         $data = $this->validated($request, $project);
         $data['published'] = $request->boolean('published');
 
@@ -67,6 +73,9 @@ class ProjectController extends Controller
         }
 
         $project->update($data);
+
+        $this->removeGalleryImages($request, $project);
+        $this->storeGalleryUploads($request, $project);
 
         return redirect()->route('admin.projects.index')->with('status', 'Project updated.');
     }
@@ -112,7 +121,13 @@ class ProjectController extends Controller
 
     public function forceDelete(int $id)
     {
-        Project::onlyTrashed()->findOrFail($id)->forceDelete();
+        $project = Project::onlyTrashed()->findOrFail($id);
+
+        foreach ($project->images as $image) {
+            Storage::disk('public')->delete($image->path);
+        }
+
+        $project->forceDelete();
 
         return back()->with('status', 'Project permanently deleted.');
     }
@@ -124,6 +139,7 @@ class ProjectController extends Controller
             'image' => ['nullable', 'image', 'max:4096'],
             'image_alt' => ['nullable', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', 'alpha_dash', Rule::unique('projects', 'slug')->ignore($project->id)],
+            'github_url' => ['nullable', 'url', 'max:255'],
             'client_name' => ['nullable', 'string', 'max:255'],
             'year' => ['nullable', 'string', 'max:4'],
             'description' => ['nullable', 'string'],
@@ -151,5 +167,48 @@ class ProjectController extends Controller
             ->save($fullPath, quality: 82);
 
         return $path;
+    }
+
+    private function validateGallery(Request $request): void
+    {
+        $request->validate([
+            'gallery' => ['nullable', 'array', 'max:8'],
+            'gallery.*' => ['image', 'max:4096'],
+        ]);
+    }
+
+    private function storeGalleryUploads(Request $request, Project $project): void
+    {
+        if (! $request->hasFile('gallery')) {
+            return;
+        }
+
+        $nextSortOrder = $project->images()->max('sort_order') + 1;
+
+        foreach ($request->file('gallery') as $file) {
+            $project->images()->create([
+                'path' => $this->storeOptimizedImage($file),
+                'sort_order' => $nextSortOrder++,
+            ]);
+        }
+    }
+
+    private function removeGalleryImages(Request $request, Project $project): void
+    {
+        $data = $request->validate([
+            'remove_images' => ['nullable', 'array'],
+            'remove_images.*' => ['integer', Rule::exists('project_images', 'id')],
+        ]);
+
+        if (empty($data['remove_images'])) {
+            return;
+        }
+
+        $images = $project->images()->whereIn('id', $data['remove_images'])->get();
+
+        foreach ($images as $image) {
+            Storage::disk('public')->delete($image->path);
+            $image->delete();
+        }
     }
 }

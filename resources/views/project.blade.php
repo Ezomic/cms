@@ -51,7 +51,12 @@
   .meta-row{display:flex;gap:24px;flex-wrap:wrap;font-family:var(--mono);font-size:13px;color:var(--ink-soft);margin-bottom:24px;}
   .work-tags{display:flex;flex-wrap:wrap;gap:8px;}
   .tag{font-family:var(--mono);font-size:12px;color:var(--ink-soft);border:1px solid var(--line);padding:4px 10px;border-radius:20px;white-space:nowrap;}
+  .github-link{display:inline-block;margin-top:16px;font-family:var(--mono);font-size:13px;text-decoration:none;color:var(--ink-soft);}
+  .github-link:hover{color:var(--accent);}
   .cover{width:100%;aspect-ratio:16/10;max-height:480px;object-fit:cover;border:1px solid var(--line);margin:40px 0;}
+  .gallery-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin:0 0 16px;}
+  .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:0 0 48px;}
+  .gallery img{width:100%;aspect-ratio:16/10;object-fit:cover;border:1px solid var(--line);}
   .outcome-callout{background:var(--accent-soft);border-left:3px solid var(--accent);padding:20px 24px;margin:32px 0;font-family:var(--mono);font-size:14px;color:var(--ink);}
   .outcome-callout strong{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:6px;}
   .body-content{padding:24px 0 96px;font-size:17px;color:var(--ink);}
@@ -97,6 +102,9 @@
         <span class="tag">{{ $tag }}</span>
       @endforeach
     </div>
+    @if ($project->github_url)
+      <a class="github-link" href="{{ $project->github_url }}" target="_blank" rel="noopener">{{ __('site.project_github_link') }}</a>
+    @endif
   </div>
 </header>
 
@@ -115,6 +123,15 @@
   <div class="body-content">
     {!! $project->body !!}
   </div>
+
+  @if ($project->images->isNotEmpty())
+    <div class="gallery-label">{{ __('site.project_gallery_label') }}</div>
+    <div class="gallery">
+      @foreach ($project->images as $image)
+        <img src="{{ $image->imageUrl() }}" alt="{{ $project->name }}" loading="lazy" decoding="async">
+      @endforeach
+    </div>
+  @endif
 
   <div style="padding:48px 0;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
     <div>
