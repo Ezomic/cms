@@ -22,13 +22,13 @@ class TestimonialController extends Controller
 
         return view('admin.testimonials.index', [
             'testimonials' => $testimonials,
-            'search'       => $search,
+            'search' => $search,
         ]);
     }
 
     public function create()
     {
-        return view('admin.testimonials.form', ['testimonial' => new Testimonial()]);
+        return view('admin.testimonials.form', ['testimonial' => new Testimonial]);
     }
 
     public function store(Request $request)
@@ -81,11 +81,12 @@ class TestimonialController extends Controller
     private function validated(Request $request): array
     {
         $data = $request->validate([
-            'quote'       => ['required', 'string'],
-            'author_name'  => ['nullable', 'string', 'max:255'],
-            'author_role'  => ['nullable', 'string', 'max:255'],
+            'quote' => ['required', 'string'],
+            'author_name' => ['nullable', 'string', 'max:255'],
+            'author_role' => ['nullable', 'string', 'max:255'],
             'company_name' => ['nullable', 'string', 'max:255'],
-            'featured'     => ['nullable', 'boolean'],
+            'featured' => ['nullable', 'boolean'],
+            'quote_nl' => ['nullable', 'string'],
         ]);
 
         $data['featured'] = $request->boolean('featured');

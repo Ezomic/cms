@@ -84,6 +84,41 @@
     </div>
 
     <fieldset class="border border-stone-200 rounded p-4 space-y-4">
+      <legend class="text-xs font-medium text-stone-600 px-1">Nederlands (NL)</legend>
+      <p class="text-xs text-stone-400">Optional. Falls back to the English text above when left blank.</p>
+      <div>
+        <label class="block text-xs font-medium text-stone-600 mb-1">Tagline (NL)</label>
+        <input name="tagline_nl" value="{{ old('tagline_nl', $profile->tagline_nl) }}" class="w-full border rounded px-3 py-2 text-sm @error('tagline_nl') border-red-400 @else border-stone-300 @enderror">
+        @error('tagline_nl')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-stone-600 mb-1">Hero headline (NL)</label>
+        <input name="hero_headline_nl" value="{{ old('hero_headline_nl', $profile->hero_headline_nl) }}" class="w-full border rounded px-3 py-2 text-sm @error('hero_headline_nl') border-red-400 @else border-stone-300 @enderror">
+        @error('hero_headline_nl')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-stone-600 mb-1">Hero subtext (NL)</label>
+        <textarea name="hero_subtext_nl" rows="3" class="w-full border rounded px-3 py-2 text-sm @error('hero_subtext_nl') border-red-400 @else border-stone-300 @enderror">{{ old('hero_subtext_nl', $profile->hero_subtext_nl) }}</textarea>
+        @error('hero_subtext_nl')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-stone-600 mb-1">Docs intro paragraph (NL)</label>
+        <textarea name="docs_intro_nl" rows="4" class="w-full border rounded px-3 py-2 text-sm @error('docs_intro_nl') border-red-400 @else border-stone-300 @enderror">{{ old('docs_intro_nl', $profile->docs_intro_nl) }}</textarea>
+        @error('docs_intro_nl')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-stone-600 mb-1">Meta title (NL)</label>
+        <input name="meta_title_nl" value="{{ old('meta_title_nl', $profile->meta_title_nl) }}" class="w-full border rounded px-3 py-2 text-sm @error('meta_title_nl') border-red-400 @else border-stone-300 @enderror">
+        @error('meta_title_nl')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-stone-600 mb-1">Meta description (NL)</label>
+        <textarea name="meta_description_nl" rows="2" class="w-full border rounded px-3 py-2 text-sm @error('meta_description_nl') border-red-400 @else border-stone-300 @enderror">{{ old('meta_description_nl', $profile->meta_description_nl) }}</textarea>
+        @error('meta_description_nl')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+      </div>
+    </fieldset>
+
+    <fieldset class="border border-stone-200 rounded p-4 space-y-4">
       <legend class="text-xs font-medium text-stone-600 px-1">Docs page</legend>
       <div>
         <label class="block text-xs font-medium text-stone-600 mb-1">Intro paragraph <span class="font-normal text-stone-400">(overrides the default lead on /docs)</span></label>

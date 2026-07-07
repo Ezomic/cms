@@ -138,6 +138,41 @@
         <p class="text-xs text-stone-400 mt-1">Falls back to the description, then a body excerpt. Aim for 150–160 characters.</p>
       @enderror
     </div>
+    <fieldset class="border border-stone-200 rounded p-4 space-y-4">
+      <legend class="text-xs font-medium text-stone-600 px-1">Nederlands (NL)</legend>
+      <p class="text-xs text-stone-400">Optional. Falls back to the English text above when left blank.</p>
+      <div>
+        <label class="block text-xs font-medium text-stone-600 mb-1">Description (NL)</label>
+        <textarea name="description_nl" rows="3" class="w-full border rounded px-3 py-2 text-sm @error('description_nl') border-red-400 @else border-stone-300 @enderror">{{ old('description_nl', $project->description_nl) }}</textarea>
+        @error('description_nl')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-stone-600 mb-1">Outcome (NL)</label>
+        <input name="outcome_nl" value="{{ old('outcome_nl', $project->outcome_nl) }}" class="w-full border rounded px-3 py-2 text-sm @error('outcome_nl') border-red-400 @else border-stone-300 @enderror">
+        @error('outcome_nl')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-stone-600 mb-1">Case study body (NL)</label>
+        <textarea name="body_nl" rows="8" class="w-full border rounded px-3 py-2 text-sm font-mono @error('body_nl') border-red-400 @else border-stone-300 @enderror">{{ old('body_nl', $project->body_nl) }}</textarea>
+        @error('body_nl')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-stone-600 mb-1">Image alt text (NL)</label>
+        <input name="image_alt_nl" value="{{ old('image_alt_nl', $project->image_alt_nl) }}" class="w-full border rounded px-3 py-2 text-sm @error('image_alt_nl') border-red-400 @else border-stone-300 @enderror">
+        @error('image_alt_nl')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-stone-600 mb-1">Meta title (NL)</label>
+        <input name="meta_title_nl" value="{{ old('meta_title_nl', $project->meta_title_nl) }}" class="w-full border rounded px-3 py-2 text-sm @error('meta_title_nl') border-red-400 @else border-stone-300 @enderror">
+        @error('meta_title_nl')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-stone-600 mb-1">Meta description (NL)</label>
+        <textarea name="meta_description_nl" rows="2" maxlength="255" class="w-full border rounded px-3 py-2 text-sm @error('meta_description_nl') border-red-400 @else border-stone-300 @enderror">{{ old('meta_description_nl', $project->meta_description_nl) }}</textarea>
+        @error('meta_description_nl')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+      </div>
+    </fieldset>
+
     <div>
       <label class="block text-xs font-medium text-stone-600 mb-1">Sort order</label>
       <input type="number" name="sort_order" value="{{ old('sort_order', $project->sort_order ?? 0) }}" class="w-32 border rounded px-3 py-2 text-sm @error('sort_order') border-red-400 @else border-stone-300 @enderror">

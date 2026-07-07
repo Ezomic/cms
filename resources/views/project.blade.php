@@ -113,15 +113,15 @@
     <img class="cover" src="{{ $project->imageUrl() }}" alt="{{ $project->imageAlt() }}" fetchpriority="high" decoding="async">
   @endif
 
-  @if ($project->outcome)
+  @if ($project->localizedOutcome())
     <div class="outcome-callout">
       <strong>{{ __('site.project_result_label') }}</strong>
-      {{ $project->outcome }}
+      {{ $project->localizedOutcome() }}
     </div>
   @endif
 
   <div class="body-content">
-    {!! $project->body !!}
+    {!! $project->localizedBody() !!}
   </div>
 
   @if ($project->images->isNotEmpty())
