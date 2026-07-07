@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class PostController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $search = $request->string('search')->trim()->toString();
 
@@ -24,12 +26,12 @@ class PostController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(): View
     {
         return view('admin.posts.form', ['post' => new Post]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $data = $this->validated($request, new Post);
         $data['published'] = $request->boolean('published');
@@ -39,12 +41,12 @@ class PostController extends Controller
         return redirect()->route('admin.posts.index')->with('status', 'Post created.');
     }
 
-    public function edit(Post $post)
+    public function edit(Post $post): View
     {
         return view('admin.posts.form', compact('post'));
     }
 
-    public function update(Request $request, Post $post)
+    public function update(Request $request, Post $post): RedirectResponse
     {
         $data = $this->validated($request, $post);
         $data['published'] = $request->boolean('published');
@@ -54,34 +56,37 @@ class PostController extends Controller
         return redirect()->route('admin.posts.index')->with('status', 'Post updated.');
     }
 
-    public function destroy(Post $post)
+    public function destroy(Post $post): RedirectResponse
     {
         $post->delete();
 
         return back()->with('status', 'Post deleted.');
     }
 
-    public function trash()
+    public function trash(): View
     {
         return view('admin.posts.trash', [
             'posts' => Post::onlyTrashed()->latest()->get(),
         ]);
     }
 
-    public function restore(int $id)
+    public function restore(int $id): RedirectResponse
     {
         Post::onlyTrashed()->findOrFail($id)->restore();
 
         return back()->with('status', 'Post restored.');
     }
 
-    public function forceDelete(int $id)
+    public function forceDelete(int $id): RedirectResponse
     {
         Post::onlyTrashed()->findOrFail($id)->forceDelete();
 
         return back()->with('status', 'Post permanently deleted.');
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function validated(Request $request, Post $post): array
     {
         return $request->validate([

@@ -4,15 +4,18 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Intervention\Image\ImageManager;
 
 class ProjectController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $search = $request->string('search')->trim()->toString();
 
@@ -30,12 +33,12 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(): View
     {
         return view('admin.projects.form', ['project' => new Project]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $this->validateGallery($request);
 
@@ -53,12 +56,12 @@ class ProjectController extends Controller
         return redirect()->route('admin.projects.index')->with('status', 'Project created.');
     }
 
-    public function edit(Project $project)
+    public function edit(Project $project): View
     {
         return view('admin.projects.form', compact('project'));
     }
 
-    public function update(Request $request, Project $project)
+    public function update(Request $request, Project $project): RedirectResponse
     {
         $this->validateGallery($request);
 
@@ -80,7 +83,7 @@ class ProjectController extends Controller
         return redirect()->route('admin.projects.index')->with('status', 'Project updated.');
     }
 
-    public function destroy(Project $project)
+    public function destroy(Project $project): RedirectResponse
     {
         if ($project->image) {
             Storage::disk('public')->delete($project->image);
@@ -91,7 +94,7 @@ class ProjectController extends Controller
         return back()->with('status', 'Project deleted.');
     }
 
-    public function reorder(Request $request)
+    public function reorder(Request $request): Response
     {
         $data = $request->validate([
             'ids' => ['required', 'array'],
@@ -105,21 +108,21 @@ class ProjectController extends Controller
         return response()->noContent();
     }
 
-    public function trash()
+    public function trash(): View
     {
         return view('admin.projects.trash', [
             'projects' => Project::onlyTrashed()->ordered()->get(),
         ]);
     }
 
-    public function restore(int $id)
+    public function restore(int $id): RedirectResponse
     {
         Project::onlyTrashed()->findOrFail($id)->restore();
 
         return back()->with('status', 'Project restored.');
     }
 
-    public function forceDelete(int $id)
+    public function forceDelete(int $id): RedirectResponse
     {
         $project = Project::onlyTrashed()->findOrFail($id);
 
@@ -132,6 +135,9 @@ class ProjectController extends Controller
         return back()->with('status', 'Project permanently deleted.');
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function validated(Request $request, Project $project): array
     {
         return $request->validate([
@@ -165,6 +171,11 @@ class ProjectController extends Controller
     private function storeOptimizedImage(UploadedFile $file): string
     {
         $path = $file->store('projects', 'public');
+
+        if ($path === false) {
+            throw new \RuntimeException('Failed to store uploaded project image.');
+        }
+
         $fullPath = Storage::disk('public')->path($path);
 
         ImageManager::gd()

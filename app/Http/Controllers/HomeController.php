@@ -9,11 +9,13 @@ use App\Models\Project;
 use App\Models\Skill;
 use App\Models\Testimonial;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\View\View;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         PageView::create(['path' => '/'.ltrim(request()->path(), '/')]);
 
@@ -29,34 +31,7 @@ class HomeController extends Controller
         // locale before caching, so each key holds one language's copy.
         $locale = app()->getLocale();
 
-        $data = Cache::rememberForever("home.page.data.{$locale}", function () {
-            $profile = Profile::current();
-
-            return [
-                'profile' => [
-                    ...$profile->toArray(),
-                    'tagline' => $profile->localizedTagline(),
-                    'hero_headline' => $profile->heroHeadline(),
-                    'hero_subtext' => $profile->heroSubtext(),
-                    'meta_title' => $profile->metaTitle(),
-                    'meta_description' => $profile->metaDescription(),
-                ],
-                'skills' => Skill::ordered()->get()->groupBy('category')
-                    ->map(fn ($items) => $items->map(fn ($skill) => $skill->toArray())->all())
-                    ->all(),
-                'projects' => Project::published()->ordered()->get()->map(fn ($project) => [
-                    ...$project->toArray(),
-                    'tag_list' => $project->tagList(),
-                    'image_url' => $project->imageUrl(),
-                    'description' => $project->localizedDescription(),
-                    'outcome' => $project->localizedOutcome(),
-                ])->all(),
-                'testimonials' => Testimonial::where('featured', true)->latest()->get()->map(fn ($testimonial) => [
-                    ...$testimonial->toArray(),
-                    'quote' => $testimonial->localizedQuote(),
-                ])->all(),
-            ];
-        });
+        $data = Cache::rememberForever("home.page.data.{$locale}", fn (): array => $this->homePageData());
 
         return view('home', [
             'profile' => (object) $data['profile'],
@@ -66,7 +41,45 @@ class HomeController extends Controller
         ]);
     }
 
-    public function docs()
+    /**
+     * @return array{
+     *     profile: array<string, mixed>,
+     *     skills: array<string, array<int, array<string, mixed>>>,
+     *     projects: array<int, array<string, mixed>>,
+     *     testimonials: array<int, array<string, mixed>>,
+     * }
+     */
+    private function homePageData(): array
+    {
+        $profile = Profile::current();
+
+        return [
+            'profile' => [
+                ...$profile->toArray(),
+                'tagline' => $profile->localizedTagline(),
+                'hero_headline' => $profile->heroHeadline(),
+                'hero_subtext' => $profile->heroSubtext(),
+                'meta_title' => $profile->metaTitle(),
+                'meta_description' => $profile->metaDescription(),
+            ],
+            'skills' => Skill::ordered()->get()->groupBy('category')
+                ->map(fn ($items) => $items->map(fn ($skill) => $skill->toArray())->all())
+                ->all(),
+            'projects' => Project::published()->ordered()->get()->map(fn ($project) => [
+                ...$project->toArray(),
+                'tag_list' => $project->tagList(),
+                'image_url' => $project->imageUrl(),
+                'description' => $project->localizedDescription(),
+                'outcome' => $project->localizedOutcome(),
+            ])->all(),
+            'testimonials' => Testimonial::where('featured', true)->latest()->get()->map(fn ($testimonial) => [
+                ...$testimonial->toArray(),
+                'quote' => $testimonial->localizedQuote(),
+            ])->all(),
+        ];
+    }
+
+    public function docs(): View
     {
         return view('docs', [
             'profile' => Profile::current(),
@@ -75,7 +88,7 @@ class HomeController extends Controller
         ]);
     }
 
-    public function work()
+    public function work(): View
     {
         PageView::create(['path' => '/'.ltrim(request()->path(), '/')]);
 
@@ -87,7 +100,7 @@ class HomeController extends Controller
             'description' => $p->localizedDescription(),
         ]);
 
-        $tags = $projects->flatMap(fn ($p) => $p->tag_list)->unique()->sort()->values();
+        $tags = $projects->flatMap(fn (\stdClass $p): array => $p->tag_list)->unique()->sort()->values();
 
         return view('work', [
             'profile' => Profile::current(),
@@ -97,7 +110,7 @@ class HomeController extends Controller
         ]);
     }
 
-    public function workTag(string $tag)
+    public function workTag(string $tag): View
     {
         $allProjects = Project::published()->ordered()->get()->map(fn ($p) => (object) [
             ...$p->toArray(),
@@ -107,13 +120,13 @@ class HomeController extends Controller
             'description' => $p->localizedDescription(),
         ]);
 
-        $tags = $allProjects->flatMap(fn ($p) => $p->tag_list)->unique()->sort()->values();
+        $tags = $allProjects->flatMap(fn (\stdClass $p): array => $p->tag_list)->unique()->sort()->values();
 
         abort_unless($tags->contains($tag), 404);
 
         PageView::create(['path' => '/'.ltrim(request()->path(), '/')]);
 
-        $projects = $allProjects->filter(fn ($p) => in_array($tag, $p->tag_list))->values();
+        $projects = $allProjects->filter(fn (\stdClass $p) => in_array($tag, $p->tag_list))->values();
 
         return view('work', [
             'profile' => Profile::current(),
@@ -123,7 +136,7 @@ class HomeController extends Controller
         ]);
     }
 
-    public function cv()
+    public function cv(): Response
     {
         $profile = Profile::current();
         $skills = Skill::ordered()->get()->groupBy('category')
@@ -143,7 +156,7 @@ class HomeController extends Controller
 
         $pdf->render();
         $pdf->getDomPDF()->getCanvas()->page_text(
-            497, 812, 'Page {PAGE_NUM} of {PAGE_COUNT}', null, 8, [0.66, 0.66, 0.66]
+            497, 812, 'Page {PAGE_NUM} of {PAGE_COUNT}', $fontMetrics->getFont('Inter', 'normal') ?? 'serif', 8, [0.66, 0.66, 0.66]
         );
 
         $filename = str($profile->name)->slug()->append('-cv.pdf')->toString();
@@ -151,7 +164,7 @@ class HomeController extends Controller
         return $pdf->download($filename);
     }
 
-    public function project(Project $project)
+    public function project(Project $project): View
     {
         abort_unless($project->published, 404);
 
@@ -163,7 +176,7 @@ class HomeController extends Controller
         ]);
     }
 
-    public function blog()
+    public function blog(): View
     {
         PageView::create(['path' => '/'.ltrim(request()->path(), '/')]);
 
@@ -173,7 +186,7 @@ class HomeController extends Controller
         ]);
     }
 
-    public function post(Post $post)
+    public function post(Post $post): View
     {
         abort_unless($post->published, 404);
 
