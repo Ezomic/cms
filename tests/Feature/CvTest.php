@@ -181,4 +181,167 @@ class CvTest extends TestCase
 
         $this->assertStringNotContainsString('Skills', $html);
     }
+
+    public function test_cv_view_renders_project_outcome_when_set(): void
+    {
+        $profile = Profile::current();
+        $skills = Skill::query()->get()->groupBy('category');
+
+        $projects = collect([
+            (object) [
+                'name' => 'Outcome Project',
+                'year' => '2024',
+                'client_name' => null,
+                'description' => null,
+                'tag_list' => [],
+                'outcome' => 'Cut load times by 40%.',
+            ],
+        ]);
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => $projects])->render();
+
+        $this->assertStringContainsString('<div class="project-outcome">', $html);
+        $this->assertStringContainsString('Result &mdash;', $html);
+        $this->assertStringContainsString('Cut load times by 40%.', $html);
+    }
+
+    public function test_cv_view_omits_project_outcome_when_null(): void
+    {
+        $profile = Profile::current();
+        $skills = Skill::query()->get()->groupBy('category');
+
+        $projects = collect([
+            (object) [
+                'name' => 'No Outcome Project',
+                'year' => '2024',
+                'client_name' => null,
+                'description' => null,
+                'tag_list' => [],
+                'outcome' => null,
+            ],
+        ]);
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => $projects])->render();
+
+        $this->assertStringNotContainsString('<div class="project-outcome">', $html);
+    }
+
+    public function test_cv_view_omits_project_outcome_when_key_is_missing(): void
+    {
+        $profile = Profile::current();
+        $skills = Skill::query()->get()->groupBy('category');
+
+        $projects = collect([
+            (object) [
+                'name' => 'Missing Outcome Key Project',
+                'year' => '2024',
+                'client_name' => null,
+                'description' => null,
+                'tag_list' => [],
+            ],
+        ]);
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => $projects])->render();
+
+        $this->assertStringNotContainsString('<div class="project-outcome">', $html);
+    }
+
+    public function test_cv_view_renders_project_github_link_when_set(): void
+    {
+        $profile = Profile::current();
+        $skills = Skill::query()->get()->groupBy('category');
+
+        $projects = collect([
+            (object) [
+                'name' => 'GitHub Project',
+                'year' => '2024',
+                'client_name' => null,
+                'description' => null,
+                'tag_list' => [],
+                'github_url' => 'https://github.com/example/repo',
+            ],
+        ]);
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => $projects])->render();
+
+        $this->assertStringContainsString('<a href="https://github.com/example/repo">GitHub</a>', $html);
+    }
+
+    public function test_cv_view_omits_project_github_link_when_null(): void
+    {
+        $profile = Profile::current();
+        $skills = Skill::query()->get()->groupBy('category');
+
+        $projects = collect([
+            (object) [
+                'name' => 'No GitHub Project',
+                'year' => '2024',
+                'client_name' => null,
+                'description' => null,
+                'tag_list' => [],
+                'github_url' => null,
+            ],
+        ]);
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => $projects])->render();
+
+        $this->assertStringNotContainsString('>GitHub</a>', $html);
+    }
+
+    public function test_cv_view_omits_project_github_link_when_key_is_missing(): void
+    {
+        $profile = Profile::current();
+        $skills = Skill::query()->get()->groupBy('category');
+
+        $projects = collect([
+            (object) [
+                'name' => 'Missing GitHub Key Project',
+                'year' => '2024',
+                'client_name' => null,
+                'description' => null,
+                'tag_list' => [],
+            ],
+        ]);
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => $projects])->render();
+
+        $this->assertStringNotContainsString('>GitHub</a>', $html);
+    }
+
+    public function test_cv_view_shows_see_all_work_cta_linking_to_work_index(): void
+    {
+        $profile = Profile::current();
+        $skills = Skill::query()->get()->groupBy('category');
+
+        $projects = collect([
+            (object) [
+                'name' => 'Case Study Project',
+                'year' => '2024',
+                'client_name' => null,
+                'description' => null,
+                'tag_list' => [],
+            ],
+        ]);
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => $projects])->render();
+
+        $this->assertStringContainsString('See all work &rarr;', $html);
+        $this->assertStringContainsString('<a class="section-cta" href="'.route('work.index').'">', $html);
+    }
+
+    public function test_cv_route_renders_successfully_with_real_project_outcome_and_github_url(): void
+    {
+        Project::create([
+            'name' => 'Real Project',
+            'sort_order' => 0,
+            'published' => true,
+            'outcome' => 'Increased conversion by 25%.',
+            'github_url' => 'https://github.com/example/real-project',
+        ]);
+
+        $response = $this->get('/cv.pdf');
+
+        $response->assertOk();
+        $response->assertHeader('content-type', 'application/pdf');
+    }
 }
