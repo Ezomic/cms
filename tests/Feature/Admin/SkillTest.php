@@ -21,8 +21,8 @@ class SkillTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/admin/skills', [
-            'category'   => 'Backend',
-            'name'       => 'Laravel',
+            'category' => 'Backend',
+            'name' => 'Laravel',
             'sort_order' => 0,
         ]);
 
@@ -45,8 +45,8 @@ class SkillTest extends TestCase
         $skill = Skill::create(['category' => 'Backend', 'name' => 'PHP', 'sort_order' => 0]);
 
         $response = $this->actingAs($user)->put("/admin/skills/{$skill->id}", [
-            'category'   => 'Backend',
-            'name'       => 'PHP 8',
+            'category' => 'Backend',
+            'name' => 'PHP 8',
             'sort_order' => 0,
         ]);
 
