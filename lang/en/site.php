@@ -35,11 +35,11 @@ return [
     'process_1_title' => 'Scope',
     'process_1_body' => 'A short call to understand the problem, then a clear proposal with fixed price or day rate.',
     'process_2_title' => 'Plan',
-    'process_2_body' => 'Technical approach, milestones, and a realistic timeline — agreed before any code is written.',
+    'process_2_body' => 'We agree on the technical approach, milestones, and a realistic timeline before any code gets written.',
     'process_3_title' => 'Build',
     'process_3_body' => 'Weekly check-ins and a staging link you can follow along with, so nothing arrives as a surprise.',
     'process_4_title' => 'Ship',
-    'process_4_body' => 'Deployed, documented, and handed over — plus a support window for anything after launch.',
+    'process_4_body' => 'Deployed, documented, and handed over. There\'s a support window afterwards if anything needs fixing.',
 
     'contact_label' => 'Get in touch',
     'contact_headline' => 'Have a project in mind?',
@@ -60,7 +60,7 @@ return [
     'contact_message_hint' => 'Describe the project, any technical constraints, and your ideal timeline.',
     'contact_submit' => 'Send message →',
     'contact_response_time' => 'I typically respond within 1 business day.',
-    'contact_success' => 'Thanks — your message has been sent. I typically reply within 1 business day.',
+    'contact_success' => 'Thanks, your message is in. I typically reply within 1 business day.',
 
     'meta_availability_now' => 'Now',
     'meta_availability_from' => 'From :date',
@@ -76,7 +76,7 @@ return [
     'services_headline' => 'What I build.',
 
     'service_1_title' => 'Web application',
-    'service_1_body' => 'Full-stack product builds from design to deployment — Laravel backend, Vue or Blade frontend, tested and production-ready.',
+    'service_1_body' => 'Full-stack product builds from design to deployment: Laravel backend, Vue or Blade frontend, tested and ready for production.',
     'service_1_items' => ['New SaaS product or internal tool', 'Feature additions to existing app', 'Laravel upgrade or refactor'],
     'service_1_price' => 'Day rate: :rate / fixed-price on request',
 
@@ -86,7 +86,7 @@ return [
     'service_2_price' => 'Day rate: :rate / fixed-price on request',
 
     'service_3_title' => 'Advisory & review',
-    'service_3_body' => 'Code review, architecture advice, or a technical audit — useful before a big migration or when you need a second opinion.',
+    'service_3_body' => 'Code review, architecture advice, or a technical audit. Handy before a big migration, or when you just want a second opinion.',
     'service_3_items' => ['Architecture review', 'Code quality audit', 'Hiring tech screen'],
     'service_3_price' => 'Half-day or day rate on request',
 
