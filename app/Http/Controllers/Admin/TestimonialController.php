@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Testimonial;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class TestimonialController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $search = $request->string('search')->trim()->toString();
 
@@ -26,58 +28,61 @@ class TestimonialController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(): View
     {
         return view('admin.testimonials.form', ['testimonial' => new Testimonial]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         Testimonial::create($this->validated($request));
 
         return redirect()->route('admin.testimonials.index')->with('status', 'Testimonial created.');
     }
 
-    public function edit(Testimonial $testimonial)
+    public function edit(Testimonial $testimonial): View
     {
         return view('admin.testimonials.form', compact('testimonial'));
     }
 
-    public function update(Request $request, Testimonial $testimonial)
+    public function update(Request $request, Testimonial $testimonial): RedirectResponse
     {
         $testimonial->update($this->validated($request));
 
         return redirect()->route('admin.testimonials.index')->with('status', 'Testimonial updated.');
     }
 
-    public function destroy(Testimonial $testimonial)
+    public function destroy(Testimonial $testimonial): RedirectResponse
     {
         $testimonial->delete();
 
         return back()->with('status', 'Testimonial deleted.');
     }
 
-    public function trash()
+    public function trash(): View
     {
         return view('admin.testimonials.trash', [
             'testimonials' => Testimonial::onlyTrashed()->latest()->get(),
         ]);
     }
 
-    public function restore(int $id)
+    public function restore(int $id): RedirectResponse
     {
         Testimonial::onlyTrashed()->findOrFail($id)->restore();
 
         return back()->with('status', 'Testimonial restored.');
     }
 
-    public function forceDelete(int $id)
+    public function forceDelete(int $id): RedirectResponse
     {
         Testimonial::onlyTrashed()->findOrFail($id)->forceDelete();
 
         return back()->with('status', 'Testimonial permanently deleted.');
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function validated(Request $request): array
     {
         $data = $request->validate([

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Concerns\BustsHomeCache;
 use App\Concerns\HasLocalizedContent;
 use App\Concerns\LogsActivity;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
@@ -36,7 +37,11 @@ class Post extends Model
         });
     }
 
-    public function scopePublished($query)
+    /**
+     * @param  Builder<Post>  $query
+     * @return Builder<Post>
+     */
+    public function scopePublished(Builder $query): Builder
     {
         return $query->where('published', true);
     }

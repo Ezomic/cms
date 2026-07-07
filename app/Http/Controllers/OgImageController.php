@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Profile;
 use App\Models\Project;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 
 class OgImageController extends Controller
 {
-    public function project(Project $project)
+    public function project(Project $project): Response
     {
         abort_unless($project->published, 404);
 
@@ -29,7 +30,7 @@ class OgImageController extends Controller
         ]);
     }
 
-    public function home()
+    public function home(): Response
     {
         $profile = Profile::current();
         $cacheKey = 'og.home.'.$profile->updated_at?->timestamp;
@@ -62,6 +63,10 @@ class OgImageController extends Controller
         $accent = imagecolorallocate($img, 232, 89, 12);
         $soft = imagecolorallocate($img, 99, 100, 95);
         $line = imagecolorallocate($img, 221, 221, 214);
+
+        if ($bg === false || $ink === false || $accent === false || $soft === false || $line === false) {
+            throw new \RuntimeException('Failed to allocate OG image colors.');
+        }
 
         imagefill($img, 0, 0, $bg);
 
@@ -102,6 +107,9 @@ class OgImageController extends Controller
         return $png;
     }
 
+    /**
+     * @return array<int, string>
+     */
     private function wrapText(string $text, int $maxChars): array
     {
         $words = explode(' ', $text);

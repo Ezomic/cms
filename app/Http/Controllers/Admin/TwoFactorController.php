@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 use PragmaRX\Google2FA\Google2FA;
 
 class TwoFactorController extends Controller
 {
-    public function show(Request $request)
+    public function show(Request $request): View
     {
         return view('admin.two-factor.show', [
             'user' => $request->user(),
@@ -18,7 +21,7 @@ class TwoFactorController extends Controller
         ]);
     }
 
-    public function enable(Request $request)
+    public function enable(Request $request): RedirectResponse
     {
         $user = $request->user();
         $user->two_factor_secret = (new Google2FA)->generateSecretKey();
@@ -29,7 +32,7 @@ class TwoFactorController extends Controller
         return redirect()->route('admin.two-factor.show');
     }
 
-    public function confirm(Request $request)
+    public function confirm(Request $request): RedirectResponse
     {
         $request->validate(['code' => ['required', 'string']]);
 
@@ -50,7 +53,7 @@ class TwoFactorController extends Controller
             ->with('status', 'Two-factor authentication enabled. Save your recovery codes somewhere safe.');
     }
 
-    public function disable(Request $request)
+    public function disable(Request $request): RedirectResponse
     {
         $request->validate(['current_password' => ['required', 'current_password']]);
 
@@ -63,7 +66,7 @@ class TwoFactorController extends Controller
         return redirect()->route('admin.two-factor.show')->with('status', 'Two-factor authentication disabled.');
     }
 
-    private function buildOtpAuthUri($user): ?string
+    private function buildOtpAuthUri(User $user): ?string
     {
         if (! $user->two_factor_secret) {
             return null;

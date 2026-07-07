@@ -4,13 +4,15 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use PragmaRX\Google2FA\Google2FA;
 
 class TwoFactorChallengeController extends Controller
 {
-    public function show(Request $request)
+    public function show(Request $request): View|RedirectResponse
     {
         if (! $request->session()->has('two_factor.user_id')) {
             return redirect()->route('admin.login');
@@ -19,12 +21,12 @@ class TwoFactorChallengeController extends Controller
         return view('auth.two-factor-challenge');
     }
 
-    public function verify(Request $request)
+    public function verify(Request $request): RedirectResponse
     {
         $request->validate(['code' => ['required', 'string']]);
 
         $userId = $request->session()->get('two_factor.user_id');
-        $user = $userId ? User::find($userId) : null;
+        $user = is_int($userId) ? User::find($userId) : null;
 
         if (! $user) {
             return redirect()->route('admin.login');
