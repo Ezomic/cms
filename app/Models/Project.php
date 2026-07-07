@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Concerns\BustsHomeCache;
 use App\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
@@ -13,7 +14,7 @@ class Project extends Model
     use BustsHomeCache, LogsActivity, SoftDeletes;
 
     protected $fillable = [
-        'name', 'image', 'image_alt', 'slug', 'client_name', 'year', 'description', 'outcome', 'body', 'published', 'tags', 'sort_order', 'meta_title', 'meta_description',
+        'name', 'image', 'image_alt', 'slug', 'github_url', 'client_name', 'year', 'description', 'outcome', 'body', 'published', 'tags', 'sort_order', 'meta_title', 'meta_description',
     ];
 
     protected $casts = [
@@ -56,6 +57,14 @@ class Project extends Model
     public function imageAlt(): string
     {
         return $this->image_alt ?: $this->name;
+    }
+
+    /**
+     * @return HasMany<ProjectImage, $this>
+     */
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProjectImage::class)->orderBy('sort_order');
     }
 
     public function metaTitle(): string
