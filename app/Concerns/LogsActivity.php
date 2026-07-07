@@ -17,9 +17,9 @@ trait LogsActivity
     protected function recordActivity(string $action): void
     {
         ActivityLog::create([
-            'user_id'       => Auth::id(),
-            'action'        => $action,
-            'subject_type'  => class_basename($this),
+            'user_id' => Auth::id(),
+            'action' => $action,
+            'subject_type' => class_basename($this),
             'subject_label' => $this->activityLabel(),
         ]);
     }

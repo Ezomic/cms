@@ -43,7 +43,7 @@ class TwoFactorChallengeController extends Controller
 
     private function codeIsValid(User $user, string $code): bool
     {
-        if ((new Google2FA())->verifyKey($user->two_factor_secret, $code)) {
+        if ((new Google2FA)->verifyKey($user->two_factor_secret, $code)) {
             return true;
         }
 
