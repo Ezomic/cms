@@ -18,13 +18,14 @@
   .section-title-row { display: table; width: 100%; margin-bottom: 10px; border-bottom: 1px solid #DDDDD6; padding-bottom: 4px; page-break-after: avoid; }
   .section-title-row .section-title { display: table-cell; margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
   .section-cta { display: table-cell; text-align: right; font-size: 9px; color: #63645F; text-decoration: none; white-space: nowrap; vertical-align: bottom; }
+  .hero-line { font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 8px; max-width: 600px; }
   .intro { font-size: 12px; color: #3a3b38; line-height: 1.6; max-width: 600px; }
   .skills-grid { display: table; width: 100%; page-break-inside: avoid; }
   .skills-col { display: table-cell; width: 33%; vertical-align: top; padding-right: 16px; }
   .skills-col-title { font-size: 10px; font-weight: 700; color: #17181A; margin-bottom: 6px; }
   .skills-col ul { list-style: none; }
   .skills-col li { font-size: 11px; color: #63645F; padding: 3px 0; border-top: 1px solid #EEEEEA; }
-  .skills-col li:first-child { border-top: none; }
+  .skills-col li:first-child { border-top: none; font-weight: 700; color: #17181A; }
   .project { margin-bottom: 18px; page-break-inside: avoid; }
   .project-header { display: table; width: 100%; margin-bottom: 4px; }
   .project-name { display: table-cell; font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 13px; font-weight: 700; }
@@ -37,8 +38,10 @@
   .project-tags span { display: inline-block; font-size: 8px; color: #63645F; background: #F0F0EB; border-radius: 3px; padding: 2px 7px; margin: 0 4px 4px 0; }
   .availability-box { background: #F7F7F4; border-left: 3px solid #E8590C; padding: 10px 14px; font-size: 11px; color: #63645F; page-break-inside: avoid; }
   .availability-box strong { color: #17181A; }
+  .availability-box a { color: #E8590C; text-decoration: none; font-weight: 700; }
   .availability-line { font-size: 10px; color: #63645F; page-break-inside: avoid; }
   .footer { margin-top: 32px; padding-top: 12px; border-top: 1px solid #DDDDD6; font-size: 9px; color: #aaa; text-align: center; }
+  .footer a { color: #aaa; text-decoration: none; }
 </style>
 </head>
 <body>
@@ -57,6 +60,9 @@
 
   <div class="section">
     <div class="section-title">About</div>
+    @if($profile->hero_headline ?? null)
+      <div class="hero-line">{{ $profile->hero_headline }}</div>
+    @endif
     <p class="intro">{{ $profile->hero_subtext }}</p>
   </div>
 
@@ -115,6 +121,9 @@
   @if($profile->available)
     <div class="availability-box">
       <strong>Currently available</strong> for new projects. Rate: {{ $profile->rate }}. Based in {{ $profile->city }}, NL. Works remote EU-wide and on-site.
+      @if($profile->email)
+        <a href="mailto:{{ $profile->email }}">Get in touch &rarr;</a>
+      @endif
     </div>
   @else
     <div class="availability-line">
@@ -126,7 +135,8 @@
     @if ($profile->kvk_number)
       KVK {{ $profile->kvk_number }} ·
     @endif
-    Generated {{ date('F Y') }}
+    Generated {{ date('F Y') }} ·
+    <a href="{{ route('home') }}">{{ parse_url(route('home'), PHP_URL_HOST) }}</a>
   </div>
 
 </div>
