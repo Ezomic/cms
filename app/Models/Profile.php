@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Concerns\BustsHomeCache;
+use App\Concerns\HasLocalizedContent;
 use App\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 
 class Profile extends Model
 {
-    use BustsHomeCache, LogsActivity;
+    use BustsHomeCache, HasLocalizedContent, LogsActivity;
 
     protected $table = 'profile';
 
@@ -17,6 +18,8 @@ class Profile extends Model
         'available', 'email', 'linkedin_url', 'github_url',
         'rate', 'availability_from', 'kvk_number',
         'meta_title', 'meta_description', 'docs_intro',
+        'tagline_nl', 'hero_headline_nl', 'hero_subtext_nl',
+        'docs_intro_nl', 'meta_title_nl', 'meta_description_nl',
     ];
 
     protected $casts = [
@@ -46,5 +49,41 @@ class Profile extends Model
     public function activityLabel(): string
     {
         return 'Profile';
+    }
+
+    /**
+     * Named localizedTagline rather than tagline() — Eloquent's __get() treats
+     * an undefined attribute access as a possible relationship method call
+     * when a same-named method exists, which throws for models missing that
+     * attribute (e.g. `new Profile(['name' => 'X'])`).
+     */
+    public function localizedTagline(): ?string
+    {
+        return $this->localized('tagline');
+    }
+
+    public function heroHeadline(): ?string
+    {
+        return $this->localized('hero_headline');
+    }
+
+    public function heroSubtext(): ?string
+    {
+        return $this->localized('hero_subtext');
+    }
+
+    public function docsIntro(): ?string
+    {
+        return $this->localized('docs_intro');
+    }
+
+    public function metaTitle(): ?string
+    {
+        return $this->localized('meta_title');
+    }
+
+    public function metaDescription(): ?string
+    {
+        return $this->localized('meta_description');
     }
 }

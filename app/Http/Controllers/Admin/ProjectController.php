@@ -149,6 +149,12 @@ class ProjectController extends Controller
             'sort_order' => ['nullable', 'integer'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:255'],
+            'description_nl' => ['nullable', 'string'],
+            'outcome_nl' => ['nullable', 'string', 'max:255'],
+            'body_nl' => ['nullable', 'string'],
+            'image_alt_nl' => ['nullable', 'string', 'max:255'],
+            'meta_title_nl' => ['nullable', 'string', 'max:255'],
+            'meta_description_nl' => ['nullable', 'string', 'max:255'],
         ]);
     }
 

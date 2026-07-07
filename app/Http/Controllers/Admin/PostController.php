@@ -91,6 +91,11 @@ class PostController extends Controller
             'body' => ['nullable', 'string'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:255'],
+            'title_nl' => ['nullable', 'string', 'max:255'],
+            'excerpt_nl' => ['nullable', 'string', 'max:500'],
+            'body_nl' => ['nullable', 'string'],
+            'meta_title_nl' => ['nullable', 'string', 'max:255'],
+            'meta_description_nl' => ['nullable', 'string', 'max:255'],
         ]);
     }
 }
