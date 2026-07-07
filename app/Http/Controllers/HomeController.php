@@ -114,6 +114,11 @@ class HomeController extends Controller
         $pdf = Pdf::loadView('cv', compact('profile', 'skills', 'projects'))
             ->setPaper('a4');
 
+        $fontMetrics = $pdf->getDomPDF()->getFontMetrics();
+        $fontMetrics->registerFont(['family' => 'Space Grotesk', 'weight' => 'bold', 'style' => 'normal'], resource_path('fonts/SpaceGrotesk-Bold.ttf'));
+        $fontMetrics->registerFont(['family' => 'Inter', 'weight' => 'normal', 'style' => 'normal'], resource_path('fonts/Inter-Regular.ttf'));
+        $fontMetrics->registerFont(['family' => 'Inter', 'weight' => 'bold', 'style' => 'normal'], resource_path('fonts/Inter-Bold.ttf'));
+
         $pdf->render();
         $pdf->getDomPDF()->getCanvas()->page_text(
             497, 812, 'Page {PAGE_NUM} of {PAGE_COUNT}', null, 8, [0.66, 0.66, 0.66]
