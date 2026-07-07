@@ -41,6 +41,28 @@
     </div>
 
     <div>
+      <label class="block text-xs font-medium text-stone-600 mb-1">Screenshots</label>
+      @if ($project->exists && $project->images->isNotEmpty())
+        <div class="grid grid-cols-4 gap-2 mb-2">
+          @foreach ($project->images as $image)
+            <label class="block cursor-pointer">
+              <img src="{{ $image->imageUrl() }}" alt="" class="w-full h-20 object-cover rounded border border-stone-200 mb-1">
+              <span class="flex items-center gap-1 text-xs text-red-600">
+                <input type="checkbox" name="remove_images[]" value="{{ $image->id }}"> Remove
+              </span>
+            </label>
+          @endforeach
+        </div>
+      @endif
+      <input type="file" name="gallery[]" multiple accept="image/*" class="w-full border rounded px-3 py-2 text-sm bg-white @error('gallery') border-red-400 @else border-stone-300 @enderror">
+      @error('gallery')
+        <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+      @else
+        <p class="text-xs text-stone-400 mt-1">Shown as a gallery on the project's case study page. JPG, PNG, or WebP, up to 4MB each, 8 max.</p>
+      @enderror
+    </div>
+
+    <div>
       <label class="block text-xs font-medium text-stone-600 mb-1">Image alt text</label>
       <input name="image_alt" value="{{ old('image_alt', $project->image_alt) }}" placeholder="Describe what the image shows, e.g. &quot;Dashboard screenshot showing the invoice list&quot;" class="w-full border rounded px-3 py-2 text-sm @error('image_alt') border-red-400 @else border-stone-300 @enderror">
       @error('image_alt')
@@ -59,6 +81,15 @@
         @if ($project->exists && $project->slug)
           <p class="text-xs text-stone-400 mt-1">{{ url('/work/'.$project->slug) }}</p>
         @endif
+      @enderror
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-stone-600 mb-1">GitHub URL</label>
+      <input name="github_url" value="{{ old('github_url', $project->github_url) }}" placeholder="https://github.com/you/repo" class="w-full border rounded px-3 py-2 text-sm @error('github_url') border-red-400 @else border-stone-300 @enderror">
+      @error('github_url')
+        <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+      @else
+        <p class="text-xs text-stone-400 mt-1">Shown as a link on the project's case study page. Leave blank to hide.</p>
       @enderror
     </div>
     <div>
