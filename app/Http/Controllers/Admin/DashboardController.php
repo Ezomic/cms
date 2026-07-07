@@ -10,10 +10,11 @@ use App\Models\Project;
 use App\Models\Skill;
 use App\Models\Testimonial;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $dailyViews = PageView::select(
             DB::raw('date(created_at) as day'),

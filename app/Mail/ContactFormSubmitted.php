@@ -14,7 +14,7 @@ class ContactFormSubmitted extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public $tries = 3;
+    public int $tries = 3;
 
     public function __construct(public ContactSubmission $submission) {}
 

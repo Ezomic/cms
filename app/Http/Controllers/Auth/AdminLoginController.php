@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class AdminLoginController extends Controller
 {
-    public function show()
+    public function show(): View|RedirectResponse
     {
         if (Auth::check()) {
             return redirect()->route('admin.dashboard');
@@ -18,7 +20,7 @@ class AdminLoginController extends Controller
         return view('auth.login');
     }
 
-    public function login(Request $request)
+    public function login(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
@@ -46,7 +48,7 @@ class AdminLoginController extends Controller
         return redirect()->intended(route('admin.dashboard'));
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request): RedirectResponse
     {
         Auth::logout();
         $request->session()->invalidate();

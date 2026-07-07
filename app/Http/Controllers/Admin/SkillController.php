@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Skill;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\View\View;
 
 class SkillController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $search = $request->string('search')->trim()->toString();
 
@@ -26,38 +29,38 @@ class SkillController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(): View
     {
         return view('admin.skills.form', ['skill' => new Skill]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         Skill::create($this->validated($request));
 
         return redirect()->route('admin.skills.index')->with('status', 'Skill added.');
     }
 
-    public function edit(Skill $skill)
+    public function edit(Skill $skill): View
     {
         return view('admin.skills.form', compact('skill'));
     }
 
-    public function update(Request $request, Skill $skill)
+    public function update(Request $request, Skill $skill): RedirectResponse
     {
         $skill->update($this->validated($request));
 
         return redirect()->route('admin.skills.index')->with('status', 'Skill updated.');
     }
 
-    public function destroy(Skill $skill)
+    public function destroy(Skill $skill): RedirectResponse
     {
         $skill->delete();
 
         return back()->with('status', 'Skill deleted.');
     }
 
-    public function reorder(Request $request)
+    public function reorder(Request $request): Response
     {
         $data = $request->validate([
             'ids' => ['required', 'array'],
@@ -71,27 +74,30 @@ class SkillController extends Controller
         return response()->noContent();
     }
 
-    public function trash()
+    public function trash(): View
     {
         return view('admin.skills.trash', [
             'skills' => Skill::onlyTrashed()->ordered()->get()->groupBy('category'),
         ]);
     }
 
-    public function restore(int $id)
+    public function restore(int $id): RedirectResponse
     {
         Skill::onlyTrashed()->findOrFail($id)->restore();
 
         return back()->with('status', 'Skill restored.');
     }
 
-    public function forceDelete(int $id)
+    public function forceDelete(int $id): RedirectResponse
     {
         Skill::onlyTrashed()->findOrFail($id)->forceDelete();
 
         return back()->with('status', 'Skill permanently deleted.');
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function validated(Request $request): array
     {
         return $request->validate([

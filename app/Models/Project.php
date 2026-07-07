@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Concerns\BustsHomeCache;
 use App\Concerns\HasLocalizedContent;
 use App\Concerns\LogsActivity;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -32,16 +33,27 @@ class Project extends Model
         });
     }
 
-    public function scopeOrdered($query)
+    /**
+     * @param  Builder<Project>  $query
+     * @return Builder<Project>
+     */
+    public function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('sort_order')->orderByDesc('year');
     }
 
-    public function scopePublished($query)
+    /**
+     * @param  Builder<Project>  $query
+     * @return Builder<Project>
+     */
+    public function scopePublished(Builder $query): Builder
     {
         return $query->where('published', true);
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function tagList(): array
     {
         if (! $this->tags) {
