@@ -344,4 +344,129 @@ class CvTest extends TestCase
         $response->assertOk();
         $response->assertHeader('content-type', 'application/pdf');
     }
+
+    public function test_cv_view_renders_hero_headline_when_set(): void
+    {
+        $profile = Profile::current();
+        $profile->update(['hero_headline' => 'Building fast, reliable web apps.']);
+        $skills = Skill::query()->get()->groupBy('category');
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => collect()])->render();
+
+        $this->assertStringContainsString('<div class="hero-line">Building fast, reliable web apps.</div>', $html);
+    }
+
+    public function test_cv_view_omits_hero_line_when_hero_headline_is_blank(): void
+    {
+        $profile = Profile::current();
+        $profile->update(['hero_headline' => '']);
+        $skills = Skill::query()->get()->groupBy('category');
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => collect()])->render();
+
+        $this->assertStringNotContainsString('<div class="hero-line">', $html);
+    }
+
+    public function test_cv_view_omits_hero_line_when_hero_headline_key_is_missing(): void
+    {
+        $profile = (object) [
+            'name' => 'Jane Doe',
+            'city' => 'Amsterdam',
+            'tagline' => 'Developer',
+            'hero_subtext' => 'I build things.',
+            'available' => false,
+            'email' => null,
+            'linkedin_url' => null,
+            'github_url' => null,
+            'rate' => null,
+            'availability_from' => null,
+            'kvk_number' => null,
+        ];
+        $skills = Skill::query()->get()->groupBy('category');
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => collect()])->render();
+
+        $this->assertStringNotContainsString('<div class="hero-line">', $html);
+        $this->assertStringContainsString('<p class="intro">I build things.</p>', $html);
+    }
+
+    public function test_cv_view_renders_first_skill_of_each_category_in_lowest_sort_order(): void
+    {
+        Skill::create(['category' => 'Backend', 'name' => 'PHP', 'sort_order' => 1]);
+        Skill::create(['category' => 'Backend', 'name' => 'Laravel', 'sort_order' => 0]);
+        Skill::create(['category' => 'Backend', 'name' => 'MySQL', 'sort_order' => 2]);
+
+        $profile = Profile::current();
+        $skills = Skill::ordered()->get()->groupBy('category');
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => collect()])->render();
+
+        $this->assertTrue(
+            strpos($html, '<li>Laravel</li>') < strpos($html, '<li>PHP</li>')
+            && strpos($html, '<li>PHP</li>') < strpos($html, '<li>MySQL</li>')
+        );
+    }
+
+    public function test_cv_view_css_bolds_the_first_skill_in_each_column(): void
+    {
+        $profile = Profile::current();
+        $skills = Skill::query()->get()->groupBy('category');
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => collect()])->render();
+
+        $this->assertStringContainsString(
+            '.skills-col li:first-child { border-top: none; font-weight: 700; color: #17181A; }',
+            $html
+        );
+    }
+
+    public function test_cv_view_shows_get_in_touch_link_when_available_and_email_set(): void
+    {
+        $profile = Profile::current();
+        $profile->update(['available' => true, 'email' => 'jane@example.com']);
+        $skills = Skill::query()->get()->groupBy('category');
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => collect()])->render();
+
+        $this->assertStringContainsString('<div class="availability-box">', $html);
+        $this->assertStringContainsString('<a href="mailto:jane@example.com">Get in touch &rarr;</a>', $html);
+    }
+
+    public function test_cv_view_omits_get_in_touch_link_when_available_but_no_email(): void
+    {
+        $profile = Profile::current();
+        $profile->update(['available' => true, 'email' => null]);
+        $skills = Skill::query()->get()->groupBy('category');
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => collect()])->render();
+
+        $this->assertStringContainsString('<div class="availability-box">', $html);
+        $this->assertStringNotContainsString('Get in touch', $html);
+    }
+
+    public function test_cv_view_omits_get_in_touch_link_from_availability_line_when_not_available(): void
+    {
+        $profile = Profile::current();
+        $profile->update(['available' => false, 'email' => 'jane@example.com']);
+        $skills = Skill::query()->get()->groupBy('category');
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => collect()])->render();
+
+        $this->assertStringContainsString('<div class="availability-line">', $html);
+        $this->assertStringNotContainsString('Get in touch', $html);
+    }
+
+    public function test_cv_view_footer_always_links_to_home_route(): void
+    {
+        $profile = Profile::current();
+        $skills = Skill::query()->get()->groupBy('category');
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => collect()])->render();
+
+        $host = parse_url(route('home'), PHP_URL_HOST);
+
+        $this->assertStringContainsString('<a href="'.route('home').'">'.$host.'</a>', $html);
+        $this->assertStringNotContainsString('>http://'.$host.'</a>', $html);
+        $this->assertStringNotContainsString('>https://'.$host.'</a>', $html);
+    }
 }
