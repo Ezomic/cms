@@ -35,7 +35,6 @@
         Log in
       </button>
     </form>
-    <p class="text-xs text-stone-400 text-center mt-4">Seeded admin: admin@example.com / password</p>
   </div>
 </body>
 </html>
