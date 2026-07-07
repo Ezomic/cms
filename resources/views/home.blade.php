@@ -378,10 +378,10 @@
         <a class="contact-row" href="mailto:{{ $profile->email }}"><span>Email</span> {{ $profile->email }}</a>
         @endif
         @if ($profile->linkedin_url)
-        <a class="contact-row" href="{{ $profile->linkedin_url }}" target="_blank"><span>LinkedIn</span> {{ $profile->linkedin_url }}</a>
+        <a class="contact-row" href="{{ $profile->linkedin_url }}" target="_blank" rel="noopener noreferrer"><span>LinkedIn</span> {{ $profile->linkedin_url }}</a>
         @endif
         @if ($profile->github_url)
-        <a class="contact-row" href="{{ $profile->github_url }}" target="_blank"><span>GitHub</span> {{ $profile->github_url }}</a>
+        <a class="contact-row" href="{{ $profile->github_url }}" target="_blank" rel="noopener noreferrer"><span>GitHub</span> {{ $profile->github_url }}</a>
         @endif
       </div>
 
