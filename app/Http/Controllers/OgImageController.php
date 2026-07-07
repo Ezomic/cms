@@ -24,7 +24,7 @@ class OgImageController extends Controller
         });
 
         return response($png, 200, [
-            'Content-Type'  => 'image/png',
+            'Content-Type' => 'image/png',
             'Cache-Control' => 'public, max-age=604800',
         ]);
     }
@@ -46,7 +46,7 @@ class OgImageController extends Controller
         });
 
         return response($png, 200, [
-            'Content-Type'  => 'image/png',
+            'Content-Type' => 'image/png',
             'Cache-Control' => 'public, max-age=604800',
         ]);
     }
@@ -57,11 +57,11 @@ class OgImageController extends Controller
         $h = 630;
         $img = imagecreatetruecolor($w, $h);
 
-        $bg      = imagecolorallocate($img, 247, 247, 244);
-        $ink     = imagecolorallocate($img, 23, 24, 26);
-        $accent  = imagecolorallocate($img, 232, 89, 12);
-        $soft    = imagecolorallocate($img, 99, 100, 95);
-        $line    = imagecolorallocate($img, 221, 221, 214);
+        $bg = imagecolorallocate($img, 247, 247, 244);
+        $ink = imagecolorallocate($img, 23, 24, 26);
+        $accent = imagecolorallocate($img, 232, 89, 12);
+        $soft = imagecolorallocate($img, 99, 100, 95);
+        $line = imagecolorallocate($img, 221, 221, 214);
 
         imagefill($img, 0, 0, $bg);
 

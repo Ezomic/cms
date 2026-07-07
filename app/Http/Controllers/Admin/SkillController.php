@@ -28,7 +28,7 @@ class SkillController extends Controller
 
     public function create()
     {
-        return view('admin.skills.form', ['skill' => new Skill()]);
+        return view('admin.skills.form', ['skill' => new Skill]);
     }
 
     public function store(Request $request)
@@ -60,7 +60,7 @@ class SkillController extends Controller
     public function reorder(Request $request)
     {
         $data = $request->validate([
-            'ids'   => ['required', 'array'],
+            'ids' => ['required', 'array'],
             'ids.*' => ['integer', 'exists:skills,id'],
         ]);
 
@@ -95,8 +95,8 @@ class SkillController extends Controller
     private function validated(Request $request): array
     {
         return $request->validate([
-            'category'   => ['required', 'string', 'max:100'],
-            'name'       => ['required', 'string', 'max:255'],
+            'category' => ['required', 'string', 'max:100'],
+            'name' => ['required', 'string', 'max:255'],
             'sort_order' => ['nullable', 'integer'],
         ]);
     }

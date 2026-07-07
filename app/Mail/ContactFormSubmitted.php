@@ -16,9 +16,7 @@ class ContactFormSubmitted extends Mailable implements ShouldQueue
 
     public $tries = 3;
 
-    public function __construct(public ContactSubmission $submission)
-    {
-    }
+    public function __construct(public ContactSubmission $submission) {}
 
     public function envelope(): Envelope
     {

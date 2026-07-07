@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
+use App\Models\ContactSubmission;
 use App\Models\PageView;
 use App\Models\Project;
 use App\Models\Skill;
@@ -15,9 +16,9 @@ class DashboardController extends Controller
     public function index()
     {
         $dailyViews = PageView::select(
-                DB::raw("date(created_at) as day"),
-                DB::raw('count(*) as views')
-            )
+            DB::raw('date(created_at) as day'),
+            DB::raw('count(*) as views')
+        )
             ->where('created_at', '>=', now()->subDays(29))
             ->groupBy('day')
             ->orderBy('day')
@@ -33,14 +34,14 @@ class DashboardController extends Controller
             ->get();
 
         return view('admin.dashboard', [
-            'projectCount'     => Project::count(),
-            'skillCount'       => Skill::count(),
+            'projectCount' => Project::count(),
+            'skillCount' => Skill::count(),
             'testimonialCount' => Testimonial::count(),
-            'pageViewCount'    => PageView::count(),
-            'activity'         => ActivityLog::with('user')->latest()->take(8)->get(),
-            'sparkline'        => $sparkline,
-            'topPaths'         => $topPaths,
-            'contactCount'     => \App\Models\ContactSubmission::count(),
+            'pageViewCount' => PageView::count(),
+            'activity' => ActivityLog::with('user')->latest()->take(8)->get(),
+            'sparkline' => $sparkline,
+            'topPaths' => $topPaths,
+            'contactCount' => ContactSubmission::count(),
         ]);
     }
 }

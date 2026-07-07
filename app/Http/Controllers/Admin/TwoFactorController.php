@@ -12,8 +12,8 @@ class TwoFactorController extends Controller
     public function show(Request $request)
     {
         return view('admin.two-factor.show', [
-            'user'          => $request->user(),
-            'otpAuthUri'    => $this->buildOtpAuthUri($request->user()),
+            'user' => $request->user(),
+            'otpAuthUri' => $this->buildOtpAuthUri($request->user()),
             'recoveryCodes' => session('two_factor_recovery_codes'),
         ]);
     }
@@ -21,7 +21,7 @@ class TwoFactorController extends Controller
     public function enable(Request $request)
     {
         $user = $request->user();
-        $user->two_factor_secret = (new Google2FA())->generateSecretKey();
+        $user->two_factor_secret = (new Google2FA)->generateSecretKey();
         $user->two_factor_confirmed_at = null;
         $user->two_factor_recovery_codes = null;
         $user->save();
@@ -35,7 +35,7 @@ class TwoFactorController extends Controller
 
         $user = $request->user();
 
-        if (! $user->two_factor_secret || ! (new Google2FA())->verifyKey($user->two_factor_secret, $request->string('code')->toString())) {
+        if (! $user->two_factor_secret || ! (new Google2FA)->verifyKey($user->two_factor_secret, $request->string('code')->toString())) {
             return back()->withErrors(['code' => 'That code is invalid.']);
         }
 
@@ -69,7 +69,7 @@ class TwoFactorController extends Controller
             return null;
         }
 
-        return (new Google2FA())->getQRCodeUrl(
+        return (new Google2FA)->getQRCodeUrl(
             config('app.name'),
             $user->email,
             $user->two_factor_secret,

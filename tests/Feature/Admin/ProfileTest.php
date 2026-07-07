@@ -21,11 +21,11 @@ class ProfileTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->put('/admin/profile', [
-            'name'          => 'Jane Developer',
-            'city'          => 'Amsterdam',
-            'tagline'       => 'Backend Engineer',
+            'name' => 'Jane Developer',
+            'city' => 'Amsterdam',
+            'tagline' => 'Backend Engineer',
             'hero_headline' => 'Building solid backends.',
-            'available'     => '1',
+            'available' => '1',
         ]);
 
         $response->assertRedirect();

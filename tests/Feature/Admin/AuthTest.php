@@ -22,7 +22,7 @@ class AuthTest extends TestCase
         User::factory()->create(['email' => 'admin@example.com', 'password' => bcrypt('password')]);
 
         $response = $this->post('/admin/login', [
-            'email'    => 'admin@example.com',
+            'email' => 'admin@example.com',
             'password' => 'wrong-password',
         ]);
 
@@ -35,7 +35,7 @@ class AuthTest extends TestCase
         User::factory()->create(['email' => 'admin@example.com', 'password' => bcrypt('password')]);
 
         $response = $this->post('/admin/login', [
-            'email'    => 'admin@example.com',
+            'email' => 'admin@example.com',
             'password' => 'password',
         ]);
 

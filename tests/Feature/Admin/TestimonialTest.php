@@ -21,10 +21,10 @@ class TestimonialTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->post('/admin/testimonials', [
-            'quote'       => 'Excellent work.',
+            'quote' => 'Excellent work.',
             'author_name' => 'A Client',
             'author_role' => 'CEO, Acme',
-            'featured'    => '1',
+            'featured' => '1',
         ]);
 
         $response->assertRedirect('/admin/testimonials');
@@ -46,7 +46,7 @@ class TestimonialTest extends TestCase
         $testimonial = Testimonial::create(['quote' => 'Old quote', 'featured' => false]);
 
         $response = $this->actingAs($user)->put("/admin/testimonials/{$testimonial->id}", [
-            'quote'    => 'Updated quote',
+            'quote' => 'Updated quote',
             'featured' => '1',
         ]);
 
