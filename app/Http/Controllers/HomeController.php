@@ -106,13 +106,18 @@ class HomeController extends Controller
         $profile = Profile::current();
         $skills = Skill::ordered()->get()->groupBy('category')
             ->map(fn ($items) => $items->map(fn ($s) => (object) $s->toArray()));
-        $projects = Project::published()->ordered()->get()->map(fn ($p) => (object) [
+        $projects = Project::published()->ordered()->take(4)->get()->map(fn ($p) => (object) [
             ...$p->toArray(),
             'tag_list' => $p->tagList(),
         ]);
 
         $pdf = Pdf::loadView('cv', compact('profile', 'skills', 'projects'))
             ->setPaper('a4');
+
+        $pdf->render();
+        $pdf->getDomPDF()->getCanvas()->page_text(
+            497, 812, 'Page {PAGE_NUM} of {PAGE_COUNT}', null, 8, [0.66, 0.66, 0.66]
+        );
 
         $filename = str($profile->name)->slug()->append('-cv.pdf')->toString();
 

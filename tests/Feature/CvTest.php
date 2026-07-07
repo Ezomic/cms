@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Profile;
+use App\Models\Project;
 use App\Models\Skill;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -17,6 +18,137 @@ class CvTest extends TestCase
 
         $response->assertOk();
         $response->assertHeader('content-type', 'application/pdf');
+    }
+
+    public function test_cv_download_is_attached_with_a_filename(): void
+    {
+        $response = $this->get('/cv.pdf');
+
+        $response->assertOk();
+        $response->assertHeader('content-disposition');
+        $this->assertStringContainsString('attachment', $response->headers->get('content-disposition'));
+        $this->assertStringContainsString('cv.pdf', $response->headers->get('content-disposition'));
+    }
+
+    public function test_cv_query_limits_published_projects_to_four(): void
+    {
+        for ($i = 1; $i <= 6; $i++) {
+            Project::create(['name' => "Project {$i}", 'sort_order' => $i, 'published' => true]);
+        }
+
+        $projects = Project::published()->ordered()->take(4)->get();
+
+        $this->assertCount(4, $projects);
+    }
+
+    public function test_cv_route_still_renders_successfully_with_more_than_four_published_projects(): void
+    {
+        for ($i = 1; $i <= 6; $i++) {
+            Project::create(['name' => "Project {$i}", 'sort_order' => $i, 'published' => true]);
+        }
+
+        $response = $this->get('/cv.pdf');
+
+        $response->assertOk();
+        $response->assertHeader('content-type', 'application/pdf');
+    }
+
+    public function test_cv_query_excludes_unpublished_projects_from_the_four_project_cap(): void
+    {
+        Project::create(['name' => 'Published One', 'sort_order' => 0, 'published' => true]);
+        Project::create(['name' => 'Published Two', 'sort_order' => 1, 'published' => true]);
+        Project::create(['name' => 'Unpublished One', 'sort_order' => 2, 'published' => false]);
+
+        $projects = Project::published()->ordered()->take(4)->get();
+
+        $this->assertCount(2, $projects);
+        $this->assertTrue($projects->pluck('name')->doesntContain('Unpublished One'));
+    }
+
+    public function test_cv_view_only_renders_the_projects_it_is_given(): void
+    {
+        $profile = Profile::current();
+        $skills = Skill::query()->get()->groupBy('category');
+
+        $projects = collect(range(1, 6))->map(fn ($i) => (object) [
+            'name' => "Case Study {$i}",
+            'year' => '2024',
+            'client_name' => null,
+            'description' => null,
+            'tag_list' => [],
+        ])->take(4);
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => $projects])->render();
+
+        $this->assertStringContainsString('Case Study 1', $html);
+        $this->assertStringContainsString('Case Study 4', $html);
+        $this->assertStringNotContainsString('Case Study 5', $html);
+        $this->assertStringNotContainsString('Case Study 6', $html);
+    }
+
+    public function test_cv_view_wraps_contact_details_in_links(): void
+    {
+        $profile = Profile::current();
+        $profile->update([
+            'email' => 'jane@example.com',
+            'linkedin_url' => 'https://linkedin.com/in/jane',
+            'github_url' => 'https://github.com/jane',
+        ]);
+        $skills = Skill::query()->get()->groupBy('category');
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => collect()])->render();
+
+        $this->assertStringContainsString('<a href="mailto:jane@example.com">', $html);
+        $this->assertStringContainsString('<a href="https://linkedin.com/in/jane">', $html);
+        $this->assertStringContainsString('<a href="https://github.com/jane">', $html);
+    }
+
+    public function test_cv_view_renders_each_project_tag_as_its_own_span(): void
+    {
+        $profile = Profile::current();
+        $skills = Skill::query()->get()->groupBy('category');
+
+        $projects = collect([
+            (object) [
+                'name' => 'Tagged Project',
+                'year' => '2024',
+                'client_name' => null,
+                'description' => null,
+                'tag_list' => ['Laravel', 'Vue', 'Tailwind'],
+            ],
+        ]);
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => $projects])->render();
+
+        $this->assertStringContainsString('<span>Laravel</span>', $html);
+        $this->assertStringContainsString('<span>Vue</span>', $html);
+        $this->assertStringContainsString('<span>Tailwind</span>', $html);
+    }
+
+    public function test_cv_view_shows_availability_box_when_profile_is_available(): void
+    {
+        $profile = Profile::current();
+        $profile->update(['available' => true]);
+        $skills = Skill::query()->get()->groupBy('category');
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => collect()])->render();
+
+        $this->assertStringContainsString('<div class="availability-box">', $html);
+        $this->assertStringContainsString('Currently available', $html);
+        $this->assertStringNotContainsString('<div class="availability-line">', $html);
+    }
+
+    public function test_cv_view_shows_availability_line_when_profile_is_not_available(): void
+    {
+        $profile = Profile::current();
+        $profile->update(['available' => false]);
+        $skills = Skill::query()->get()->groupBy('category');
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => collect()])->render();
+
+        $this->assertStringContainsString('<div class="availability-line">', $html);
+        $this->assertStringContainsString('Currently booked', $html);
+        $this->assertStringNotContainsString('<div class="availability-box">', $html);
     }
 
     public function test_cv_view_omits_kvk_number_when_blank(): void
