@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         // Admin login — change the password after your first login.
         User::firstOrCreate(
-            ['email' => 'admin@example.com'],
+            ['email' => 'robbin_thijssen@hotmail.nl'],
             ['name' => 'Admin', 'password' => bcrypt('password')]
         );
 
