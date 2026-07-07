@@ -33,13 +33,13 @@ return [
     'process_label' => 'Hoe ik werk',
     'process_headline' => 'Vier stappen, geen verrassingen.',
     'process_1_title' => 'Scopen',
-    'process_1_body' => 'Een kort gesprek om het probleem te begrijpen, gevolgd door een heldere offerte — vaste prijs of dagtarief.',
+    'process_1_body' => 'Een kort gesprek om het probleem te begrijpen, gevolgd door een heldere offerte: vaste prijs of dagtarief.',
     'process_2_title' => 'Plannen',
-    'process_2_body' => 'Technische aanpak, mijlpalen en een realistische planning — allemaal vastgelegd vóór er ook maar één regel code wordt geschreven.',
+    'process_2_body' => 'We leggen de technische aanpak, mijlpalen en een realistische planning vast vóórdat er een regel code wordt geschreven.',
     'process_3_title' => 'Bouwen',
     'process_3_body' => 'Wekelijkse updates en een staging-link die je kunt volgen, zodat er niets als een verrassing komt.',
     'process_4_title' => 'Opleveren',
-    'process_4_body' => 'Gedeployed, gedocumenteerd en overgedragen — inclusief een supportvenster voor alles na de lancering.',
+    'process_4_body' => 'Gedeployed, gedocumenteerd en overgedragen. Daarna is er nog een supportvenster mocht er iets zijn.',
 
     'contact_label' => 'Neem contact op',
     'contact_headline' => 'Een project in gedachten?',
@@ -60,7 +60,7 @@ return [
     'contact_message_hint' => 'Beschrijf het project, eventuele technische vereisten en je gewenste planning.',
     'contact_submit' => 'Verstuur bericht →',
     'contact_response_time' => 'Ik reageer doorgaans binnen één werkdag.',
-    'contact_success' => 'Bedankt — je bericht is verzonden. Ik reageer doorgaans binnen één werkdag.',
+    'contact_success' => 'Bedankt, je bericht is binnen. Ik reageer doorgaans binnen één werkdag.',
 
     'meta_availability_now' => 'Nu',
     'meta_availability_from' => 'Vanaf :date',
@@ -76,7 +76,7 @@ return [
     'services_headline' => 'Wat ik bouw.',
 
     'service_1_title' => 'Webapplicatie',
-    'service_1_body' => 'Full-stack productbuilds van ontwerp tot deployment — Laravel backend, Vue of Blade frontend, getest en productie-gereed.',
+    'service_1_body' => 'Full-stack productbuilds van ontwerp tot deployment: Laravel backend, Vue of Blade frontend, getest en klaar voor productie.',
     'service_1_items' => ['Nieuw SaaS-product of intern tool', 'Functies toevoegen aan bestaande app', 'Laravel upgrade of refactor'],
     'service_1_price' => 'Dagtarief: :rate / vaste prijs op aanvraag',
 
@@ -86,7 +86,7 @@ return [
     'service_2_price' => 'Dagtarief: :rate / vaste prijs op aanvraag',
 
     'service_3_title' => 'Advies & review',
-    'service_3_body' => 'Code review, architectuuradvies of een technische audit — nuttig voor een grote migratie of als je een tweede mening wilt.',
+    'service_3_body' => 'Code review, architectuuradvies of een technische audit. Handig vóór een grote migratie, of als je gewoon een tweede mening wilt.',
     'service_3_items' => ['Architectuurreview', 'Code-kwaliteitsaudit', 'Technische sollicitatiescreen'],
     'service_3_price' => 'Halve dag of dagtarief op aanvraag',
 
