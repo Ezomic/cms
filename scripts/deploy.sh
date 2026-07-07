@@ -106,7 +106,7 @@ ok "Caches rebuilt"
 
 # ── 7. Permissions ────────────────────────────────────────────────────────────
 step "Fixing permissions"
-chmod -R 755 storage bootstrap/cache
+chmod -R 755 storage bootstrap/cache 2>/dev/null || true
 chmod 664 database/database.sqlite 2>/dev/null || true
 ok "Permissions set"
 
