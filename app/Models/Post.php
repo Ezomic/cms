@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Concerns\BustsHomeCache;
+use App\Concerns\HasLocalizedContent;
 use App\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,10 +11,11 @@ use Illuminate\Support\Str;
 
 class Post extends Model
 {
-    use BustsHomeCache, LogsActivity, SoftDeletes;
+    use BustsHomeCache, HasLocalizedContent, LogsActivity, SoftDeletes;
 
     protected $fillable = [
         'title', 'slug', 'excerpt', 'body', 'published', 'published_at', 'meta_title', 'meta_description',
+        'title_nl', 'excerpt_nl', 'body_nl', 'meta_title_nl', 'meta_description_nl',
     ];
 
     protected $casts = [
@@ -39,22 +41,43 @@ class Post extends Model
         return $query->where('published', true);
     }
 
+    /**
+     * Named localizedX rather than title()/excerpt()/body() — Eloquent's
+     * __get() treats an undefined attribute access as a possible relationship
+     * method call when a same-named method exists, which throws for models
+     * missing that attribute (e.g. `new Post(['title' => 'X'])`).
+     */
+    public function localizedTitle(): ?string
+    {
+        return $this->localized('title');
+    }
+
+    public function localizedExcerpt(): ?string
+    {
+        return $this->localized('excerpt');
+    }
+
+    public function localizedBody(): ?string
+    {
+        return $this->localized('body');
+    }
+
     public function metaTitle(): string
     {
-        return $this->meta_title ?: $this->title;
+        return $this->localized('meta_title') ?: $this->localizedTitle();
     }
 
     public function metaDescription(): string
     {
-        if ($this->meta_description) {
-            return $this->meta_description;
+        if ($this->localized('meta_description')) {
+            return $this->localized('meta_description');
         }
 
-        if ($this->excerpt) {
-            return $this->excerpt;
+        if ($this->localizedExcerpt()) {
+            return $this->localizedExcerpt();
         }
 
-        return $this->body ? Str::limit(trim(strip_tags($this->body)), 160) : '';
+        return $this->localizedBody() ? Str::limit(trim(strip_tags($this->localizedBody())), 160) : '';
     }
 
     protected function uniqueSlugFrom(string $title): string

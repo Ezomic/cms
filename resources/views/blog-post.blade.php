@@ -13,7 +13,7 @@
 @include('partials.schema.breadcrumbs', ['items' => [
     ['name' => __('site.breadcrumb_home'), 'url' => localized_route('home')],
     ['name' => __('site.breadcrumb_blog'), 'url' => localized_route('blog.index')],
-    ['name' => $post->title, 'url' => localized_route('blog.show', $post->slug)],
+    ['name' => $post->localizedTitle(), 'url' => localized_route('blog.show', $post->slug)],
 ]])
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -80,7 +80,7 @@
 <header class="hero">
   <div class="wrap">
     <div class="eyebrow">{{ __('site.blog_eyebrow') }}</div>
-    <h1>{{ $post->title }}</h1>
+    <h1>{{ $post->localizedTitle() }}</h1>
     <div class="meta-row">
       @if ($post->published_at)<span>{{ $post->published_at->format('F j, Y') }}</span>@endif
     </div>
@@ -89,7 +89,7 @@
 
 <div class="wrap">
   <div class="body-content">
-    {!! $post->body !!}
+    {!! $post->localizedBody() !!}
   </div>
 
   <div style="padding:48px 0;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">

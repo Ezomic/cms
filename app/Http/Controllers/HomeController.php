@@ -24,9 +24,23 @@ class HomeController extends Controller
         // would bake one visitor's CSRF token into every other visitor's
         // page. Arrays cache and restore cleanly; we cast them back to
         // stdClass so the view's property access keeps working unchanged.
-        $data = Cache::rememberForever('home.page.data', function () {
+        //
+        // Keyed per locale: translatable fields are resolved to the current
+        // locale before caching, so each key holds one language's copy.
+        $locale = app()->getLocale();
+
+        $data = Cache::rememberForever("home.page.data.{$locale}", function () {
+            $profile = Profile::current();
+
             return [
-                'profile' => Profile::current()->toArray(),
+                'profile' => [
+                    ...$profile->toArray(),
+                    'tagline' => $profile->localizedTagline(),
+                    'hero_headline' => $profile->heroHeadline(),
+                    'hero_subtext' => $profile->heroSubtext(),
+                    'meta_title' => $profile->metaTitle(),
+                    'meta_description' => $profile->metaDescription(),
+                ],
                 'skills' => Skill::ordered()->get()->groupBy('category')
                     ->map(fn ($items) => $items->map(fn ($skill) => $skill->toArray())->all())
                     ->all(),
@@ -34,9 +48,13 @@ class HomeController extends Controller
                     ...$project->toArray(),
                     'tag_list' => $project->tagList(),
                     'image_url' => $project->imageUrl(),
-                    'outcome' => $project->outcome,
+                    'description' => $project->localizedDescription(),
+                    'outcome' => $project->localizedOutcome(),
                 ])->all(),
-                'testimonials' => Testimonial::where('featured', true)->latest()->get()->map->toArray()->all(),
+                'testimonials' => Testimonial::where('featured', true)->latest()->get()->map(fn ($testimonial) => [
+                    ...$testimonial->toArray(),
+                    'quote' => $testimonial->localizedQuote(),
+                ])->all(),
             ];
         });
 
@@ -65,6 +83,8 @@ class HomeController extends Controller
             ...$p->toArray(),
             'tag_list' => $p->tagList(),
             'image_url' => $p->imageUrl(),
+            'image_alt' => $p->imageAlt(),
+            'description' => $p->localizedDescription(),
         ]);
 
         $tags = $projects->flatMap(fn ($p) => $p->tag_list)->unique()->sort()->values();
@@ -83,6 +103,8 @@ class HomeController extends Controller
             ...$p->toArray(),
             'tag_list' => $p->tagList(),
             'image_url' => $p->imageUrl(),
+            'image_alt' => $p->imageAlt(),
+            'description' => $p->localizedDescription(),
         ]);
 
         $tags = $allProjects->flatMap(fn ($p) => $p->tag_list)->unique()->sort()->values();

@@ -126,7 +126,7 @@
   <div class="page-header">
     <div class="eyebrow">{{ __('docs.page_eyebrow') }}</div>
     <h1>{{ __('docs.page_headline') }}</h1>
-    <p class="lead">{{ $profile->docs_intro ?: __('docs.page_lead') }}</p>
+    <p class="lead">{{ $profile->docsIntro() ?: __('docs.page_lead') }}</p>
   </div>
 
   <div class="toc">

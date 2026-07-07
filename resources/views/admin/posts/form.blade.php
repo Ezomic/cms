@@ -40,6 +40,37 @@
         @error('meta_description')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
       </div>
     </div>
+
+    <fieldset class="border border-stone-200 rounded p-4 space-y-4">
+      <legend class="text-xs font-medium text-stone-600 px-1">Nederlands (NL)</legend>
+      <p class="text-xs text-stone-400">Optional. Falls back to the English text above when left blank.</p>
+      <div>
+        <label class="block text-xs font-medium text-stone-600 mb-1">Title (NL)</label>
+        <input name="title_nl" value="{{ old('title_nl', $post->title_nl) }}" class="w-full border rounded px-3 py-2 text-sm @error('title_nl') border-red-400 @else border-stone-300 @enderror">
+        @error('title_nl')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-stone-600 mb-1">Excerpt (NL)</label>
+        <textarea name="excerpt_nl" rows="2" class="w-full border rounded px-3 py-2 text-sm @error('excerpt_nl') border-red-400 @else border-stone-300 @enderror">{{ old('excerpt_nl', $post->excerpt_nl) }}</textarea>
+        @error('excerpt_nl')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-stone-600 mb-1">Body (NL)</label>
+        <textarea name="body_nl" rows="14" class="w-full border rounded px-3 py-2 text-sm font-mono @error('body_nl') border-red-400 @else border-stone-300 @enderror">{{ old('body_nl', $post->body_nl) }}</textarea>
+        @error('body_nl')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-stone-600 mb-1">Meta title (NL)</label>
+        <input name="meta_title_nl" value="{{ old('meta_title_nl', $post->meta_title_nl) }}" class="w-full border rounded px-3 py-2 text-sm @error('meta_title_nl') border-red-400 @else border-stone-300 @enderror">
+        @error('meta_title_nl')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-stone-600 mb-1">Meta description (NL)</label>
+        <input name="meta_description_nl" value="{{ old('meta_description_nl', $post->meta_description_nl) }}" class="w-full border rounded px-3 py-2 text-sm @error('meta_description_nl') border-red-400 @else border-stone-300 @enderror">
+        @error('meta_description_nl')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+      </div>
+    </fieldset>
+
     <label class="flex items-center gap-2 text-sm">
       <input type="checkbox" name="published" value="1" {{ old('published', $post->published) ? 'checked' : '' }}>
       Published (visible on the live blog)
