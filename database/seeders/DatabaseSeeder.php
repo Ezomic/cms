@@ -13,10 +13,10 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Admin login — change the password after your first login.
+        // Admin login is passwordless — log in via emailed login code, then register a passkey.
         User::firstOrCreate(
             ['email' => 'robbin_thijssen@hotmail.nl'],
-            ['name' => 'Admin', 'password' => bcrypt('password')]
+            ['name' => 'Admin']
         );
 
         Profile::updateOrCreate(['id' => 1], [

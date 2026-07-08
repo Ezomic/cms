@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -29,16 +28,11 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'confirmed', 'min:8'],
         ]);
 
-        User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        User::create($data);
 
-        return redirect()->route('admin.users.index')->with('status', 'Admin user created.');
+        return redirect()->route('admin.users.index')->with('status', 'Admin user created. They can sign in with an emailed login code, then register a passkey.');
     }
 
     public function edit(User $user): View
@@ -51,17 +45,9 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
-            'password' => ['nullable', 'confirmed', 'min:8'],
         ]);
 
-        $user->name = $data['name'];
-        $user->email = $data['email'];
-
-        if (! empty($data['password'])) {
-            $user->password = Hash::make($data['password']);
-        }
-
-        $user->save();
+        $user->forceFill($data)->save();
 
         return redirect()->route('admin.users.index')->with('status', 'Admin user updated.');
     }
