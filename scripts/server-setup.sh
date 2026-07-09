@@ -9,7 +9,7 @@
 #
 # What it does:
 #   1. Installs PHP 8.4, Nginx, Composer, SQLite3, Certbot, Supervisor
-#   2. Creates a dedicated `deploy` user with a home at /var/www
+#   2. Creates a dedicated `deploy` user with a home at /home/deploy
 #   3. Clones the repository and wires up the .env
 #   4. Configures Nginx + PHP-FPM for the domain
 #   5. Obtains an SSL certificate via Let's Encrypt
@@ -28,7 +28,7 @@ set -euo pipefail
 DOMAIN="${DOMAIN:-}"
 GIT_REPO="${GIT_REPO:-git@github.com:Ezomic/cms.git}"
 ADMIN_EMAIL="${ADMIN_EMAIL:-}"
-APP_DIR="/var/www/cms"
+APP_DIR="/home/deploy/cms"
 DEPLOY_USER="deploy"
 PHP_VERSION="8.4"
 
@@ -92,7 +92,7 @@ ok "Composer $(composer --version --no-ansi)"
 # ── 2. Deploy user ────────────────────────────────────────────────────────────
 step "Creating $DEPLOY_USER user"
 if ! id "$DEPLOY_USER" &>/dev/null; then
-  useradd -m -d /var/www -s /bin/bash "$DEPLOY_USER"
+  useradd -m -s /bin/bash "$DEPLOY_USER"
   ok "User $DEPLOY_USER created"
 else
   ok "User $DEPLOY_USER already exists"

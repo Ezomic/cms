@@ -38,8 +38,8 @@ curl -fsSL https://raw.githubusercontent.com/Ezomic/cms/main/scripts/server-setu
 Or clone first and run locally:
 
 ```bash
-git clone git@github.com:Ezomic/cms.git /var/www/cms
-DOMAIN=yourdomain.nl ADMIN_EMAIL=you@yourdomain.nl bash /var/www/cms/scripts/server-setup.sh
+git clone git@github.com:Ezomic/cms.git /home/deploy/cms
+DOMAIN=yourdomain.nl ADMIN_EMAIL=you@yourdomain.nl bash /home/deploy/cms/scripts/server-setup.sh
 ```
 
 The script is idempotent — safe to re-run if it fails partway through.
@@ -55,8 +55,8 @@ The script is idempotent — safe to re-run if it fails partway through.
 After provisioning, create the production `.env`:
 
 ```bash
-cp /var/www/cms/.env.production.example /var/www/cms/.env
-nano /var/www/cms/.env          # or your editor of choice
+cp /home/deploy/cms/.env.production.example /home/deploy/cms/.env
+nano /home/deploy/cms/.env          # or your editor of choice
 ```
 
 Minimum required values:
@@ -74,7 +74,7 @@ MAIL_FROM_ADDRESS=   # hello@yourdomain.nl
 Generate the app key:
 
 ```bash
-cd /var/www/cms && php artisan key:generate
+cd /home/deploy/cms && php artisan key:generate
 ```
 
 ---
@@ -83,7 +83,7 @@ cd /var/www/cms && php artisan key:generate
 
 ```bash
 su - deploy
-cd /var/www/cms && bash scripts/deploy.sh
+cd /home/deploy/cms && bash scripts/deploy.sh
 ```
 
 This will:
@@ -121,7 +121,7 @@ bash scripts/deploy.sh --remote deploy@yourdomain.nl
 
 ```bash
 ssh deploy@yourdomain.nl
-cd /var/www/cms && bash scripts/deploy.sh
+cd /home/deploy/cms && bash scripts/deploy.sh
 ```
 
 ### Via GitHub Actions (automatic)
@@ -154,7 +154,7 @@ cat ~/.ssh/cms_deploy
 
 ```bash
 # View logs
-tail -f /var/www/cms/storage/logs/laravel.log
+tail -f /home/deploy/cms/storage/logs/laravel.log
 tail -f /var/log/nginx/cms.error.log
 
 # Queue worker status
@@ -164,13 +164,13 @@ sudo supervisorctl status cms-queue:*
 sudo supervisorctl restart cms-queue:*
 
 # Clear all caches manually
-cd /var/www/cms && php artisan cache:clear && php artisan config:cache
+cd /home/deploy/cms && php artisan cache:clear && php artisan config:cache
 
 # Manual database backup
-cd /var/www/cms && php artisan backup:database
+cd /home/deploy/cms && php artisan backup:database
 
 # Run scheduler manually (for testing)
-cd /var/www/cms && php artisan schedule:run --verbose
+cd /home/deploy/cms && php artisan schedule:run --verbose
 ```
 
 ---
@@ -193,7 +193,7 @@ There is no built-in rollback command. Since the database is SQLite:
 2. To roll back to a previous commit:
 
 ```bash
-cd /var/www/cms
+cd /home/deploy/cms
 php artisan down
 git log --oneline -10          # find the target commit
 git reset --hard <commit-sha>
