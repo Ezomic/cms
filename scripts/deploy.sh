@@ -3,7 +3,7 @@
 # deploy.sh — deploy latest code to the production server
 #
 # Run ON the server (as the deploy user):
-#   cd /var/www/cms && bash scripts/deploy.sh
+#   cd /home/deploy/cms && bash scripts/deploy.sh
 #
 # Run FROM your local machine:
 #   bash scripts/deploy.sh --remote deploy@your-server
