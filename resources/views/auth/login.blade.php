@@ -19,7 +19,17 @@
         </div>
       @endif
 
-      <button type="button" id="passkey-login-btn" class="w-full bg-stone-900 text-white text-sm rounded px-3 py-2 hover:bg-orange-600 transition">
+      <a href="{{ route('sso.redirect') }}" class="block w-full bg-stone-900 text-white text-sm text-center rounded px-3 py-2 hover:bg-orange-600 transition">
+        Sign in with Thijssensoftware
+      </a>
+
+      <div class="flex items-center gap-3 text-xs text-stone-400">
+        <div class="flex-1 border-t border-stone-200"></div>
+        or
+        <div class="flex-1 border-t border-stone-200"></div>
+      </div>
+
+      <button type="button" id="passkey-login-btn" class="w-full border border-stone-300 text-stone-700 text-sm rounded px-3 py-2 hover:bg-stone-100 transition">
         Sign in with passkey
       </button>
       <p id="passkey-unsupported" class="hidden text-xs text-stone-400 text-center">Your browser doesn't support passkeys — use a login code instead.</p>
