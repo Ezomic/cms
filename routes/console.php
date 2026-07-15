@@ -10,3 +10,4 @@ Artisan::command('inspire', function () {
 
 Schedule::command('backup:database')->daily();
 Schedule::command('og:prune-cache')->weekly();
+Schedule::command('page-views:prune')->daily();
