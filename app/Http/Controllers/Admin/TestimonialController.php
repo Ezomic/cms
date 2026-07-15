@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\HandlesSoftDeleteActions;
 use App\Http\Controllers\Controller;
 use App\Models\Testimonial;
 use Illuminate\Http\RedirectResponse;
@@ -10,6 +11,14 @@ use Illuminate\View\View;
 
 class TestimonialController extends Controller
 {
+    /** @use HandlesSoftDeleteActions<Testimonial> */
+    use HandlesSoftDeleteActions;
+
+    protected function softDeleteModel(): string
+    {
+        return Testimonial::class;
+    }
+
     public function index(Request $request): View
     {
         $search = $request->string('search')->trim()->toString();
@@ -64,20 +73,6 @@ class TestimonialController extends Controller
         return view('admin.testimonials.trash', [
             'testimonials' => Testimonial::onlyTrashed()->latest()->get(),
         ]);
-    }
-
-    public function restore(int $id): RedirectResponse
-    {
-        Testimonial::onlyTrashed()->findOrFail($id)->restore();
-
-        return back()->with('status', 'Testimonial restored.');
-    }
-
-    public function forceDelete(int $id): RedirectResponse
-    {
-        Testimonial::onlyTrashed()->findOrFail($id)->forceDelete();
-
-        return back()->with('status', 'Testimonial permanently deleted.');
     }
 
     /**
