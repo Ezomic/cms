@@ -43,6 +43,7 @@ php artisan storage:link     # once after fresh install
 | `GET /cv.pdf` | `cv` | `HomeController@cv` | Streams PDF via dompdf |
 | `GET /og/home.png` | `og.home` | `OgImageController@home` | PHP GD 1200×630 OG image |
 | `GET /og/work/{project:slug}.png` | `og.project` | `OgImageController@project` | Per-project OG image |
+| `GET /og/blog/{post:slug}.png` | `og.post` | `OgImageController@post` | Per-post OG image (title, published date, excerpt) |
 | `POST /contact` | `contact.store` | `ContactController@store` | Throttled 5/min by IP |
 | `POST /locale/{locale}` | `locale.switch` | closure | Stores `en`/`nl` in session |
 
@@ -89,7 +90,7 @@ php artisan storage:link     # once after fresh install
 | Controller | Methods |
 |------------|---------|
 | `HomeController` | `index`, `docs`, `work`, `cv`, `project` |
-| `OgImageController` | `home`, `project` — private `generate()` and `wrapText()` helpers |
+| `OgImageController` | `home`, `project`, `post` — private `generate()` and `wrapText()` helpers |
 | `ContactController` | `store` — validates, saves `ContactSubmission`, dispatches `ContactFormSubmitted` |
 
 **Admin** (`app/Http/Controllers/Admin/`)
@@ -133,9 +134,10 @@ environment (PHP-FPM + SQLite-backed cache). Pre-compute derived values (`tag_li
 before storing. `BustsHomeCache` invalidates the key whenever content changes. Tests flush
 the cache in `Tests\TestCase::setUp()`.
 
-OG images are cached forever under `og.home.{updated_at_ts}` and
-`og.project.{id}.{updated_at_ts}`. Stale keys are orphaned (never hit again) rather than
-evicted — do not flush the entire cache table to clear them in production.
+OG images are cached forever under `og.home.{updated_at_ts}`,
+`og.project.{id}.{updated_at_ts}`, and `og.post.{id}.{updated_at_ts}`. Stale keys are orphaned
+(never hit again) rather than evicted — do not flush the entire cache table to clear them in
+production.
 
 ### i18n
 
