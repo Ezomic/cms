@@ -10,6 +10,7 @@ use App\Models\Skill;
 use App\Models\Testimonial;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
@@ -92,35 +93,20 @@ class HomeController extends Controller
     {
         PageView::create(['path' => '/'.ltrim(request()->path(), '/')]);
 
-        $projects = Project::published()->ordered()->get()->map(fn ($p) => (object) [
-            ...$p->toArray(),
-            'tag_list' => $p->tagList(),
-            'image_url' => $p->imageUrl(),
-            'image_alt' => $p->imageAlt(),
-            'description' => $p->localizedDescription(),
-        ]);
-
-        $tags = $projects->flatMap(fn (\stdClass $p): array => $p->tag_list)->unique()->sort()->values();
+        $projects = $this->publishedProjects();
 
         return view('work', [
             'profile' => Profile::current(),
             'projects' => $projects,
-            'tags' => $tags,
+            'tags' => $this->tagsFrom($projects),
             'activeTag' => null,
         ]);
     }
 
     public function workTag(string $tag): View
     {
-        $allProjects = Project::published()->ordered()->get()->map(fn ($p) => (object) [
-            ...$p->toArray(),
-            'tag_list' => $p->tagList(),
-            'image_url' => $p->imageUrl(),
-            'image_alt' => $p->imageAlt(),
-            'description' => $p->localizedDescription(),
-        ]);
-
-        $tags = $allProjects->flatMap(fn (\stdClass $p): array => $p->tag_list)->unique()->sort()->values();
+        $allProjects = $this->publishedProjects();
+        $tags = $this->tagsFrom($allProjects);
 
         abort_unless($tags->contains($tag), 404);
 
@@ -134,6 +120,29 @@ class HomeController extends Controller
             'tags' => $tags,
             'activeTag' => $tag,
         ]);
+    }
+
+    /**
+     * @return Collection<int, \stdClass>
+     */
+    private function publishedProjects(): Collection
+    {
+        return Project::published()->ordered()->get()->map(fn ($p) => (object) [
+            ...$p->toArray(),
+            'tag_list' => $p->tagList(),
+            'image_url' => $p->imageUrl(),
+            'image_alt' => $p->imageAlt(),
+            'description' => $p->localizedDescription(),
+        ]);
+    }
+
+    /**
+     * @param  Collection<int, \stdClass>  $projects
+     * @return Collection<int, string>
+     */
+    private function tagsFrom(Collection $projects): Collection
+    {
+        return $projects->flatMap(fn (\stdClass $p): array => $p->tag_list)->unique()->sort()->values();
     }
 
     public function cv(): Response
