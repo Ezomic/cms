@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use App\Models\Profile;
 use App\Models\Project;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class OgImageController extends Controller
 {
@@ -20,6 +22,27 @@ class OgImageController extends Controller
                 $project->name,
                 $project->client_name.' - '.$project->year,
                 implode('   -   ', $project->tagList()),
+                Profile::current()->name,
+            );
+        });
+
+        return response($png, 200, [
+            'Content-Type' => 'image/png',
+            'Cache-Control' => 'public, max-age=604800',
+        ]);
+    }
+
+    public function post(Post $post): Response
+    {
+        abort_unless($post->published, 404);
+
+        $cacheKey = 'og.post.'.$post->id.'.'.$post->updated_at->timestamp;
+
+        $png = Cache::rememberForever($cacheKey, function () use ($post) {
+            return $this->generate(
+                $post->title,
+                $post->published_at?->format('F j, Y') ?? '',
+                Str::limit(strip_tags((string) $post->excerpt), 60),
                 Profile::current()->name,
             );
         });

@@ -36,6 +36,7 @@ Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 Route::get('/robots.txt', fn () => response("User-agent: *\nDisallow: /admin\n\nSitemap: ".route('sitemap')."\n", 200, ['Content-Type' => 'text/plain']))->name('robots');
 Route::get('/og/home.png', [OgImageController::class, 'home'])->name('og.home');
 Route::get('/og/work/{project:slug}.png', [OgImageController::class, 'project'])->name('og.project');
+Route::get('/og/blog/{post:slug}.png', [OgImageController::class, 'post'])->name('og.post');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store')->middleware('throttle:contact');
 
 // Admin auth

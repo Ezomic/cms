@@ -9,6 +9,7 @@
     'canonicalRoute' => 'blog.show',
     'canonicalParams' => ['post' => $post->slug],
     'ogType' => 'article',
+    'ogImage' => route('og.post', $post->slug),
 ])
 @include('partials.schema.breadcrumbs', ['items' => [
     ['name' => __('site.breadcrumb_home'), 'url' => localized_route('home')],
