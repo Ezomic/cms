@@ -74,15 +74,17 @@ class Post extends Model
 
     public function metaDescription(): string
     {
-        if ($this->localized('meta_description')) {
-            return $this->localized('meta_description');
+        if ($metaDescription = $this->localized('meta_description')) {
+            return $metaDescription;
         }
 
-        if ($this->localizedExcerpt()) {
-            return $this->localizedExcerpt();
+        if ($excerpt = $this->localizedExcerpt()) {
+            return $excerpt;
         }
 
-        return $this->localizedBody() ? Str::limit(trim(strip_tags($this->localizedBody())), 160) : '';
+        $body = $this->localizedBody();
+
+        return $body ? Str::limit(trim(strip_tags($body)), 160) : '';
     }
 
     protected function uniqueSlugFrom(string $title): string
