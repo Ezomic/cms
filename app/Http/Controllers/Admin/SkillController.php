@@ -2,15 +2,31 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\HandlesReordering;
+use App\Http\Controllers\Concerns\HandlesSoftDeleteActions;
 use App\Http\Controllers\Controller;
 use App\Models\Skill;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class SkillController extends Controller
 {
+    use HandlesReordering;
+
+    /** @use HandlesSoftDeleteActions<Skill> */
+    use HandlesSoftDeleteActions;
+
+    protected function softDeleteModel(): string
+    {
+        return Skill::class;
+    }
+
+    protected function reorderModel(): string
+    {
+        return Skill::class;
+    }
+
     public function index(Request $request): View
     {
         $search = $request->string('search')->trim()->toString();
@@ -60,39 +76,11 @@ class SkillController extends Controller
         return back()->with('status', 'Skill deleted.');
     }
 
-    public function reorder(Request $request): Response
-    {
-        $data = $request->validate([
-            'ids' => ['required', 'array'],
-            'ids.*' => ['integer', 'exists:skills,id'],
-        ]);
-
-        foreach ($data['ids'] as $index => $id) {
-            Skill::where('id', $id)->update(['sort_order' => $index]);
-        }
-
-        return response()->noContent();
-    }
-
     public function trash(): View
     {
         return view('admin.skills.trash', [
             'skills' => Skill::onlyTrashed()->ordered()->get()->groupBy('category'),
         ]);
-    }
-
-    public function restore(int $id): RedirectResponse
-    {
-        Skill::onlyTrashed()->findOrFail($id)->restore();
-
-        return back()->with('status', 'Skill restored.');
-    }
-
-    public function forceDelete(int $id): RedirectResponse
-    {
-        Skill::onlyTrashed()->findOrFail($id)->forceDelete();
-
-        return back()->with('status', 'Skill permanently deleted.');
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\HandlesSoftDeleteActions;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Illuminate\Http\RedirectResponse;
@@ -11,6 +12,14 @@ use Illuminate\View\View;
 
 class PostController extends Controller
 {
+    /** @use HandlesSoftDeleteActions<Post> */
+    use HandlesSoftDeleteActions;
+
+    protected function softDeleteModel(): string
+    {
+        return Post::class;
+    }
+
     public function index(Request $request): View
     {
         $search = $request->string('search')->trim()->toString();
@@ -68,20 +77,6 @@ class PostController extends Controller
         return view('admin.posts.trash', [
             'posts' => Post::onlyTrashed()->latest()->get(),
         ]);
-    }
-
-    public function restore(int $id): RedirectResponse
-    {
-        Post::onlyTrashed()->findOrFail($id)->restore();
-
-        return back()->with('status', 'Post restored.');
-    }
-
-    public function forceDelete(int $id): RedirectResponse
-    {
-        Post::onlyTrashed()->findOrFail($id)->forceDelete();
-
-        return back()->with('status', 'Post permanently deleted.');
     }
 
     /**
