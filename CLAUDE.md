@@ -23,7 +23,7 @@ Site runs under **Herd** at `cms.test`. No `php artisan serve` needed.
 ```bash
 php artisan migrate          # run pending migrations
 php artisan db:seed          # seed initial user + profile
-php artisan queue:work       # needed for contact-form emails (database driver)
+php artisan queue:work       # optional; contact emails send synchronously, no worker needed
 php artisan backup:database  # manual DB backup; scheduled daily via console.php
 php artisan test             # Pest suite (~25 tests)
 php artisan storage:link     # once after fresh install
@@ -167,10 +167,12 @@ Guest redirect: `bootstrap/app.php` sets it to `/admin/login` (not the default `
 
 ### Queue
 
-Driver: `database`. `ContactFormSubmitted` implements `ShouldQueue` but `ContactController`
-currently calls `Mail::send()` (synchronous), so the queue worker is not required for emails.
-If you switch back to `Mail::queue()`, run `php artisan queue:work` in dev and configure
-Supervisor in production.
+Driver: `database`. The contact notification (`ContactFormSubmitted`) is a plain Mailable sent
+**synchronously** in the request by `ContactController`, so the queue worker is **not** required
+for contact emails. The send is wrapped in a try/catch: the submission is always saved to the
+admin inbox first, so an SMTP failure is reported (logged) without breaking the visitor's success
+response. If you add queued jobs later (or make this mailable `ShouldQueue`), run
+`php artisan queue:work` in dev and rely on the Supervisor worker in production.
 
 ### Images
 

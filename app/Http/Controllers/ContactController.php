@@ -30,7 +30,15 @@ class ContactController extends Controller
 
         $profileEmail = Profile::current()->email;
         if ($profileEmail) {
-            Mail::to($profileEmail)->send(new ContactFormSubmitted($submission));
+            // Sent synchronously so the notification never depends on a queue
+            // worker. The submission is already saved to the admin inbox, so a
+            // mail failure is reported but must not break the visitor's success
+            // response.
+            try {
+                Mail::to($profileEmail)->send(new ContactFormSubmitted($submission));
+            } catch (\Throwable $e) {
+                report($e);
+            }
         }
 
         return back()->with('status', __('site.contact_success'));
