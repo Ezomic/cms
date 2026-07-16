@@ -4,8 +4,8 @@
 
 A freelancer portfolio CMS for Robbin Thijssen (Dutch developer/designer). The public site has a
 portfolio home page (`/`), a work archive (`/work`), project case-study pages (`/work/{slug}`), a
-client-facing docs page (`/docs`), and a CV download (`/cv.pdf`). Everything behind `/admin` is a
-Blade-rendered CMS.
+blog (`/blog`), a client-facing docs page (`/docs`), and a CV download (`/cv.pdf`). Everything
+behind `/admin` is a Blade-rendered CMS.
 
 ## Stack
 
@@ -25,7 +25,7 @@ php artisan migrate          # run pending migrations
 php artisan db:seed          # seed initial user + profile
 php artisan queue:work       # optional; contact emails send synchronously, no worker needed
 php artisan backup:database  # manual DB backup; scheduled daily via console.php
-php artisan test             # Pest suite (~25 tests)
+php artisan test             # Pest/PHPUnit suite
 php artisan storage:link     # once after fresh install
 ```
 
@@ -35,7 +35,7 @@ php artisan storage:link     # once after fresh install
 
 | Route | Name | Controller method | Notes |
 |-------|------|-------------------|-------|
-| `GET /` | `home` | `HomeController@index` | Data cached forever under `home.page.data` |
+| `GET /` | `home` | `HomeController@index` | Data cached forever, per locale, under `home.page.data.{en,nl}` |
 | `GET /work` | `work.index` | `HomeController@work` | Archive with client-side JS tag filter |
 | `GET /work/tag/{tag}` | `work.tag` | `HomeController@workTag` | Server-rendered tag filter page for SEO; 404 if tag doesn't exist |
 | `GET /work/{project:slug}` | `project.show` | `HomeController@project` | 404 if not published |
@@ -44,8 +44,14 @@ php artisan storage:link     # once after fresh install
 | `GET /og/home.png` | `og.home` | `OgImageController@home` | PHP GD 1200×630 OG image |
 | `GET /og/work/{project:slug}.png` | `og.project` | `OgImageController@project` | Per-project OG image |
 | `GET /og/blog/{post:slug}.png` | `og.post` | `OgImageController@post` | Per-post OG image (title, published date, excerpt) |
-| `POST /contact` | `contact.store` | `ContactController@store` | Throttled 5/min by IP |
-| `POST /locale/{locale}` | `locale.switch` | closure | Stores `en`/`nl` in session |
+| `GET /blog` | `blog.index` | `HomeController@blog` | Blog index (published posts) |
+| `GET /blog/{post:slug}` | `blog.show` | `HomeController@post` | 404 if not published |
+| `GET /sitemap.xml` | `sitemap` | `SitemapController` | Includes projects, tags, and posts |
+| `GET /robots.txt` | `robots` | closure | Disallows `/admin` |
+| `POST /contact` | `contact.store` | `ContactController@store` | Throttled via `throttle:contact` |
+
+Every public route is registered **twice**: unprefixed (English default) and under a `/nl` prefix
+(`nl.` name prefix) for Dutch. There is no locale-switch route — locale is chosen by the URL prefix.
 
 ### Admin (all behind `auth` middleware, prefix `/admin`, name prefix `admin.`)
 
@@ -53,15 +59,19 @@ php artisan storage:link     # once after fresh install
 - Projects: full CRUD + trash/restore/force-delete + `POST /admin/projects/reorder`
 - Testimonials: full CRUD + trash/restore/force-delete
 - Skills: full CRUD + trash/restore/force-delete + `POST /admin/skills/reorder`
+- Posts: full CRUD + trash/restore/force-delete
 - `GET|PUT /admin/profile` — profile edit
-- `GET|PUT /admin/settings` — site settings
 - Users: full CRUD
-- 2FA: `GET /admin/two-factor`, `POST /two-factor/enable`, `POST /two-factor/confirm`, `DELETE /two-factor`
+- Contact submissions: `index`, mark read/unread, destroy
+- `GET /admin/security` — passkey management (`security.show`)
 
 ### Auth (not behind `auth`)
 
-- `GET|POST /admin/login` — rate-limited `throttle:login` (5/min by IP)
-- `GET|POST /admin/two-factor-challenge` — 2FA verify step; rate-limited
+- `GET /admin/login` — email entry (`admin.login`); `POST /admin/logout`
+- Email login code (rate-limited `throttle:login`): `POST /admin/login/code` (`admin.login.code.send`),
+  `GET /admin/login/code` (`.challenge`), `POST /admin/login/code/verify` (`.verify`)
+- Passkey routes are registered by **laravel/passkeys** (`passkey.login`, `passkey.store`,
+  `passkey.destroy`, and their `*-options` endpoints)
 
 ## Architecture
 
@@ -69,19 +79,22 @@ php artisan storage:link     # once after fresh install
 
 | Model | Traits | Notes |
 |-------|--------|-------|
-| `Profile` | `BustsHomeCache`, `LogsActivity` | Always access via `Profile::current()` — never `find(1)` |
-| `Project` | `BustsHomeCache`, `LogsActivity`, `SoftDeletes` | Slug auto-generated on save; `published()` and `ordered()` scopes; `tagList(): array` and `imageUrl(): ?string` helpers |
+| `Profile` | `BustsHomeCache`, `HasLocalizedContent`, `LogsActivity` | Always access via `Profile::current()` — never `find(1)` |
+| `Project` | `BustsHomeCache`, `HasLocalizedContent`, `LogsActivity`, `SoftDeletes` | Slug auto-generated on save; `published()` and `ordered()` scopes; `tagList(): array` and `imageUrl(): ?string` helpers |
 | `Skill` | `BustsHomeCache`, `LogsActivity`, `SoftDeletes` | `ordered()` scope; grouped by `category` in views |
-| `Testimonial` | `BustsHomeCache`, `LogsActivity`, `SoftDeletes` | `featured=true` + latest shown on home |
-| `User` | — | 2FA: `two_factor_secret` (encrypted), `two_factor_confirmed_at` |
+| `Testimonial` | `BustsHomeCache`, `HasLocalizedContent`, `LogsActivity`, `SoftDeletes` | `featured=true` + latest shown on home |
+| `Post` | `BustsHomeCache`, `HasLocalizedContent`, `LogsActivity`, `SoftDeletes` | Blog posts; slug auto-generated; `published()` scope; `published_at` |
+| `User` | — | Passkey login (`Laravel\Passkeys`) + emailed login code (`login_code_hash`, `login_code_expires_at`); uses `#[Fillable]`/`#[Hidden]` attributes, no password |
 | `ActivityLog` | — | Append-only; written by `LogsActivity` |
-| `PageView` | — | Append-only path+timestamp; recorded in `index()`, `work()`, `project()` |
-| `ContactSubmission` | — | Saved on every valid contact form submit |
+| `PageView` | — | Append-only path+timestamp; recorded in every public page controller |
+| `PageViewTotal` | — | Per-path lifetime totals rolled up from pruned `page_views` (see Dashboard) |
+| `ContactSubmission` | — | Saved on every valid contact form submit; `read_at` inbox flag |
 
 ### Traits (`app/Concerns/`)
 
-- **`BustsHomeCache`** — `saved`/`deleted` hooks call `Cache::forget('home.page.data')`
+- **`BustsHomeCache`** — `saved`/`deleted` hooks forget both `home.page.data.en` and `home.page.data.nl`
 - **`LogsActivity`** — `created`/`updated`/`deleted` hooks write to `activity_logs`
+- **`HasLocalizedContent`** — `localized($field)` returns the `_nl` column when locale is `nl` and it's filled, else the base column
 
 ### Controllers
 
@@ -89,24 +102,28 @@ php artisan storage:link     # once after fresh install
 
 | Controller | Methods |
 |------------|---------|
-| `HomeController` | `index`, `docs`, `work`, `cv`, `project` |
-| `OgImageController` | `home`, `project`, `post` — private `generate()` and `wrapText()` helpers |
-| `ContactController` | `store` — validates, saves `ContactSubmission`, dispatches `ContactFormSubmitted` |
+| `HomeController` | `index`, `docs`, `work`, `workTag`, `cv`, `project`, `blog`, `post` |
+| `OgImageController` | `home`, `project`, `post` — private `generate()`, `wrapText()`, `textWidth()` helpers |
+| `SitemapController` | `__invoke` — XML sitemap |
+| `ContactController` | `store` — validates, saves `ContactSubmission`, sends `ContactFormSubmitted` synchronously |
 
 **Admin** (`app/Http/Controllers/Admin/`)
 
-`DashboardController`, `ProfileController`, `ProjectController`, `SettingsController`,
-`SkillController`, `TestimonialController`, `TwoFactorController`, `UserController`
+`ContactSubmissionController`, `DashboardController`, `PostController`, `ProfileController`,
+`ProjectController`, `SecurityController`, `SkillController`, `TestimonialController`, `UserController`
+
+`Project`, `Skill`, `Testimonial`, `Post` share the `HandlesSoftDeleteActions` trait
+(`restore`/`forceDelete`); `Project` and `Skill` also use `HandlesReordering` (`reorder`).
 
 **Auth** (`app/Http/Controllers/Auth/`)
 
-`AdminLoginController`, `TwoFactorChallengeController`
+`AdminLoginController` (login page + logout), `LoginCodeController` (send/challenge/verify)
 
 ### Middleware
 
-**`SetLocale`** (`app/Http/Middleware/SetLocale.php`) — reads `session('locale')`, validates
-against `['en', 'nl']`, calls `app()->setLocale()`. Appended to the `web` group in
-`bootstrap/app.php` via `$middleware->web(append: [SetLocale::class])`.
+**`SetLocale`** (`app/Http/Middleware/SetLocale.php`) — sets the locale from the **first URL
+segment**: `/nl/*` → `nl`, otherwise the app default (`config('app.locale')`, `en`). Appended to
+the `web` group in `bootstrap/app.php` via `$middleware->web(append: [SetLocale::class])`.
 
 ### Views
 
@@ -119,14 +136,17 @@ against `['en', 'nl']`, calls `app()->setLocale()`. Appended to the `web` group 
 | `project.blade.php` | `/work/{slug}` | `$profile`, `$project` (live Eloquent model) |
 | `docs.blade.php` | `/docs` | `$profile`, `$skills` (grouped Collection — live Eloquent), `$projects` (live Eloquent Collection) — skills and projects power the tech-defaults and selected-work sections |
 | `cv.blade.php` | `/cv.pdf` | `$profile`, `$skills` (grouped Collection of stdClass), `$projects` (Collection of stdClass with `tag_list`) |
+| `blog.blade.php` | `/blog` | `$profile`, `$posts` (live Eloquent Collection) |
+| `blog-post.blade.php` | `/blog/{slug}` | `$profile`, `$post` (live Eloquent model) |
 
 **Admin** — `resources/views/admin/` with layout `resources/views/layouts/admin.blade.php`
 
-**Auth** — `resources/views/auth/login.blade.php`, `auth/two-factor-challenge.blade.php`
+**Auth** — `resources/views/auth/login.blade.php`, `auth/login-code-challenge.blade.php`
 
 ### Caching
 
-The home page is cached forever under `home.page.data`.
+The home page data is cached forever, **keyed per locale**, under `home.page.data.en` /
+`home.page.data.nl` (translatable fields are resolved to the locale before caching).
 
 **Critical**: the cache stores **plain arrays** (`->toArray()`), not Eloquent model instances.
 Storing models directly causes `__PHP_Incomplete_Class` errors on deserialization in this
@@ -141,29 +161,38 @@ production.
 
 ### i18n
 
-Session-based locale (`en` / `nl`). Language files:
+**URL-prefix locale** (`en` default, `nl` under `/nl`). Language files:
 
 | File | Used by |
 |------|---------|
 | `lang/en/site.php` + `lang/nl/site.php` | `home.blade.php`, `work.blade.php`, `project.blade.php` |
 | `lang/en/docs.php` + `lang/nl/docs.php` | `docs.blade.php` |
 
-The `locale.switch` route stores the choice in `session('locale')`; `SetLocale` middleware
-applies it on every request. All four public views (`home`, `work`, `project`, `docs`) use
-`__('*.key')` for every user-facing string and carry a `<html lang="{{ app()->getLocale() }}">`
-attribute. The `cv.blade.php` view is English-only (PDF output has no language toggle).
+Every public route is registered twice (unprefixed + `/nl`); `SetLocale` reads the prefix and
+calls `app()->setLocale()`. Views use `__('*.key')` for user-facing strings and carry
+`<html lang="{{ app()->getLocale() }}">`. The `localized_route()` and `alternate_locale_url()`
+helpers (`app/Support/helpers.php`) build locale-aware URLs and the language-toggle link.
+Per-model translatable fields use `_nl` columns via `HasLocalizedContent`. The `cv.blade.php`
+view is English-only (PDF output has no language toggle).
 
-### Auth & 2FA
+### Auth (passkey + email login code)
 
-Login at `/admin/login`. With 2FA enabled, successful login stores a pending user ID in
-session and redirects to `/two-factor-challenge`. On verify the session is cleared and
-the user is fully logged in. Recovery codes are single-use and stripped from the encrypted
-array on use.
+No passwords. Login at `/admin/login` (enter email). Two paths:
 
-QR code on the 2FA setup page is rendered client-side via **QRious.js** CDN v4.0.2 on a
-`<canvas id="qr-canvas">`. The OTP auth URI is passed via `Js::from($otpAuthUri)`.
+- **Email login code** — `SendLoginCode` generates a 6-digit code, stores its **hash** with a
+  10-minute expiry (`login_code_hash`, `login_code_expires_at`) and emails it (`LoginCodeMail`).
+  `VerifyLoginCode` checks expiry + `Hash::check`, then clears the code (single-use) and logs in.
+  `LoginCodeController` returns a **generic** message whether or not the email matches an account
+  (no enumeration). Both send/verify are rate-limited via `throttle:login`.
+- **Passkeys** — via **laravel/passkeys** (`User implements PasskeyUser`). Registered/managed from
+  `/admin/security` (`SecurityController`); package routes handle registration and WebAuthn login.
 
+There is no TOTP/2FA, recovery codes, or password column (removed in the passkey migration).
 Guest redirect: `bootstrap/app.php` sets it to `/admin/login` (not the default `login`).
+
+SSO: `thijssensoftware/id-client` provides "Sign in with Thijssensoftware"; on a successful
+callback it logs the user into the `web` guard and (if `provision` is on) auto-creates the local
+account, redirecting to `/admin` (`config/id-client.php`).
 
 ### Queue
 
@@ -189,16 +218,23 @@ does not support CSS Grid or Flexbox.
 
 ### OG images
 
-`OgImageController` uses PHP GD (`imagecreatetruecolor`, `imagestring`, etc.) to produce
-1200×630 PNG files with the site design tokens (cream `#F7F7F4`, ink `#17181A`, orange
-`#E8590C`). Served with `Cache-Control: public, max-age=604800`.
+`OgImageController` uses PHP GD to produce 1200×630 PNG files with the site design tokens
+(cream `#F7F7F4`, ink `#17181A`, orange `#E8590C`). Text is drawn with **`imagettftext()`** using
+the shipped TrueType fonts in `resources/fonts/` (Space Grotesk / Inter) — not GD bitmap fonts —
+so accented characters render correctly and match the site typography. Served with
+`Cache-Control: public, max-age=604800`. Requires GD compiled with FreeType.
 
 ### Dashboard analytics
 
 `DashboardController::index()` provides:
 - Counts: published projects, testimonials, skills, contact submissions
 - 30-day sparkline: daily `PageView` counts filled with zeros for days without data
-- Top-5 paths by view count
+- Total page views and top-5 paths — **all-time**, combining live `page_views` rows with the
+  `page_view_totals` rollup
+
+**Retention**: `page-views:prune` (scheduled daily) rolls `page_view` rows older than `--days`
+(default 90, floored at 30 to protect the sparkline) into per-path `page_view_totals`, then
+deletes them — inside a transaction. Indexed on `created_at` and `path`.
 
 ### Database backups
 
@@ -226,16 +262,18 @@ php artisan test --filter ProjectTest
 2. **Cache + CSRF** — never cache rendered HTML. A cached page bakes one visitor's CSRF token
    into every subsequent visitor's response. Cache data arrays only.
 
-3. **Soft deletes** — `Project`, `Skill`, `Testimonial` use `SoftDeletes`. Admin trash/restore/
-   force-delete routes exist for all three. Always use `withTrashed()` / `onlyTrashed()` where
-   appropriate and `assertSoftDeleted()` in tests.
+3. **Soft deletes** — `Project`, `Skill`, `Testimonial`, `Post` use `SoftDeletes` (restore/
+   force-delete via the shared `HandlesSoftDeleteActions` trait). Admin trash/restore/force-delete
+   routes exist for all four. Always use `withTrashed()` / `onlyTrashed()` where appropriate and
+   `assertSoftDeleted()` in tests.
 
 4. **Sort order** — `Project` and `Skill` have `sort_order` columns managed by SortableJS
    drag-and-drop via `/admin/projects/reorder` and `/admin/skills/reorder` POST endpoints.
 
 5. **OG cache orphaning** — stale OG image cache keys accumulate in the SQLite cache table.
-   Pruning them requires direct SQL on the `cache` table, not `Cache::flush()` (which would
-   also clear `home.page.data` and break the home page until the next request warms it).
+   Pruning them requires the `og:prune-cache` command (scheduled weekly), not `Cache::flush()`
+   (which would also clear `home.page.data.{en,nl}` and break the home page until the next
+   request warms it).
 
 6. **i18n files** — `__('site.*')` covers `home`, `work`, and `project` views; `__('docs.*')`
    covers the docs page. Adding a new string requires adding the key to both the `en` and `nl`
@@ -244,10 +282,11 @@ php artisan test --filter ProjectTest
 7. **dompdf layout** — use `<table>` and inline styles only inside `cv.blade.php`. CSS Grid
    and Flexbox are not supported by dompdf.
 
-## Linear
+## Tracker
 
-Team: **THI** (Thijssen Software) — `3b1bf7b2-5ff4-4e70-9ca5-a1efb1280839`
+File tickets under the **CMS** ("Portfolio CMS") project via the `create-linear-ticket` skill
+(`--project CMS`), producing `CMS-###` identifiers — **not** the THI umbrella project.
 
-Branch format: `feature/thi-{number}-{description}` or `fix/thi-{number}-{description}`
+Branch format: `feature/CMS-{number}-{description}` or `fix/CMS-{number}-{description}`.
 
 Follow the full workflow in `~/.claude/CLAUDE.md`. See parent context in `~/Projects/cms/CLAUDE.md`.
