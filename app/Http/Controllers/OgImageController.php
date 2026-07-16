@@ -99,28 +99,36 @@ class OgImageController extends Controller
         // Accent bar top
         imagefilledrectangle($img, 0, 0, $w, 6, $accent);
 
+        $display = resource_path('fonts/SpaceGrotesk-Bold.ttf');
+        $body = resource_path('fonts/Inter-Regular.ttf');
+        $bodyBold = resource_path('fonts/Inter-Bold.ttf');
+        $marginX = 72;
+        $maxWidth = $w - ($marginX * 2);
+
         // Dot + owner label top-left
         imagefilledellipse($img, 52, 52, 10, 10, $accent);
-        imagestring($img, 3, 68, 46, strtoupper($owner), $soft);
+        imagettftext($img, 15, 0, $marginX, 58, $soft, $bodyBold, strtoupper($owner));
 
-        // Title — wrap long text manually
-        $titleLines = $this->wrapText($title, 36);
-        $y = 200;
-        foreach ($titleLines as $line_text) {
-            // Use built-in font 5 (largest GD built-in)
-            imagestring($img, 5, 72, $y, $line_text, $ink);
-            $y += 22;
+        // Title — TrueType, wrapped to the content width
+        $titleSize = 50;
+        $titleLeading = 64;
+        $y = 236;
+        foreach ($this->wrapText($title, $titleSize, $display, $maxWidth) as $lineText) {
+            imagettftext($img, $titleSize, 0, $marginX, $y, $ink, $display, $lineText);
+            $y += $titleLeading;
         }
 
         // Subtitle
-        imagestring($img, 4, 72, $y + 20, $subtitle, $soft);
+        $y += 8;
+        imagettftext($img, 26, 0, $marginX, $y, $soft, $body, $subtitle);
 
         // Detail / tags
-        imagestring($img, 3, 72, $y + 50, $detail, $soft);
+        $y += 44;
+        imagettftext($img, 20, 0, $marginX, $y, $soft, $body, $detail);
 
-        // Bottom rule
-        imageline($img, 72, $h - 72, $w - 72, $h - 72, $line);
-        imagestring($img, 2, 72, $h - 58, route('home'), $soft);
+        // Bottom rule + site URL
+        imageline($img, $marginX, $h - 72, $w - $marginX, $h - 72, $line);
+        imagettftext($img, 16, 0, $marginX, $h - 44, $soft, $body, route('home'));
 
         ob_start();
         imagepng($img);
@@ -131,20 +139,23 @@ class OgImageController extends Controller
     }
 
     /**
+     * Word-wrap to a maximum pixel width for the given TrueType font/size.
+     *
      * @return array<int, string>
      */
-    private function wrapText(string $text, int $maxChars): array
+    private function wrapText(string $text, float $size, string $font, int $maxWidth): array
     {
-        $words = explode(' ', $text);
         $lines = [];
         $current = '';
 
-        foreach ($words as $word) {
-            if (strlen($current) + strlen($word) + 1 > $maxChars) {
+        foreach (explode(' ', $text) as $word) {
+            $trial = $current === '' ? $word : $current.' '.$word;
+
+            if ($current !== '' && $this->textWidth($trial, $size, $font) > $maxWidth) {
                 $lines[] = $current;
                 $current = $word;
             } else {
-                $current = $current === '' ? $word : $current.' '.$word;
+                $current = $trial;
             }
         }
 
@@ -153,5 +164,12 @@ class OgImageController extends Controller
         }
 
         return $lines;
+    }
+
+    private function textWidth(string $text, float $size, string $font): int
+    {
+        $box = imagettfbbox($size, 0, $font, $text);
+
+        return $box === false ? 0 : abs($box[2] - $box[0]);
     }
 }

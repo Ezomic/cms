@@ -74,4 +74,39 @@ class OgImageTest extends TestCase
 
         $this->get("/og/blog/{$post->slug}.png")->assertNotFound();
     }
+
+    public function test_og_image_renders_truetype_title_text(): void
+    {
+        $project = Project::create([
+            'name' => 'Café Résumé',
+            'client_name' => 'Zürich BV',
+            'year' => '2026',
+            'tags' => 'Laravel',
+            'published' => true,
+            'sort_order' => 0,
+        ]);
+
+        $response = $this->get("/og/work/{$project->slug}.png");
+        $response->assertOk();
+
+        $img = imagecreatefromstring($response->getContent());
+        $this->assertNotFalse($img);
+
+        // The title is drawn in ink #17181A via imagettftext. Finding those
+        // pixels proves the TrueType text actually rendered (a GD build without
+        // FreeType would silently produce a blank card that still passes the
+        // dimension checks).
+        $found = false;
+        for ($x = 60; $x < 720 && ! $found; $x += 2) {
+            for ($y = 180; $y < 245; $y += 2) {
+                $rgb = imagecolorat($img, $x, $y);
+                if ((($rgb >> 16) & 0xFF) === 23 && (($rgb >> 8) & 0xFF) === 24 && ($rgb & 0xFF) === 26) {
+                    $found = true;
+                    break;
+                }
+            }
+        }
+
+        $this->assertTrue($found, 'Expected ink-colored TrueType title pixels in the OG image.');
+    }
 }
