@@ -156,7 +156,7 @@ return [
     's10_channels' => 'Voorkeurskanalen',
     's10_channels_val' => 'E-mail voor asynchroon, Slack of Teams als je dat hebt, videogesprek voor scoping en reviews',
     's10_tracking' => 'Projectbeheer',
-    's10_tracking_val' => 'Linear of Notion — jouw voorkeur, of ik stel er een in als onderdeel van de kickoff',
+    's10_tracking_val' => 'Tracker (mijn eigen app), Linear of Notion — jouw voorkeur, of ik stel er een in als onderdeel van de kickoff',
     's10_review' => 'Code review',
     's10_review_val' => 'Al het werk in een privé GitHub-repo; PR\'s gekoppeld in wekelijkse updates',
     's10_lang' => 'Talen',

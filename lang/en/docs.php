@@ -156,7 +156,7 @@ return [
     's10_channels' => 'Preferred channels',
     's10_channels_val' => 'Email for async, Slack or Teams if you have it, video call for scoping and reviews',
     's10_tracking' => 'Project tracking',
-    's10_tracking_val' => 'Linear or Notion — your preference, or I set one up as part of kick-off',
+    's10_tracking_val' => 'Tracker (my own app), Linear, or Notion — your preference, or I set one up as part of kick-off',
     's10_review' => 'Code review',
     's10_review_val' => 'All work in a private GitHub repo; PRs linked in weekly updates',
     's10_lang' => 'Languages',
