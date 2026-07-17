@@ -150,4 +150,33 @@ class OgImageTest extends TestCase
 
         $this->assertTrue($found, 'Expected ink-colored bitmap title pixels in the fallback OG image.');
     }
+
+    public function test_render_falls_back_to_bitmap_when_truetype_draw_throws(): void
+    {
+        // Capability check passes, but the actual TrueType draw throws at runtime
+        // (the real production failure mode). generate() must catch and degrade.
+        $controller = new class extends OgImageController
+        {
+            protected function trueTypeAvailable(): bool
+            {
+                return true;
+            }
+
+            protected function drawTrueTypeText(\GdImage $img, string $title, string $subtitle, string $detail, string $owner, int $ink, int $soft, int $w, int $h): void
+            {
+                throw new \RuntimeException('simulated FreeType/font failure');
+            }
+        };
+
+        $generate = new \ReflectionMethod(OgImageController::class, 'generate');
+        $generate->setAccessible(true);
+
+        /** @var string $png */
+        $png = $generate->invoke($controller, 'Fallback Title', 'Subtitle', 'Detail', 'Owner');
+
+        $size = getimagesizefromstring($png);
+        $this->assertSame(1200, $size[0]);
+        $this->assertSame(630, $size[1]);
+        $this->assertSame('image/png', $size['mime']);
+    }
 }

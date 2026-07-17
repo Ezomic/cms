@@ -11,6 +11,10 @@ use Illuminate\Support\Str;
 
 class OgImageController extends Controller
 {
+    // Which render path produced the last image; surfaced via X-OG-Renderer so
+    // a rendering failure on a server we can't SSH into is diagnosable by curl.
+    private ?string $renderer = null;
+
     public function project(Project $project): Response
     {
         abort_unless($project->published, 404);
@@ -29,6 +33,7 @@ class OgImageController extends Controller
         return response($png, 200, [
             'Content-Type' => 'image/png',
             'Cache-Control' => 'public, max-age=604800',
+            'X-OG-Renderer' => $this->renderer ?? 'cached',
         ]);
     }
 
@@ -50,6 +55,7 @@ class OgImageController extends Controller
         return response($png, 200, [
             'Content-Type' => 'image/png',
             'Cache-Control' => 'public, max-age=604800',
+            'X-OG-Renderer' => $this->renderer ?? 'cached',
         ]);
     }
 
@@ -72,6 +78,7 @@ class OgImageController extends Controller
         return response($png, 200, [
             'Content-Type' => 'image/png',
             'Cache-Control' => 'public, max-age=604800',
+            'X-OG-Renderer' => $this->renderer ?? 'cached',
         ]);
     }
 
@@ -91,16 +98,31 @@ class OgImageController extends Controller
             throw new \RuntimeException('Failed to allocate OG image colors.');
         }
 
-        imagefill($img, 0, 0, $bg);
-        imagerectangle($img, 0, 0, $w - 1, $h - 1, $line);
-        imagefilledrectangle($img, 0, 0, $w, 6, $accent);
-        imagefilledellipse($img, 52, 52, 10, 10, $accent);
-        imageline($img, 72, $h - 72, $w - 72, $h - 72, $line);
+        $this->drawBase($img, $bg, $accent, $line, $w, $h);
 
-        if ($this->trueTypeAvailable()) {
-            $this->drawTrueTypeText($img, $title, $subtitle, $detail, $owner, $ink, $soft, $w, $h);
-        } else {
-            $this->drawBitmapText($img, $title, $subtitle, $detail, $owner, $soft, $w, $h);
+        // TrueType needs GD+FreeType and readable font files; either can fail at
+        // render time (not just the capability check), so guard the actual draw
+        // and degrade to bitmap, then to the bare base card, rather than 500.
+        try {
+            if ($this->trueTypeAvailable()) {
+                $this->drawTrueTypeText($img, $title, $subtitle, $detail, $owner, $ink, $soft, $w, $h);
+                $this->renderer = 'truetype';
+            } else {
+                $this->drawBitmapText($img, $title, $subtitle, $detail, $owner, $soft, $w, $h);
+                $this->renderer = 'bitmap:no-freetype';
+            }
+        } catch (\Throwable $e) {
+            report($e);
+            $this->renderer = 'bitmap:'.class_basename($e);
+
+            try {
+                $this->drawBase($img, $bg, $accent, $line, $w, $h);
+                $this->drawBitmapText($img, $title, $subtitle, $detail, $owner, $soft, $w, $h);
+            } catch (\Throwable $inner) {
+                report($inner);
+                $this->renderer = 'base:'.class_basename($inner);
+                $this->drawBase($img, $bg, $accent, $line, $w, $h);
+            }
         }
 
         ob_start();
@@ -111,10 +133,19 @@ class OgImageController extends Controller
         return $png;
     }
 
+    private function drawBase(\GdImage $img, int $bg, int $accent, int $line, int $w, int $h): void
+    {
+        imagefilledrectangle($img, 0, 0, $w, $h, $bg);
+        imagerectangle($img, 0, 0, $w - 1, $h - 1, $line);
+        imagefilledrectangle($img, 0, 0, $w, 6, $accent);
+        imagefilledellipse($img, 52, 52, 10, 10, $accent);
+        imageline($img, 72, $h - 72, $w - 72, $h - 72, $line);
+    }
+
     /**
-     * TrueType text needs GD compiled with FreeType. Without it, imagettftext /
-     * imagettfbbox are undefined and every OG route 500s, so callers fall back
-     * to bitmap rendering instead.
+     * TrueType text needs GD compiled with FreeType and the shipped .ttf files
+     * readable on disk. When the capability check passes but a draw still throws
+     * at runtime, generate() catches it and degrades to bitmap.
      */
     protected function trueTypeAvailable(): bool
     {
@@ -123,7 +154,7 @@ class OgImageController extends Controller
             && ((gd_info()['FreeType Support'] ?? false) === true);
     }
 
-    private function drawTrueTypeText(\GdImage $img, string $title, string $subtitle, string $detail, string $owner, int $ink, int $soft, int $w, int $h): void
+    protected function drawTrueTypeText(\GdImage $img, string $title, string $subtitle, string $detail, string $owner, int $ink, int $soft, int $w, int $h): void
     {
         $display = resource_path('fonts/SpaceGrotesk-Bold.ttf');
         $body = resource_path('fonts/Inter-Regular.ttf');
