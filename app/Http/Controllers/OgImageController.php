@@ -92,24 +92,47 @@ class OgImageController extends Controller
         }
 
         imagefill($img, 0, 0, $bg);
-
-        // Border
         imagerectangle($img, 0, 0, $w - 1, $h - 1, $line);
-
-        // Accent bar top
         imagefilledrectangle($img, 0, 0, $w, 6, $accent);
+        imagefilledellipse($img, 52, 52, 10, 10, $accent);
+        imageline($img, 72, $h - 72, $w - 72, $h - 72, $line);
 
+        if ($this->trueTypeAvailable()) {
+            $this->drawTrueTypeText($img, $title, $subtitle, $detail, $owner, $ink, $soft, $w, $h);
+        } else {
+            $this->drawBitmapText($img, $title, $subtitle, $detail, $owner, $soft, $w, $h);
+        }
+
+        ob_start();
+        imagepng($img);
+        $png = ob_get_clean();
+        imagedestroy($img);
+
+        return $png;
+    }
+
+    /**
+     * TrueType text needs GD compiled with FreeType. Without it, imagettftext /
+     * imagettfbbox are undefined and every OG route 500s, so callers fall back
+     * to bitmap rendering instead.
+     */
+    protected function trueTypeAvailable(): bool
+    {
+        return function_exists('imagettftext')
+            && function_exists('imagettfbbox')
+            && ((gd_info()['FreeType Support'] ?? false) === true);
+    }
+
+    private function drawTrueTypeText(\GdImage $img, string $title, string $subtitle, string $detail, string $owner, int $ink, int $soft, int $w, int $h): void
+    {
         $display = resource_path('fonts/SpaceGrotesk-Bold.ttf');
         $body = resource_path('fonts/Inter-Regular.ttf');
         $bodyBold = resource_path('fonts/Inter-Bold.ttf');
         $marginX = 72;
         $maxWidth = $w - ($marginX * 2);
 
-        // Dot + owner label top-left
-        imagefilledellipse($img, 52, 52, 10, 10, $accent);
         imagettftext($img, 15, 0, $marginX, 58, $soft, $bodyBold, strtoupper($owner));
 
-        // Title — TrueType, wrapped to the content width
         $titleSize = 50;
         $titleLeading = 64;
         $y = 236;
@@ -118,24 +141,67 @@ class OgImageController extends Controller
             $y += $titleLeading;
         }
 
-        // Subtitle
         $y += 8;
         imagettftext($img, 26, 0, $marginX, $y, $soft, $body, $subtitle);
 
-        // Detail / tags
         $y += 44;
         imagettftext($img, 20, 0, $marginX, $y, $soft, $body, $detail);
 
-        // Bottom rule + site URL
-        imageline($img, $marginX, $h - 72, $w - $marginX, $h - 72, $line);
         imagettftext($img, 16, 0, $marginX, $h - 44, $soft, $body, route('home'));
+    }
 
-        ob_start();
-        imagepng($img);
-        $png = ob_get_clean();
-        imagedestroy($img);
+    /**
+     * Degraded rendering for GD builds without FreeType: built-in bitmap fonts
+     * (imagestring), with the title scaled up for legibility. Keeps link
+     * previews working with real per-page text instead of a hard 500.
+     */
+    private function drawBitmapText(\GdImage $img, string $title, string $subtitle, string $detail, string $owner, int $soft, int $w, int $h): void
+    {
+        $marginX = 72;
+        $font = 5;
 
-        return $png;
+        imagestring($img, $font, $marginX, 42, strtoupper($owner), $soft);
+
+        $scale = 4;
+        $charsPerLine = (int) floor(($w - $marginX * 2) / (imagefontwidth($font) * $scale));
+        $lineHeight = imagefontheight($font) * $scale + 12;
+        $y = 200;
+        foreach (explode("\n", wordwrap($title, max(1, $charsPerLine), "\n", true)) as $lineText) {
+            $this->drawScaledString($img, $lineText, $marginX, $y, $scale);
+            $y += $lineHeight;
+        }
+
+        $y += 12;
+        imagestring($img, $font, $marginX, $y, $subtitle, $soft);
+        imagestring($img, $font, $marginX, $y + 28, $detail, $soft);
+
+        imagestring($img, $font, $marginX, $h - 52, route('home'), $soft);
+    }
+
+    private function drawScaledString(\GdImage $img, string $text, int $x, int $y, int $scale): void
+    {
+        if ($text === '') {
+            return;
+        }
+
+        $font = 5;
+        $srcW = max(1, imagefontwidth($font) * strlen($text));
+        $srcH = max(1, imagefontheight($font));
+
+        $tmp = imagecreatetruecolor($srcW, $srcH);
+        $tmpBg = imagecolorallocate($tmp, 247, 247, 244);
+        $tmpInk = imagecolorallocate($tmp, 23, 24, 26);
+
+        if ($tmpBg === false || $tmpInk === false) {
+            imagedestroy($tmp);
+
+            return;
+        }
+
+        imagefill($tmp, 0, 0, $tmpBg);
+        imagestring($tmp, $font, 0, 0, $text, $tmpInk);
+        imagecopyresampled($img, $tmp, $x, $y, 0, 0, $srcW * $scale, $srcH * $scale, $srcW, $srcH);
+        imagedestroy($tmp);
     }
 
     /**
