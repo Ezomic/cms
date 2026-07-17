@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\OgImageController;
 use App\Models\Post;
 use App\Models\Project;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -108,5 +109,45 @@ class OgImageTest extends TestCase
         }
 
         $this->assertTrue($found, 'Expected ink-colored TrueType title pixels in the OG image.');
+    }
+
+    public function test_bitmap_fallback_renders_a_valid_png_without_truetype(): void
+    {
+        // Simulate a GD build without FreeType by forcing the bitmap path.
+        $controller = new class extends OgImageController
+        {
+            protected function trueTypeAvailable(): bool
+            {
+                return false;
+            }
+        };
+
+        $generate = new \ReflectionMethod(OgImageController::class, 'generate');
+        $generate->setAccessible(true);
+
+        /** @var string $png */
+        $png = $generate->invoke($controller, 'Fallback Title', 'Subtitle here', 'Some detail', 'Owner Name');
+
+        $this->assertNotSame('', $png);
+        $size = getimagesizefromstring($png);
+        $this->assertSame(1200, $size[0]);
+        $this->assertSame(630, $size[1]);
+        $this->assertSame('image/png', $size['mime']);
+
+        // The scaled title is drawn in ink #17181A; finding those pixels proves
+        // the bitmap fallback actually rendered text rather than a blank card.
+        $img = imagecreatefromstring($png);
+        $found = false;
+        for ($x = 60; $x < 720 && ! $found; $x += 2) {
+            for ($y = 195; $y < 260; $y += 2) {
+                $rgb = imagecolorat($img, $x, $y);
+                if ((($rgb >> 16) & 0xFF) === 23 && (($rgb >> 8) & 0xFF) === 24 && ($rgb & 0xFF) === 26) {
+                    $found = true;
+                    break;
+                }
+            }
+        }
+
+        $this->assertTrue($found, 'Expected ink-colored bitmap title pixels in the fallback OG image.');
     }
 }
