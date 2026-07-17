@@ -6,6 +6,7 @@ use App\Http\Controllers\OgImageController;
 use App\Models\Post;
 use App\Models\Project;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Response;
 use Tests\TestCase;
 
 class OgImageTest extends TestCase
@@ -178,5 +179,29 @@ class OgImageTest extends TestCase
         $this->assertSame(1200, $size[0]);
         $this->assertSame(630, $size[1]);
         $this->assertSame('image/png', $size['mime']);
+    }
+
+    public function test_serves_static_fallback_and_error_header_when_generation_fails(): void
+    {
+        // Whatever breaks generation (e.g. GD unavailable on the server),
+        // respond() must still return 200 with the committed static image and
+        // name the cause in a header rather than 500. Throwing from the args
+        // closure stands in for any failure inside the cached generation.
+        $controller = new OgImageController;
+
+        $respond = new \ReflectionMethod(OgImageController::class, 'respond');
+        $respond->setAccessible(true);
+
+        /** @var Response $response */
+        $response = $respond->invoke($controller, 'og.test.key', fn (): array => throw new \RuntimeException('simulated GD failure'));
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('image/png', $response->headers->get('Content-Type'));
+        $this->assertSame('static', $response->headers->get('X-OG-Renderer'));
+        $this->assertNotNull($response->headers->get('X-OG-Error'));
+
+        $size = getimagesizefromstring((string) $response->getContent());
+        $this->assertSame(1200, $size[0]);
+        $this->assertSame(630, $size[1]);
     }
 }
