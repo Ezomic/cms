@@ -143,8 +143,6 @@ return [
     's09_a5' => 'I don\'t have a hard minimum, but engagements under roughly three days of work are rarely a good fit — the scoping and handover overhead is disproportionate. For small, well-defined tasks (a bug fix, a single integration) a day-rate arrangement works better than a fixed-price contract.',
     's09_q6' => 'Do you provide hosting?',
     's09_a6' => 'I set up and configure the server and deploy the application as part of every project. The server account is in your name and under your control — I don\'t act as a hosting intermediary. After handover, you own the infrastructure and can manage it directly or hand it to an ops team.',
-    's09_q7' => 'Can I see references or speak to past clients?',
-    's09_a7' => 'Yes. I can connect you with two or three past clients who have agreed to take reference calls. Some projects are under NDA and those clients can confirm the engagement but not discuss details. Ask during the scoping call.',
 
     // 10 Communication
     's10_headline' => 'Working hours & communication',
@@ -158,7 +156,7 @@ return [
     's10_channels' => 'Preferred channels',
     's10_channels_val' => 'Email for async, Slack or Teams if you have it, video call for scoping and reviews',
     's10_tracking' => 'Project tracking',
-    's10_tracking_val' => 'Linear or Notion — your preference, or I set one up as part of kick-off',
+    's10_tracking_val' => 'Tracker (my own app), Linear, or Notion — your preference, or I set one up as part of kick-off',
     's10_review' => 'Code review',
     's10_review_val' => 'All work in a private GitHub repo; PRs linked in weekly updates',
     's10_lang' => 'Languages',
