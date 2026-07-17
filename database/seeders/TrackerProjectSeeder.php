@@ -17,6 +17,7 @@ class TrackerProjectSeeder extends Seeder
                 'name' => 'Tracker',
                 'client_name' => 'Thijssen Software',
                 'year' => '2026',
+                'github_url' => 'https://github.com/Ezomic/tracker',
                 'tags' => 'Laravel, Vue 3, TypeScript, Inertia, Tailwind',
                 'published' => true,
                 'sort_order' => 1,
