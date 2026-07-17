@@ -19,67 +19,83 @@ class OgImageController extends Controller
     {
         abort_unless($project->published, 404);
 
-        $cacheKey = 'og.project.'.$project->id.'.'.$project->updated_at->timestamp;
-
-        $png = Cache::rememberForever($cacheKey, function () use ($project) {
-            return $this->generate(
+        return $this->respond(
+            'og.project.'.$project->id.'.'.$project->updated_at->timestamp,
+            fn (): array => [
                 $project->name,
                 $project->client_name.' - '.$project->year,
                 implode('   -   ', $project->tagList()),
                 Profile::current()->name,
-            );
-        });
-
-        return response($png, 200, [
-            'Content-Type' => 'image/png',
-            'Cache-Control' => 'public, max-age=604800',
-            'X-OG-Renderer' => $this->renderer ?? 'cached',
-        ]);
+            ],
+        );
     }
 
     public function post(Post $post): Response
     {
         abort_unless($post->published, 404);
 
-        $cacheKey = 'og.post.'.$post->id.'.'.$post->updated_at->timestamp;
-
-        $png = Cache::rememberForever($cacheKey, function () use ($post) {
-            return $this->generate(
+        return $this->respond(
+            'og.post.'.$post->id.'.'.$post->updated_at->timestamp,
+            fn (): array => [
                 $post->title,
                 $post->published_at?->format('F j, Y') ?? '',
                 Str::limit(strip_tags((string) $post->excerpt), 60),
                 Profile::current()->name,
-            );
-        });
-
-        return response($png, 200, [
-            'Content-Type' => 'image/png',
-            'Cache-Control' => 'public, max-age=604800',
-            'X-OG-Renderer' => $this->renderer ?? 'cached',
-        ]);
+            ],
+        );
     }
 
     public function home(): Response
     {
         $profile = Profile::current();
-        $cacheKey = 'og.home.'.$profile->updated_at?->timestamp;
 
-        $png = Cache::rememberForever($cacheKey, function () use ($profile) {
-            $availability = $profile->available ? 'Available for new projects' : 'Currently booked';
+        return $this->respond(
+            'og.home.'.$profile->updated_at?->timestamp,
+            function () use ($profile): array {
+                $availability = $profile->available ? 'Available for new projects' : 'Currently booked';
 
-            return $this->generate(
-                $profile->name,
-                $profile->tagline,
-                $profile->city.', Netherlands   -   '.$availability,
-                $profile->name,
-            );
-        });
+                return [
+                    $profile->name,
+                    $profile->tagline,
+                    $profile->city.', Netherlands   -   '.$availability,
+                    $profile->name,
+                ];
+            },
+        );
+    }
 
-        return response($png, 200, [
-            'Content-Type' => 'image/png',
-            'Cache-Control' => 'public, max-age=604800',
-            'X-OG-Renderer' => $this->renderer ?? 'cached',
-        ]);
+    /**
+     * Cache and serve a generated OG PNG. If anything in generation fails —
+     * including GD itself being unavailable, which faults before generate()'s
+     * own guards — fall back to the committed static image so the endpoint
+     * never 500s, and surface the cause in X-OG-Error headers (prod has no
+     * SSH and hides errors, so this is how the server-side fix is diagnosed).
+     *
+     * @param  \Closure(): array{string, string, string, string}  $args
+     */
+    private function respond(string $cacheKey, \Closure $args): Response
+    {
+        try {
+            $png = Cache::rememberForever($cacheKey, fn (): string => $this->generate(...$args()));
+
+            return response($png, 200, [
+                'Content-Type' => 'image/png',
+                'Cache-Control' => 'public, max-age=604800',
+                'X-OG-Renderer' => $this->renderer ?? 'cached',
+            ]);
+        } catch (\Throwable $e) {
+            report($e);
+
+            $static = @file_get_contents(public_path('og-default.png'));
+
+            return response($static === false ? '' : $static, 200, [
+                'Content-Type' => 'image/png',
+                'Cache-Control' => 'no-store',
+                'X-OG-Renderer' => 'static',
+                'X-OG-Error' => class_basename($e),
+                'X-OG-Error-Message' => Str::limit($e->getMessage(), 180),
+            ]);
+        }
     }
 
     private function generate(string $title, string $subtitle, string $detail, string $owner): string
