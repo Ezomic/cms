@@ -406,7 +406,7 @@
     <div class="section-num">09</div>
     <h2>{{ __('docs.s09_headline') }}</h2>
     <div style="margin-top:32px;">
-      @foreach (range(1, 7) as $i)
+      @foreach (range(1, 6) as $i)
         <div style="padding:24px 0;border-top:1px solid var(--line);">
           <h3>{{ __("docs.s09_q{$i}") }}</h3>
           <p>{{ __("docs.s09_a{$i}") }}</p>

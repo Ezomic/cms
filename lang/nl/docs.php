@@ -143,8 +143,6 @@ return [
     's09_a5' => 'Er is geen harde ondergrens, maar samenwerkingen van minder dan ongeveer drie dagen werk zijn zelden een goede match — de overhead van scoping en overdracht is dan disproportioneel. Voor kleine, goed gedefinieerde taken (een bugfix, een enkele integratie) werkt een dagtarief beter dan een vaste-prijscontract.',
     's09_q6' => 'Verzorg je ook hosting?',
     's09_a6' => 'Ik stel de server in, configureer die en deploy de applicatie als onderdeel van elk project. Het serveraccount staat op jouw naam en onder jouw controle — ik fungeer niet als tussenpartij. Na de overdracht ben jij eigenaar van de infrastructuur en kun je die zelf beheren of overdragen aan een ops-team.',
-    's09_q7' => 'Kan ik referenties zien of met eerdere klanten spreken?',
-    's09_a7' => 'Ja. Ik kan je in contact brengen met twee of drie eerdere klanten die hebben ingestemd met referentiegesprekken. Sommige projecten vallen onder een NDA; die klanten kunnen de samenwerking bevestigen maar geen details bespreken. Vraag ernaar tijdens het scopegesprek.',
 
     // 10 Communicatie
     's10_headline' => 'Werktijden & communicatie',
