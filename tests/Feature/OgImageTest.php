@@ -4,9 +4,11 @@ namespace Tests\Feature;
 
 use App\Http\Controllers\OgImageController;
 use App\Models\Post;
+use App\Models\Profile;
 use App\Models\Project;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 class OgImageTest extends TestCase
@@ -179,6 +181,56 @@ class OgImageTest extends TestCase
         $this->assertSame(1200, $size[0]);
         $this->assertSame(630, $size[1]);
         $this->assertSame('image/png', $size['mime']);
+    }
+
+    public function test_cached_og_value_is_binary_safe_for_the_database_cache_store(): void
+    {
+        // Regression for CMS-79: the raw PNG bytes were cached directly, which
+        // the database cache store on prod (MySQL, utf8mb4 `value` column)
+        // rejects with a 1366 "Incorrect string value" error. The cached value
+        // must be ASCII-safe (base64) so it survives a utf8mb4 text column.
+        $profile = Profile::current();
+
+        $first = $this->get('/og/home.png');
+        $first->assertOk();
+
+        $cached = Cache::get('og.home.'.$profile->updated_at?->timestamp);
+
+        $this->assertIsString($cached);
+        $this->assertTrue(
+            mb_check_encoding($cached, 'UTF-8'),
+            'Cached OG value must be valid UTF-8 to store in a utf8mb4 column.',
+        );
+        $this->assertNotFalse(base64_decode($cached, true), 'Cached OG value must be base64.');
+
+        $decoded = getimagesizefromstring((string) base64_decode($cached));
+        $this->assertSame(1200, $decoded[0]);
+        $this->assertSame(630, $decoded[1]);
+    }
+
+    public function test_cache_hit_decodes_stored_base64_back_to_a_png(): void
+    {
+        // A pre-cached base64 value (a cache hit) must be decoded back to raw
+        // PNG bytes before it is served, not returned base64.
+        $profile = Profile::current();
+        $key = 'og.home.'.$profile->updated_at?->timestamp;
+
+        $png = imagecreatetruecolor(1200, 630);
+        ob_start();
+        imagepng($png);
+        $raw = (string) ob_get_clean();
+        imagedestroy($png);
+
+        Cache::forever($key, base64_encode($raw));
+
+        $response = $this->get('/og/home.png');
+        $response->assertOk();
+        $response->assertHeader('x-og-renderer', 'cached');
+
+        $this->assertSame($raw, $response->getContent());
+        $size = getimagesizefromstring($response->getContent());
+        $this->assertSame(1200, $size[0]);
+        $this->assertSame(630, $size[1]);
     }
 
     public function test_serves_static_fallback_and_error_header_when_generation_fails(): void
