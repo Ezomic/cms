@@ -71,12 +71,17 @@ class OgImageController extends Controller
      * never 500s, and surface the cause in X-OG-Error headers (prod has no
      * SSH and hides errors, so this is how the server-side fix is diagnosed).
      *
+     * The PNG is base64-encoded before caching: the database cache store on
+     * prod (MySQL, utf8mb4 `value` column) rejects raw PNG bytes with a 1366
+     * "Incorrect string value" error, so the value must be ASCII-safe.
+     *
      * @param  \Closure(): array{string, string, string, string}  $args
      */
     private function respond(string $cacheKey, \Closure $args): Response
     {
         try {
-            $png = Cache::rememberForever($cacheKey, fn (): string => $this->generate(...$args()));
+            $encoded = Cache::rememberForever($cacheKey, fn (): string => base64_encode($this->generate(...$args())));
+            $png = base64_decode($encoded);
 
             return response($png, 200, [
                 'Content-Type' => 'image/png',
