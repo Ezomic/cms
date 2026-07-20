@@ -20,7 +20,7 @@ class OgImageController extends Controller
         abort_unless($project->published, 404);
 
         return $this->respond(
-            'og.project.'.$project->id.'.'.$project->updated_at->timestamp,
+            'og.project.'.$project->id.'.'.($project->updated_at->timestamp ?? 0),
             fn (): array => [
                 $project->name,
                 $project->client_name.' - '.$project->year,
@@ -35,7 +35,7 @@ class OgImageController extends Controller
         abort_unless($post->published, 404);
 
         return $this->respond(
-            'og.post.'.$post->id.'.'.$post->updated_at->timestamp,
+            'og.post.'.$post->id.'.'.($post->updated_at->timestamp ?? 0),
             fn (): array => [
                 $post->title,
                 $post->published_at?->format('F j, Y') ?? '',

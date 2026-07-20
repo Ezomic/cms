@@ -69,7 +69,7 @@ class Post extends Model
 
     public function metaTitle(): string
     {
-        return $this->localized('meta_title') ?: $this->localizedTitle();
+        return $this->localized('meta_title') ?: $this->localizedTitle() ?: $this->title;
     }
 
     public function metaDescription(): string
