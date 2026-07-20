@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Concerns\InteractsWithCurrentUser;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -11,6 +12,8 @@ use Illuminate\View\View;
 
 class UserController extends Controller
 {
+    use InteractsWithCurrentUser;
+
     public function index(): View
     {
         return view('admin.users.index', [
@@ -52,9 +55,9 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')->with('status', 'Admin user updated.');
     }
 
-    public function destroy(Request $request, User $user): RedirectResponse
+    public function destroy(User $user): RedirectResponse
     {
-        if ($user->id === $request->user()->id) {
+        if ($user->id === $this->currentUser()->id) {
             return back()->with('status', "You can't delete your own account while logged in as it.");
         }
 
