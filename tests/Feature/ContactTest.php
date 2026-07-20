@@ -45,6 +45,47 @@ class ContactTest extends TestCase
         $this->assertDatabaseHas('contact_submissions', ['email' => 'jane@example.com']);
     }
 
+    public function test_budget_from_the_form_option_list_is_accepted(): void
+    {
+        Profile::current()->update(['email' => 'owner@example.com']);
+        Mail::fake();
+
+        $this->post(route('contact.store'), [...$this->valid, 'budget' => '> €50k'])
+            ->assertRedirect()
+            ->assertSessionHas('status');
+
+        $this->assertDatabaseHas('contact_submissions', ['budget' => '> €50k']);
+        Mail::assertSent(ContactFormSubmitted::class);
+    }
+
+    public function test_omitted_budget_is_accepted(): void
+    {
+        Profile::current()->update(['email' => 'owner@example.com']);
+        Mail::fake();
+
+        $this->post(route('contact.store'), $this->valid)
+            ->assertRedirect()
+            ->assertSessionHas('status');
+
+        $this->assertDatabaseCount('contact_submissions', 1);
+    }
+
+    public function test_budget_outside_the_option_list_is_dropped_silently(): void
+    {
+        // Regression for CMS-81: a scraper posts the raw HTML option value back
+        // without decoding entities, which the real <select> can never produce.
+        Profile::current()->update(['email' => 'owner@example.com']);
+        Mail::fake();
+
+        $this->post(route('contact.store'), [...$this->valid, 'budget' => '&gt; €50k'])
+            ->assertRedirect()
+            ->assertSessionHas('status')
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseCount('contact_submissions', 0);
+        Mail::assertNothingSent();
+    }
+
     public function test_honeypot_skips_persistence_and_mail(): void
     {
         Profile::current()->update(['email' => 'owner@example.com']);

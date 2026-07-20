@@ -21,8 +21,10 @@ class ContactController extends Controller
             'message' => ['required', 'string', 'max:5000'],
         ]);
 
-        // Honeypot: real visitors never fill this hidden field.
-        if ($request->filled('website')) {
+        // Bot signals: a hidden field real visitors never fill, and a budget the
+        // form's <select> cannot emit. Both get the success response so a
+        // spammer learns nothing about why the message was dropped.
+        if ($request->filled('website') || ! $this->budgetIsFromForm($data['budget'] ?? null)) {
             return back()->with('status', __('site.contact_success'));
         }
 
@@ -42,5 +44,22 @@ class ContactController extends Controller
         }
 
         return back()->with('status', __('site.contact_success'));
+    }
+
+    /**
+     * The budget field is a <select> with a fixed option set, so any other value
+     * was not produced by our form (scrapers post the raw HTML value back
+     * without decoding entities, e.g. "&gt; €50k"). Falls open when the options
+     * cannot be resolved: dropping a real enquiry costs more than storing spam.
+     */
+    private function budgetIsFromForm(?string $budget): bool
+    {
+        $options = __('site.contact_budget_options');
+
+        if (! is_array($options)) {
+            return true;
+        }
+
+        return in_array((string) $budget, array_keys($options), true);
     }
 }
