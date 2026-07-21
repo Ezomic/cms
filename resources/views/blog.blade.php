@@ -82,7 +82,7 @@
   <div class="post-list">
     @forelse ($posts as $post)
       <div class="post-item">
-        <div class="post-date">{{ $post->published_at?->format('M j, Y') }}</div>
+        <div class="post-date">{{ $post->published_at?->locale(app()->getLocale())->translatedFormat('M j, Y') }}</div>
         <div>
           <div class="post-title"><a href="{{ localized_route('blog.show', $post->slug) }}">{{ $post->localizedTitle() }} →</a></div>
           <div class="post-excerpt">{{ $post->localizedExcerpt() }}</div>

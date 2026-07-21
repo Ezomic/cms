@@ -81,7 +81,7 @@
     <div class="eyebrow">{{ __('site.blog_eyebrow') }}</div>
     <h1>{{ $post->localizedTitle() }}</h1>
     <div class="meta-row">
-      @if ($post->published_at)<span>{{ $post->published_at->format('F j, Y') }}</span>@endif
+      @if ($post->published_at)<span>{{ $post->published_at->locale(app()->getLocale())->translatedFormat('F j, Y') }}</span>@endif
     </div>
   </div>
 </header>
