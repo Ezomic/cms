@@ -151,10 +151,10 @@ server {
     root $APP_DIR/public;
     index index.php;
 
-    # Security headers
-    add_header X-Frame-Options "SAMEORIGIN";
-    add_header X-Content-Type-Options "nosniff";
-    add_header Referrer-Policy "strict-origin-when-cross-origin";
+    # Security headers are set by the Laravel SecurityHeaders middleware
+    # (X-Frame-Options: DENY, X-Content-Type-Options, Referrer-Policy,
+    # Permissions-Policy, HSTS). Do not duplicate them here — nginx and
+    # Laravel emitting the same header produced conflicting values.
 
     # Block access to sensitive files
     location ~ /\\.(?!well-known) { deny all; }
