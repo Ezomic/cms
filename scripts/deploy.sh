@@ -67,6 +67,10 @@ step "Enabling maintenance mode"
 $PHP artisan down --retry=10
 ok "Site is down"
 
+# Safety net: if any later step fails, still bring the site back up rather than
+# leaving it stuck in maintenance mode. Harmless (idempotent) on the success path.
+trap '$PHP artisan up > /dev/null 2>&1 || true' EXIT
+
 # ── 2. Pull latest code ───────────────────────────────────────────────────────
 step "Pulling from origin/main"
 git fetch origin
@@ -117,8 +121,12 @@ sudo systemctl reload php${PHP_VERSION}-fpm
 ok "PHP-FPM reloaded"
 
 step "Restarting queue worker"
-sudo supervisorctl restart cms-queue:* > /dev/null
-ok "Queue worker restarted"
+if sudo supervisorctl status cms-queue: > /dev/null 2>&1; then
+  sudo supervisorctl restart cms-queue:* > /dev/null
+  ok "Queue worker restarted"
+else
+  ok "No cms-queue worker configured — skipping"
+fi
 
 # ── 9. Back online ────────────────────────────────────────────────────────────
 step "Disabling maintenance mode"
