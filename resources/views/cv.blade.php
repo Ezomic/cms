@@ -54,7 +54,7 @@
       @if($profile->email)<span><a href="mailto:{{ $profile->email }}">{{ $profile->email }}</a></span>@endif
       @if($profile->linkedin_url)<span><a href="{{ $profile->linkedin_url }}">{{ $profile->linkedin_url }}</a></span>@endif
       @if($profile->github_url)<span><a href="{{ $profile->github_url }}">{{ $profile->github_url }}</a></span>@endif
-      @if($profile->rate)<span>{{ $profile->rate }}</span>@endif
+      <span>Rate on request</span>
     </div>
   </div>
 
@@ -120,14 +120,14 @@
 
   @if($profile->available)
     <div class="availability-box">
-      <strong>Currently available</strong> for new projects. Rate: {{ $profile->rate }}. Based in {{ $profile->city }}, NL. Works remote EU-wide and on-site.
+      <strong>Currently available</strong> for new projects. Rate on request. Based in {{ $profile->city }}, NL. Works remote EU-wide and on-site.
       @if($profile->email)
         <a href="mailto:{{ $profile->email }}">Get in touch &rarr;</a>
       @endif
     </div>
   @else
     <div class="availability-line">
-      Currently booked{{ $profile->availability_from ? ' — available from '.$profile->availability_from : '' }}. Rate: {{ $profile->rate }}. Based in {{ $profile->city }}, NL.
+      Currently booked{{ $profile->availability_from ? ' — available from '.$profile->availability_from : '' }}. Rate on request. Based in {{ $profile->city }}, NL.
     </div>
   @endif
 

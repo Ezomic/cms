@@ -313,7 +313,7 @@
             <li>{{ $item }}</li>
           @endforeach
         </ul>
-        <div class="service-price">{{ __('site.service_1_price', ['rate' => $profile->rate]) }}</div>
+        <div class="service-price">{{ __('site.service_1_price') }}</div>
       </div>
       <div class="service-card">
         <h3>{{ __('site.service_2_title') }}</h3>
@@ -323,7 +323,7 @@
             <li>{{ $item }}</li>
           @endforeach
         </ul>
-        <div class="service-price">{{ __('site.service_2_price', ['rate' => $profile->rate]) }}</div>
+        <div class="service-price">{{ __('site.service_2_price') }}</div>
       </div>
       <div class="service-card">
         <h3>{{ __('site.service_3_title') }}</h3>
@@ -431,7 +431,7 @@
 
     <div class="meta-box">
       <div><span>{{ __('site.meta_based_in') }}</span><strong>{{ $profile->city }}, NL</strong></div>
-      <div><span>{{ __('site.meta_rate') }}</span><strong>{{ $profile->rate }}</strong></div>
+      <div><span>{{ __('site.meta_rate') }}</span><strong>{{ __('site.meta_rate_value') }}</strong></div>
       <div><span>{{ __('site.meta_availability') }}</span><strong>{{ $profile->available ? __('site.meta_availability_now') : __('site.meta_availability_from', ['date' => $profile->availability_from]) }}</strong></div>
       <div><span>{{ __('site.meta_languages_label') }}</span><strong>{{ __('site.meta_languages') }}</strong></div>
       <div><span>{{ __('site.meta_remote_label') }}</span><strong>{{ __('site.meta_remote') }}</strong></div>
