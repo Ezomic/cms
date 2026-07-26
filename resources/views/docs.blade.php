@@ -155,7 +155,7 @@
         <p>{{ __('docs.s01_fixed_body') }}</p>
       </div>
       <div class="pricing-cell">
-        <div class="label">{{ __('docs.s01_day_label') }}{{ $profile->rate ? ' — '.$profile->rate : '' }}</div>
+        <div class="label">{{ __('docs.s01_day_label') }}</div>
         <h3>{{ __('docs.s01_day_title') }}</h3>
         <p>{{ __('docs.s01_day_body') }}</p>
       </div>
