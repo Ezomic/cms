@@ -72,6 +72,6 @@ class HomeTest extends TestCase
         $response = $this->get('/');
 
         $response->assertSee('2025');
-        $response->assertDontSee('2025 —');
+        $response->assertDontSee('2025 ·');
     }
 }

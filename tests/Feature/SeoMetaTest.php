@@ -33,7 +33,7 @@ class SeoMetaTest extends TestCase
         $response = $this->get('/work');
 
         $response->assertStatus(200);
-        $response->assertSee('<title>Case Studies — Jane Developer</title>', false);
+        $response->assertSee('<title>Case Studies · Jane Developer</title>', false);
         $response->assertSee('<meta name="description" content="Case studies by Jane Developer.">', false);
         $response->assertSee('<link rel="canonical" href="'.route('work.index').'">', false);
         $response->assertSee('<meta property="og:title"', false);
@@ -84,7 +84,7 @@ class SeoMetaTest extends TestCase
 
         $response = $this->get("/work/{$project->slug}");
 
-        $response->assertSee('<title>Custom SEO title —', false);
+        $response->assertSee('<title>Custom SEO title ·', false);
         $response->assertSee('<meta name="description" content="Custom SEO description.">', false);
     }
 
