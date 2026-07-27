@@ -150,7 +150,7 @@ class HomeController extends Controller
         $profile = Profile::current();
         $skills = Skill::ordered()->get()->groupBy('category')
             ->map(fn ($items) => $items->map(fn ($s) => (object) $s->toArray()));
-        $projects = Project::published()->ordered()->take(4)->get()->map(fn ($p) => (object) [
+        $projects = Project::published()->ordered()->get()->map(fn ($p) => (object) [
             ...$p->toArray(),
             'tag_list' => $p->tagList(),
         ]);

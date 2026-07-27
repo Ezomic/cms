@@ -37,6 +37,10 @@
   .project-outcome { font-size: 11px; color: #17181A; font-weight: 700; margin-top: 4px; }
   .project-tags { margin-top: 6px; }
   .project-tags span { display: inline-block; font-size: 8px; color: #63645F; background: #F0F0EB; border-radius: 3px; padding: 2px 7px; margin: 0 4px 4px 0; }
+  .edu-row { display: table; width: 100%; margin-bottom: 7px; page-break-inside: avoid; }
+  .edu-degree { display: table-cell; font-size: 11px; font-weight: 700; color: #17181A; }
+  .edu-degree span { font-weight: 400; color: #63645F; }
+  .edu-place { display: table-cell; text-align: right; font-size: 10px; color: #63645F; white-space: nowrap; }
   .availability-box { background: #F7F7F4; border-left: 3px solid #4b3fd0; padding: 10px 14px; font-size: 11px; color: #63645F; page-break-inside: avoid; }
   .availability-box strong { color: #17181A; }
   .availability-box a { color: #4b3fd0; text-decoration: none; font-weight: 700; }
@@ -118,6 +122,18 @@
     @endforeach
   </div>
   @endif
+
+  <div class="section">
+    <div class="section-title">Education</div>
+    <div class="edu-row">
+      <div class="edu-degree">MBO level 4 <span>· Application Manager</span></div>
+      <div class="edu-place">ROC van Twente, Hengelo</div>
+    </div>
+    <div class="edu-row">
+      <div class="edu-degree">MBO level 3 <span>· Medewerker Beheer ICT</span></div>
+      <div class="edu-place">ROC van Twente, Hengelo</div>
+    </div>
+  </div>
 
   @if($profile->available)
     <div class="availability-box">
