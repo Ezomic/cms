@@ -10,40 +10,22 @@ class BlogTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_blog_index_lists_published_posts(): void
+    /**
+     * The blog is hidden pre-launch (CMS-88): the public routes are not
+     * registered, so both the index and post URLs 404 for now.
+     */
+    public function test_blog_index_is_hidden(): void
     {
         Post::create(['title' => 'Published Post', 'published' => true]);
-        Post::create(['title' => 'Draft Post', 'published' => false]);
 
-        $response = $this->get('/blog');
-
-        $response->assertStatus(200);
-        $response->assertSee('Published Post');
-        $response->assertDontSee('Draft Post');
+        $this->get('/blog')->assertNotFound();
     }
 
-    public function test_published_post_is_viewable(): void
+    public function test_blog_post_is_hidden(): void
     {
-        $post = Post::create([
-            'title' => 'My Great Post',
-            'body' => '<p>Hello world.</p>',
-            'published' => true,
-        ]);
+        $post = Post::create(['title' => 'My Great Post', 'body' => '<p>Hi.</p>', 'published' => true]);
 
-        $response = $this->get("/blog/{$post->slug}");
-
-        $response->assertStatus(200);
-        $response->assertSee('My Great Post');
-        $response->assertSee('Hello world.', false);
-    }
-
-    public function test_unpublished_post_returns_404(): void
-    {
-        $post = Post::create(['title' => 'Not Ready Yet', 'published' => false]);
-
-        $response = $this->get("/blog/{$post->slug}");
-
-        $response->assertStatus(404);
+        $this->get("/blog/{$post->slug}")->assertNotFound();
     }
 
     public function test_post_slug_is_generated_from_title(): void

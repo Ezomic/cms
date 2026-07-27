@@ -24,8 +24,7 @@ $publicRoutes = function (): void {
     Route::get('/work', [HomeController::class, 'work'])->name('work.index');
     Route::get('/work/tag/{tag}', [HomeController::class, 'workTag'])->name('work.tag');
     Route::get('/work/{project:slug}', [HomeController::class, 'project'])->name('project.show');
-    Route::get('/blog', [HomeController::class, 'blog'])->name('blog.index');
-    Route::get('/blog/{post:slug}', [HomeController::class, 'post'])->name('blog.show');
+    // Blog is hidden pre-launch (CMS-88); routes re-enabled once the section is ready.
 };
 
 Route::group([], $publicRoutes);

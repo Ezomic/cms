@@ -18,7 +18,6 @@ class FontsTest extends TestCase
         return [
             ['/'],
             ['/work'],
-            ['/blog'],
             ['/docs'],
             ['/this-page-does-not-exist'],
         ];
