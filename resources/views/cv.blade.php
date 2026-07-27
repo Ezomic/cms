@@ -6,7 +6,8 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   /* accent updated to brand indigo (#4b3fd0) as part of the redesign; dompdf keeps table/inline layout */
   body { font-family: 'Inter', 'DejaVu Sans', sans-serif; font-size: 11px; color: #17181A; background: #fff; line-height: 1.5; }
-  .page { padding: 36px 52px; max-width: 780px; margin: 0 auto; }
+  @page { margin: 42px 52px 40px 52px; }
+  .page { max-width: 780px; margin: 0 auto; }
   .header { border-bottom: 2px solid #17181A; padding-bottom: 14px; margin-bottom: 18px; page-break-inside: avoid; }
   .name { font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4px; }
   .tagline { font-size: 13px; color: #63645F; margin-bottom: 12px; }
@@ -92,12 +93,12 @@
   <div class="section">
     <div class="section-title">Education</div>
     <div class="edu-row">
-      <div class="edu-degree">MBO level 4 <span>· Application Manager</span></div>
-      <div class="edu-place">2016-2017 &middot; ROC van Twente, Hengelo</div>
-    </div>
-    <div class="edu-row">
       <div class="edu-degree">MBO level 3 <span>· Medewerker Beheer ICT</span></div>
       <div class="edu-place">2013-2016 &middot; ROC van Twente, Hengelo</div>
+    </div>
+    <div class="edu-row">
+      <div class="edu-degree">MBO level 4 <span>· Application Manager</span></div>
+      <div class="edu-place">2016-2017 &middot; ROC van Twente, Hengelo</div>
     </div>
   </div>
 
