@@ -22,6 +22,15 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --quiet
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Build frontend assets
+        run: npm ci && npm run build
+
       - name: Check code style (Pint)
         run: vendor/bin/pint --test
 
