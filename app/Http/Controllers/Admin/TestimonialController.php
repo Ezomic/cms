@@ -7,7 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Testimonial;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 
 class TestimonialController extends Controller
 {
@@ -19,7 +20,7 @@ class TestimonialController extends Controller
         return Testimonial::class;
     }
 
-    public function index(Request $request): View
+    public function index(Request $request): InertiaResponse
     {
         $search = $request->string('search')->trim()->toString();
 
@@ -29,17 +30,26 @@ class TestimonialController extends Controller
                     ->orWhere('author_name', 'like', "%{$search}%");
             }))
             ->paginate(10)
-            ->withQueryString();
+            ->withQueryString()
+            ->through(fn (Testimonial $t) => [
+                'id' => $t->id,
+                'quote' => $t->quote,
+                'author_name' => $t->author_name,
+                'author_role' => $t->author_role,
+                'company_name' => $t->company_name,
+                'featured' => $t->featured,
+            ]);
 
-        return view('admin.testimonials.index', [
+        return Inertia::render('Testimonials/Index', [
             'testimonials' => $testimonials,
-            'search' => $search,
+            'filters' => ['search' => $search],
+            'trashCount' => Testimonial::onlyTrashed()->count(),
         ]);
     }
 
-    public function create(): View
+    public function create(): InertiaResponse
     {
-        return view('admin.testimonials.form', ['testimonial' => new Testimonial]);
+        return Inertia::render('Testimonials/Form', ['testimonial' => null]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -49,9 +59,19 @@ class TestimonialController extends Controller
         return redirect()->route('admin.testimonials.index')->with('status', 'Testimonial created.');
     }
 
-    public function edit(Testimonial $testimonial): View
+    public function edit(Testimonial $testimonial): InertiaResponse
     {
-        return view('admin.testimonials.form', compact('testimonial'));
+        return Inertia::render('Testimonials/Form', [
+            'testimonial' => [
+                'id' => $testimonial->id,
+                'quote' => $testimonial->quote,
+                'quote_nl' => $testimonial->quote_nl,
+                'author_name' => $testimonial->author_name,
+                'author_role' => $testimonial->author_role,
+                'company_name' => $testimonial->company_name,
+                'featured' => $testimonial->featured,
+            ],
+        ]);
     }
 
     public function update(Request $request, Testimonial $testimonial): RedirectResponse
@@ -68,10 +88,15 @@ class TestimonialController extends Controller
         return back()->with('status', 'Testimonial deleted.');
     }
 
-    public function trash(): View
+    public function trash(): InertiaResponse
     {
-        return view('admin.testimonials.trash', [
-            'testimonials' => Testimonial::onlyTrashed()->latest()->get(),
+        return Inertia::render('Testimonials/Trash', [
+            'testimonials' => Testimonial::onlyTrashed()->latest()->get()->map(fn (Testimonial $t) => [
+                'id' => $t->id,
+                'quote' => $t->quote,
+                'author_name' => $t->author_name,
+                'deleted_at' => $t->deleted_at?->diffForHumans(),
+            ]),
         ]);
     }
 

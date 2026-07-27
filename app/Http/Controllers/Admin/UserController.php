@@ -8,22 +8,29 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 
 class UserController extends Controller
 {
     use InteractsWithCurrentUser;
 
-    public function index(): View
+    public function index(): InertiaResponse
     {
-        return view('admin.users.index', [
-            'users' => User::orderBy('name')->get(),
+        return Inertia::render('Users/Index', [
+            'users' => User::orderBy('name')->get()->map(fn (User $user) => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'has_passkey' => $user->passkeys()->exists(),
+                'is_current' => $user->id === $this->currentUser()->id,
+            ]),
         ]);
     }
 
-    public function create(): View
+    public function create(): InertiaResponse
     {
-        return view('admin.users.form', ['user' => new User]);
+        return Inertia::render('Users/Form', ['user' => null]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -38,9 +45,15 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')->with('status', 'Admin user created. They can sign in with an emailed login code, then register a passkey.');
     }
 
-    public function edit(User $user): View
+    public function edit(User $user): InertiaResponse
     {
-        return view('admin.users.form', compact('user'));
+        return Inertia::render('Users/Form', [
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
+        ]);
     }
 
     public function update(Request $request, User $user): RedirectResponse

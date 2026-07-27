@@ -8,7 +8,8 @@ use App\Models\Post;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 
 class PostController extends Controller
 {
@@ -20,24 +21,32 @@ class PostController extends Controller
         return Post::class;
     }
 
-    public function index(Request $request): View
+    public function index(Request $request): InertiaResponse
     {
         $search = $request->string('search')->trim()->toString();
 
         $posts = Post::latest('published_at')
             ->when($search, fn ($query) => $query->where('title', 'like', "%{$search}%"))
             ->paginate(10)
-            ->withQueryString();
+            ->withQueryString()
+            ->through(fn (Post $post) => [
+                'id' => $post->id,
+                'title' => $post->title,
+                'slug' => $post->slug,
+                'published' => $post->published,
+                'published_at' => $post->published_at?->translatedFormat('M j, Y'),
+            ]);
 
-        return view('admin.posts.index', [
+        return Inertia::render('Posts/Index', [
             'posts' => $posts,
-            'search' => $search,
+            'filters' => ['search' => $search],
+            'trashCount' => Post::onlyTrashed()->count(),
         ]);
     }
 
-    public function create(): View
+    public function create(): InertiaResponse
     {
-        return view('admin.posts.form', ['post' => new Post]);
+        return Inertia::render('Posts/Form', ['post' => null]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -50,9 +59,25 @@ class PostController extends Controller
         return redirect()->route('admin.posts.index')->with('status', 'Post created.');
     }
 
-    public function edit(Post $post): View
+    public function edit(Post $post): InertiaResponse
     {
-        return view('admin.posts.form', compact('post'));
+        return Inertia::render('Posts/Form', [
+            'post' => [
+                'id' => $post->id,
+                'title' => $post->title,
+                'slug' => $post->slug,
+                'excerpt' => $post->excerpt,
+                'body' => $post->body,
+                'published' => $post->published,
+                'meta_title' => $post->meta_title,
+                'meta_description' => $post->meta_description,
+                'title_nl' => $post->title_nl,
+                'excerpt_nl' => $post->excerpt_nl,
+                'body_nl' => $post->body_nl,
+                'meta_title_nl' => $post->meta_title_nl,
+                'meta_description_nl' => $post->meta_description_nl,
+            ],
+        ]);
     }
 
     public function update(Request $request, Post $post): RedirectResponse
@@ -72,10 +97,15 @@ class PostController extends Controller
         return back()->with('status', 'Post deleted.');
     }
 
-    public function trash(): View
+    public function trash(): InertiaResponse
     {
-        return view('admin.posts.trash', [
-            'posts' => Post::onlyTrashed()->latest()->get(),
+        return Inertia::render('Posts/Trash', [
+            'posts' => Post::onlyTrashed()->latest()->get()->map(fn (Post $post) => [
+                'id' => $post->id,
+                'title' => $post->title,
+                'slug' => $post->slug,
+                'deleted_at' => $post->deleted_at?->diffForHumans(),
+            ]),
         ]);
     }
 

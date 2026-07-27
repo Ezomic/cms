@@ -75,4 +75,10 @@
     .font-mono {
         font-family: var(--font-mono);
     }
+    .lt {
+        @apply cursor-pointer rounded-md border border-border px-2.5 py-1 font-mono text-[11px] text-muted-foreground;
+    }
+    .lt-on {
+        @apply border-foreground bg-foreground text-background;
+    }
 }

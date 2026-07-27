@@ -8,7 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Skill;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 
 class SkillController extends Controller
 {
@@ -27,7 +28,7 @@ class SkillController extends Controller
         return Skill::class;
     }
 
-    public function index(Request $request): View
+    public function index(Request $request): InertiaResponse
     {
         $search = $request->string('search')->trim()->toString();
 
@@ -37,17 +38,22 @@ class SkillController extends Controller
                     ->orWhere('category', 'like', "%{$search}%");
             }))
             ->get()
-            ->groupBy('category');
+            ->map(fn (Skill $skill) => [
+                'id' => $skill->id,
+                'name' => $skill->name,
+                'category' => $skill->category,
+            ]);
 
-        return view('admin.skills.index', [
+        return Inertia::render('Skills/Index', [
             'skills' => $skills,
-            'search' => $search,
+            'filters' => ['search' => $search],
+            'trashCount' => Skill::onlyTrashed()->count(),
         ]);
     }
 
-    public function create(): View
+    public function create(): InertiaResponse
     {
-        return view('admin.skills.form', ['skill' => new Skill]);
+        return Inertia::render('Skills/Form', ['skill' => null]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -57,9 +63,15 @@ class SkillController extends Controller
         return redirect()->route('admin.skills.index')->with('status', 'Skill added.');
     }
 
-    public function edit(Skill $skill): View
+    public function edit(Skill $skill): InertiaResponse
     {
-        return view('admin.skills.form', compact('skill'));
+        return Inertia::render('Skills/Form', [
+            'skill' => [
+                'id' => $skill->id,
+                'name' => $skill->name,
+                'category' => $skill->category,
+            ],
+        ]);
     }
 
     public function update(Request $request, Skill $skill): RedirectResponse
@@ -76,10 +88,15 @@ class SkillController extends Controller
         return back()->with('status', 'Skill deleted.');
     }
 
-    public function trash(): View
+    public function trash(): InertiaResponse
     {
-        return view('admin.skills.trash', [
-            'skills' => Skill::onlyTrashed()->ordered()->get()->groupBy('category'),
+        return Inertia::render('Skills/Trash', [
+            'skills' => Skill::onlyTrashed()->ordered()->get()->map(fn (Skill $skill) => [
+                'id' => $skill->id,
+                'name' => $skill->name,
+                'category' => $skill->category,
+                'deleted_at' => $skill->deleted_at?->diffForHumans(),
+            ]),
         ]);
     }
 
