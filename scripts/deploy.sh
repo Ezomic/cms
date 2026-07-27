@@ -14,12 +14,16 @@
 #   2. Pulls latest code from main
 #   3. Installs/updates Composer dependencies (no-dev)
 #   4. Runs migrations
-#   5. Clears and rebuilds caches
-#   6. Creates storage symlink if missing
-#   7. Sets correct permissions
-#   8. Restarts PHP-FPM and queue worker
-#   9. Takes the site out of maintenance mode
-#  10. Runs a smoke test (HTTP 200 on /)
+#   5. Builds frontend assets (Vite) and verifies the manifest
+#   6. Clears and rebuilds caches
+#   7. Creates storage symlink if missing
+#   8. Sets correct permissions
+#   9. Restarts PHP-FPM and queue worker
+#  10. Takes the site out of maintenance mode
+#  11. Runs a smoke test (HTTP 200 on /)
+#
+# Note: this script pulls its own source (step 2). If the pull changes deploy.sh,
+# it re-executes the updated copy once so newly added steps are not skipped.
 # =============================================================================
 
 set -euo pipefail
@@ -53,6 +57,11 @@ if [[ ! -f ".env" ]]; then
   exit 1
 fi
 
+# Hash of this script before we pull, so we can detect when the pull rewrites
+# deploy.sh itself and re-execute the updated version (see step 2).
+SELF="$APP_DIR/scripts/deploy.sh"
+SELF_HASH_BEFORE="$(sha256sum "$SELF" | awk '{print $1}')"
+
 # ── Helpers ───────────────────────────────────────────────────────────────────
 step() { echo; echo "▶ $*"; }
 ok()   { echo "  ✓ $*"; }
@@ -76,6 +85,15 @@ step "Pulling from origin/main"
 git fetch origin
 git reset --hard origin/main
 ok "$(git log -1 --format='%h %s')"
+
+# If the pull changed deploy.sh itself, bash is still executing the old version
+# from before the reset, so any newly added step below would be silently skipped.
+# Re-exec the updated script exactly once (guarded by DEPLOY_REEXEC to avoid a loop).
+if [[ -z "${DEPLOY_REEXEC:-}" && "$(sha256sum "$SELF" | awk '{print $1}')" != "$SELF_HASH_BEFORE" ]]; then
+  ok "deploy.sh changed in this pull — re-executing the updated script"
+  export DEPLOY_REEXEC=1
+  exec bash "$SELF"
+fi
 
 # ── 3. Composer ───────────────────────────────────────────────────────────────
 step "Installing Composer dependencies"
@@ -103,6 +121,10 @@ ok "Migrations complete"
 step "Building frontend assets"
 npm ci --no-audit --no-fund
 npm run build
+if [[ ! -f "public/build/manifest.json" ]]; then
+  echo "  ✗ Vite build produced no public/build/manifest.json — the admin (Inertia) would 500." >&2
+  exit 1
+fi
 ok "Assets built"
 
 # ── 6. Caches ─────────────────────────────────────────────────────────────────
