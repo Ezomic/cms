@@ -30,15 +30,15 @@ class CvTest extends TestCase
         $this->assertStringContainsString('cv.pdf', $response->headers->get('content-disposition'));
     }
 
-    public function test_cv_query_limits_published_projects_to_four(): void
+    public function test_cv_includes_all_published_projects_in_order(): void
     {
         for ($i = 1; $i <= 6; $i++) {
             Project::create(['name' => "Project {$i}", 'sort_order' => $i, 'published' => true]);
         }
 
-        $projects = Project::published()->ordered()->take(4)->get();
+        $projects = Project::published()->ordered()->get();
 
-        $this->assertCount(4, $projects);
+        $this->assertCount(6, $projects);
     }
 
     public function test_cv_route_still_renders_successfully_with_more_than_four_published_projects(): void
@@ -53,16 +53,29 @@ class CvTest extends TestCase
         $response->assertHeader('content-type', 'application/pdf');
     }
 
-    public function test_cv_query_excludes_unpublished_projects_from_the_four_project_cap(): void
+    public function test_cv_query_excludes_unpublished_projects(): void
     {
         Project::create(['name' => 'Published One', 'sort_order' => 0, 'published' => true]);
         Project::create(['name' => 'Published Two', 'sort_order' => 1, 'published' => true]);
         Project::create(['name' => 'Unpublished One', 'sort_order' => 2, 'published' => false]);
 
-        $projects = Project::published()->ordered()->take(4)->get();
+        $projects = Project::published()->ordered()->get();
 
         $this->assertCount(2, $projects);
         $this->assertTrue($projects->pluck('name')->doesntContain('Unpublished One'));
+    }
+
+    public function test_cv_view_renders_education_section(): void
+    {
+        $profile = Profile::current();
+        $skills = Skill::query()->get()->groupBy('category');
+
+        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => collect()])->render();
+
+        $this->assertStringContainsString('Education', $html);
+        $this->assertStringContainsString('MBO level 4', $html);
+        $this->assertStringContainsString('MBO level 3', $html);
+        $this->assertStringContainsString('ROC van Twente, Hengelo', $html);
     }
 
     public function test_cv_view_only_renders_the_projects_it_is_given(): void
