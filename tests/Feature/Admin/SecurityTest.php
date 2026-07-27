@@ -4,6 +4,7 @@ namespace Tests\Feature\Admin;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class SecurityTest extends TestCase
@@ -21,10 +22,8 @@ class SecurityTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->get('/admin/security');
-
-        $response->assertOk();
-        $response->assertViewIs('admin.security.show');
-        $response->assertViewHas('passkeys');
+        $this->actingAs($user)->get('/admin/security')->assertInertia(
+            fn (Assert $page) => $page->component('Security/Show')->has('passkeys')
+        );
     }
 }

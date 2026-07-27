@@ -6,14 +6,23 @@ use App\Http\Controllers\Controller;
 use App\Models\Profile;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 
 class ProfileController extends Controller
 {
-    public function edit(): View
+    public function edit(): InertiaResponse
     {
-        return view('admin.profile.edit', [
-            'profile' => Profile::current(),
+        $profile = Profile::current();
+
+        return Inertia::render('Profile/Edit', [
+            'profile' => $profile->only([
+                'name', 'city', 'tagline', 'hero_headline', 'hero_subtext', 'available',
+                'email', 'linkedin_url', 'github_url', 'rate', 'availability_from', 'kvk_number',
+                'meta_title', 'meta_description', 'docs_intro',
+                'tagline_nl', 'hero_headline_nl', 'hero_subtext_nl', 'docs_intro_nl',
+                'meta_title_nl', 'meta_description_nl',
+            ]),
         ]);
     }
 

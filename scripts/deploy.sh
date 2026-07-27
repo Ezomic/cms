@@ -99,6 +99,12 @@ step "Running migrations"
 $PHP artisan migrate --force
 ok "Migrations complete"
 
+# ── 5b. Frontend assets (Inertia/Vue via Vite) ────────────────────────────────
+step "Building frontend assets"
+npm ci --no-audit --no-fund
+npm run build
+ok "Assets built"
+
 # ── 6. Caches ─────────────────────────────────────────────────────────────────
 step "Clearing and rebuilding caches"
 $PHP artisan cache:clear

@@ -1,9 +1,84 @@
 @import 'tailwindcss';
+@import 'tw-animate-css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--card);
+    --color-popover-foreground: var(--card-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-success: var(--success);
+    --color-success-foreground: var(--success-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Jost', 'Futura', 'Avenir Next', ui-sans-serif, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+}
+
+:root {
+    --radius: 0.625rem;
+    --background: #f6f2ea;
+    --foreground: #221d17;
+    --card: #ffffff;
+    --card-foreground: #221d17;
+    --primary: #4b3fd0;
+    --primary-foreground: #ffffff;
+    --secondary: #f4eee2;
+    --secondary-foreground: #221d17;
+    --muted: #f4eee2;
+    --muted-foreground: #6b6258;
+    --accent: #e7e4fb;
+    --accent-foreground: #3a2fb0;
+    --destructive: #b3382f;
+    --destructive-foreground: #ffffff;
+    --success: #1f6b4a;
+    --success-foreground: #ffffff;
+    --border: #e7ddcd;
+    --input: #d8ccb8;
+    --ring: #4b3fd0;
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    body {
+        @apply bg-background text-foreground font-sans antialiased;
+    }
+    .font-display {
+        font-family: var(--font-display);
+    }
+    .font-mono {
+        font-family: var(--font-mono);
+    }
+    .lt {
+        @apply cursor-pointer rounded-md border border-border px-2.5 py-1 font-mono text-[11px] text-muted-foreground;
+    }
+    .lt-on {
+        @apply border-foreground bg-foreground text-background;
+    }
 }

@@ -5,14 +5,27 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ContactSubmission;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 
 class ContactSubmissionController extends Controller
 {
-    public function index(): View
+    public function index(): InertiaResponse
     {
-        return view('admin.contact-submissions.index', [
-            'submissions' => ContactSubmission::latest()->paginate(15),
+        $submissions = ContactSubmission::latest()->paginate(15)
+            ->through(fn (ContactSubmission $s) => [
+                'id' => $s->id,
+                'name' => $s->name,
+                'email' => $s->email,
+                'company' => $s->company,
+                'budget' => $s->budget,
+                'message' => $s->message,
+                'is_read' => $s->read_at !== null,
+                'when' => $s->created_at?->diffForHumans(),
+            ]);
+
+        return Inertia::render('ContactSubmissions/Index', [
+            'submissions' => $submissions,
         ]);
     }
 

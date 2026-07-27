@@ -5,6 +5,7 @@ namespace Tests\Feature\Admin;
 use App\Models\ContactSubmission;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class ContactSubmissionTest extends TestCase
@@ -21,11 +22,12 @@ class ContactSubmissionTest extends TestCase
         $user = User::factory()->create();
         ContactSubmission::create(['name' => 'Jane Doe', 'email' => 'jane@example.com', 'message' => 'Hello there.']);
 
-        $response = $this->actingAs($user)->get('/admin/contact-submissions');
-
-        $response->assertOk();
-        $response->assertSee('Jane Doe');
-        $response->assertSee('Hello there.');
+        $this->actingAs($user)->get('/admin/contact-submissions')->assertInertia(
+            fn (Assert $page) => $page
+                ->component('ContactSubmissions/Index')
+                ->where('submissions.data.0.name', 'Jane Doe')
+                ->where('submissions.data.0.message', 'Hello there.')
+        );
     }
 
     public function test_admin_can_mark_a_submission_as_read(): void
