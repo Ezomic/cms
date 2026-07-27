@@ -6,15 +6,15 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   /* accent updated to brand indigo (#4b3fd0) as part of the redesign; dompdf keeps table/inline layout */
   body { font-family: 'Inter', 'DejaVu Sans', sans-serif; font-size: 11px; color: #17181A; background: #fff; line-height: 1.5; }
-  .page { padding: 48px 52px; max-width: 780px; margin: 0 auto; }
-  .header { border-bottom: 2px solid #17181A; padding-bottom: 20px; margin-bottom: 28px; page-break-inside: avoid; }
+  .page { padding: 36px 52px; max-width: 780px; margin: 0 auto; }
+  .header { border-bottom: 2px solid #17181A; padding-bottom: 14px; margin-bottom: 18px; page-break-inside: avoid; }
   .name { font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4px; }
   .tagline { font-size: 13px; color: #63645F; margin-bottom: 12px; }
   .contact-row { font-size: 11px; color: #63645F; }
   .contact-row span { margin-right: 20px; }
   .contact-row a { color: #63645F; text-decoration: none; }
   .accent { color: #4b3fd0; }
-  .section { margin-bottom: 28px; }
+  .section { margin-bottom: 18px; }
   .section-title { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #4b3fd0; font-weight: 700; margin-bottom: 10px; border-bottom: 1px solid #DDDDD6; padding-bottom: 4px; page-break-after: avoid; }
   .section-title-row { display: table; width: 100%; margin-bottom: 10px; border-bottom: 1px solid #DDDDD6; padding-bottom: 4px; page-break-after: avoid; }
   .section-title-row .section-title { display: table-cell; margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
@@ -27,7 +27,7 @@
   .skills-col ul { list-style: none; }
   .skills-col li { font-size: 11px; color: #63645F; padding: 3px 0; border-top: 1px solid #EEEEEA; }
   .skills-col li:first-child { border-top: none; font-weight: 700; color: #17181A; }
-  .project { margin-bottom: 18px; page-break-inside: avoid; }
+  .project { margin-bottom: 12px; page-break-inside: avoid; }
   .project-header { display: table; width: 100%; margin-bottom: 4px; }
   .project-name { display: table-cell; font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 13px; font-weight: 700; }
   .project-meta { display: table-cell; text-align: right; font-size: 10px; color: #63645F; white-space: nowrap; }
@@ -105,7 +105,7 @@
         <div class="project-client">{{ $project->client_name }}</div>
         <div class="project-desc">{{ $project->description }}</div>
         @if($project->outcome ?? null)
-          <div class="project-outcome"><span class="accent">Result &mdash;</span> {{ $project->outcome }}</div>
+          <div class="project-outcome"><span class="accent">Result:</span> {{ $project->outcome }}</div>
         @endif
         @if($project->tag_list)
           <div class="project-tags">
@@ -128,7 +128,7 @@
     </div>
   @else
     <div class="availability-line">
-      Currently booked{{ $profile->availability_from ? ' — available from '.$profile->availability_from : '' }}. Rate on request. Based in {{ $profile->city }}, NL.
+      Currently booked{{ $profile->availability_from ? ', available from '.$profile->availability_from : '' }}. Rate on request. Based in {{ $profile->city }}, NL.
     </div>
   @endif
 

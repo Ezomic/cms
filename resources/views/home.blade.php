@@ -2,7 +2,7 @@
 
 @section('head')
 @include('partials.seo', [
-    'title' => $profile->meta_title ?: $profile->name.' — '.$profile->tagline,
+    'title' => $profile->meta_title ?: $profile->name.' · '.$profile->tagline,
     'description' => $profile->meta_description ?: $profile->hero_subtext,
     'canonicalRoute' => 'home',
 ])
@@ -104,7 +104,7 @@
       <div>
         <span class="pill {{ $profile->available ? '' : 'away' }}">
           <span class="dot"></span>
-          @if ($profile->available){{ __('site.status_available') }}@else{{ __('site.status_booked') }}@if($profile->availability_from) — {{ __('site.status_available_from', ['date' => $profile->availability_from]) }}@endif @endif
+          @if ($profile->available){{ __('site.status_available') }}@else{{ __('site.status_booked') }}@if($profile->availability_from), {{ __('site.status_available_from', ['date' => $profile->availability_from]) }}@endif @endif
         </span>
         <div class="clock" id="local-time">--:--</div>
         <div class="eyebrow">{{ $profile->tagline }}</div>

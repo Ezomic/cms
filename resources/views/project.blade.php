@@ -2,7 +2,7 @@
 
 @section('head')
 @include('partials.seo', [
-    'title' => $project->metaTitle().' — '.$profile->name,
+    'title' => $project->metaTitle().' · '.$profile->name,
     'description' => $project->metaDescription(),
     'canonicalRoute' => 'project.show',
     'canonicalParams' => ['project' => $project->slug],

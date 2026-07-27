@@ -2,7 +2,7 @@
 
 @section('head')
 @include('partials.seo', [
-    'title' => ($activeTag ? __('site.work_meta_title_tag', ['tag' => $activeTag]) : __('site.work_meta_title')).' — '.$profile->name,
+    'title' => ($activeTag ? __('site.work_meta_title_tag', ['tag' => $activeTag]) : __('site.work_meta_title')).' · '.$profile->name,
     'description' => $activeTag
         ? __('site.work_meta_description_tag', ['tag' => $activeTag, 'name' => $profile->name])
         : __('site.work_meta_description', ['name' => $profile->name]),

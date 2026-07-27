@@ -201,7 +201,7 @@ class CvTest extends TestCase
         $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => $projects])->render();
 
         $this->assertStringContainsString('<div class="project-outcome">', $html);
-        $this->assertStringContainsString('Result &mdash;', $html);
+        $this->assertStringContainsString('Result:', $html);
         $this->assertStringContainsString('Cut load times by 40%.', $html);
     }
 
