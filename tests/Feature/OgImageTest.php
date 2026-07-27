@@ -96,7 +96,7 @@ class OgImageTest extends TestCase
         $img = imagecreatefromstring($response->getContent());
         $this->assertNotFalse($img);
 
-        // The title is drawn in ink #17181A via imagettftext. Finding those
+        // The title is drawn in ink #221d17 via imagettftext. Finding those
         // pixels proves the TrueType text actually rendered (a GD build without
         // FreeType would silently produce a blank card that still passes the
         // dimension checks).
@@ -104,7 +104,7 @@ class OgImageTest extends TestCase
         for ($x = 60; $x < 720 && ! $found; $x += 2) {
             for ($y = 180; $y < 245; $y += 2) {
                 $rgb = imagecolorat($img, $x, $y);
-                if ((($rgb >> 16) & 0xFF) === 23 && (($rgb >> 8) & 0xFF) === 24 && ($rgb & 0xFF) === 26) {
+                if ((($rgb >> 16) & 0xFF) === 34 && (($rgb >> 8) & 0xFF) === 29 && ($rgb & 0xFF) === 23) {
                     $found = true;
                     break;
                 }
@@ -137,14 +137,14 @@ class OgImageTest extends TestCase
         $this->assertSame(630, $size[1]);
         $this->assertSame('image/png', $size['mime']);
 
-        // The scaled title is drawn in ink #17181A; finding those pixels proves
+        // The scaled title is drawn in ink #221d17; finding those pixels proves
         // the bitmap fallback actually rendered text rather than a blank card.
         $img = imagecreatefromstring($png);
         $found = false;
         for ($x = 60; $x < 720 && ! $found; $x += 2) {
             for ($y = 195; $y < 260; $y += 2) {
                 $rgb = imagecolorat($img, $x, $y);
-                if ((($rgb >> 16) & 0xFF) === 23 && (($rgb >> 8) & 0xFF) === 24 && ($rgb & 0xFF) === 26) {
+                if ((($rgb >> 16) & 0xFF) === 34 && (($rgb >> 8) & 0xFF) === 29 && ($rgb & 0xFF) === 23) {
                     $found = true;
                     break;
                 }

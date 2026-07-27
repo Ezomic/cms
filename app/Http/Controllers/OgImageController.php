@@ -109,11 +109,11 @@ class OgImageController extends Controller
         $h = 630;
         $img = imagecreatetruecolor($w, $h);
 
-        $bg = imagecolorallocate($img, 247, 247, 244);
-        $ink = imagecolorallocate($img, 23, 24, 26);
-        $accent = imagecolorallocate($img, 232, 89, 12);
-        $soft = imagecolorallocate($img, 99, 100, 95);
-        $line = imagecolorallocate($img, 221, 221, 214);
+        $bg = imagecolorallocate($img, 251, 247, 239);
+        $ink = imagecolorallocate($img, 34, 29, 23);
+        $accent = imagecolorallocate($img, 75, 63, 208);
+        $soft = imagecolorallocate($img, 107, 98, 88);
+        $line = imagecolorallocate($img, 231, 221, 205);
 
         if ($bg === false || $ink === false || $accent === false || $soft === false || $line === false) {
             throw new \RuntimeException('Failed to allocate OG image colors.');
@@ -241,8 +241,8 @@ class OgImageController extends Controller
         $srcH = max(1, imagefontheight($font));
 
         $tmp = imagecreatetruecolor($srcW, $srcH);
-        $tmpBg = imagecolorallocate($tmp, 247, 247, 244);
-        $tmpInk = imagecolorallocate($tmp, 23, 24, 26);
+        $tmpBg = imagecolorallocate($tmp, 251, 247, 239);
+        $tmpInk = imagecolorallocate($tmp, 34, 29, 23);
 
         if ($tmpBg === false || $tmpInk === false) {
             imagedestroy($tmp);

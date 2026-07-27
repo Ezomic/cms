@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  /* accent updated to brand indigo (#4b3fd0) as part of the redesign; dompdf keeps table/inline layout */
   body { font-family: 'Inter', 'DejaVu Sans', sans-serif; font-size: 11px; color: #17181A; background: #fff; line-height: 1.5; }
   .page { padding: 48px 52px; max-width: 780px; margin: 0 auto; }
   .header { border-bottom: 2px solid #17181A; padding-bottom: 20px; margin-bottom: 28px; page-break-inside: avoid; }
@@ -12,9 +13,9 @@
   .contact-row { font-size: 11px; color: #63645F; }
   .contact-row span { margin-right: 20px; }
   .contact-row a { color: #63645F; text-decoration: none; }
-  .accent { color: #E8590C; }
+  .accent { color: #4b3fd0; }
   .section { margin-bottom: 28px; }
-  .section-title { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #E8590C; font-weight: 700; margin-bottom: 10px; border-bottom: 1px solid #DDDDD6; padding-bottom: 4px; page-break-after: avoid; }
+  .section-title { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #4b3fd0; font-weight: 700; margin-bottom: 10px; border-bottom: 1px solid #DDDDD6; padding-bottom: 4px; page-break-after: avoid; }
   .section-title-row { display: table; width: 100%; margin-bottom: 10px; border-bottom: 1px solid #DDDDD6; padding-bottom: 4px; page-break-after: avoid; }
   .section-title-row .section-title { display: table-cell; margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
   .section-cta { display: table-cell; text-align: right; font-size: 9px; color: #63645F; text-decoration: none; white-space: nowrap; vertical-align: bottom; }
@@ -31,14 +32,14 @@
   .project-name { display: table-cell; font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 13px; font-weight: 700; }
   .project-meta { display: table-cell; text-align: right; font-size: 10px; color: #63645F; white-space: nowrap; }
   .project-meta a { color: #63645F; text-decoration: none; }
-  .project-client { font-size: 10px; color: #E8590C; margin-bottom: 4px; }
+  .project-client { font-size: 10px; color: #4b3fd0; margin-bottom: 4px; }
   .project-desc { font-size: 11px; color: #63645F; line-height: 1.5; }
   .project-outcome { font-size: 11px; color: #17181A; font-weight: 700; margin-top: 4px; }
   .project-tags { margin-top: 6px; }
   .project-tags span { display: inline-block; font-size: 8px; color: #63645F; background: #F0F0EB; border-radius: 3px; padding: 2px 7px; margin: 0 4px 4px 0; }
-  .availability-box { background: #F7F7F4; border-left: 3px solid #E8590C; padding: 10px 14px; font-size: 11px; color: #63645F; page-break-inside: avoid; }
+  .availability-box { background: #F7F7F4; border-left: 3px solid #4b3fd0; padding: 10px 14px; font-size: 11px; color: #63645F; page-break-inside: avoid; }
   .availability-box strong { color: #17181A; }
-  .availability-box a { color: #E8590C; text-decoration: none; font-weight: 700; }
+  .availability-box a { color: #4b3fd0; text-decoration: none; font-weight: 700; }
   .availability-line { font-size: 10px; color: #63645F; page-break-inside: avoid; }
   .footer { margin-top: 32px; padding-top: 12px; border-top: 1px solid #DDDDD6; font-size: 9px; color: #aaa; text-align: center; }
   .footer a { color: #aaa; text-decoration: none; }

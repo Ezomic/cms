@@ -8,32 +8,37 @@
 @include('partials.fonts')
 <style>
   :root{
-    --bg:#F7F7F4; --ink:#17181A; --ink-soft:#63645F; --line:#DDDDD6;
-    --accent:#E8590C; --accent-soft:#FCE6D8; --white:#FFFFFF;
-    --display:'Space Grotesk',sans-serif; --body:'Inter',sans-serif; --mono:'IBM Plex Mono',monospace;
+    --bg:#fbf7ef; --ink:#221d17; --muted:#6b6258; --line:#e7ddcd; --line-strong:#d8ccb8;
+    --primary:#4b3fd0; --deep:#3a2fb0;
+    --geo:'Jost','Futura','Avenir Next',system-ui,sans-serif;
+    --body:'Inter',system-ui,-apple-system,sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;align-items:center;justify-content:center;}
-  ::selection{background:var(--accent);color:var(--white);}
-  .wrap{max-width:560px;padding:32px;text-align:left;}
-  .eyebrow{font-family:var(--mono);font-size:13px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;}
-  h1{font-family:var(--display);font-weight:600;font-size:clamp(2rem,5vw,3rem);line-height:1.1;letter-spacing:-.02em;margin-bottom:16px;}
-  p{color:var(--ink-soft);margin-bottom:32px;}
-  .actions{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
-  .btn{font-family:var(--mono);font-size:14px;background:var(--ink);color:var(--white);padding:14px 24px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .15s;}
-  .btn:hover{background:var(--accent);}
-  .link{font-family:var(--mono);font-size:14px;color:var(--ink-soft);text-decoration:none;border-bottom:1px solid var(--line);}
-  .link:hover{color:var(--ink);}
+  body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;align-items:center;justify-content:center;}
+  ::selection{background:var(--primary);color:#fff;}
+  a{color:inherit;text-decoration:none;}
+  a:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:3px;}
+  .wrap{max-width:560px;padding:32px;}
+  .big{font-family:var(--geo);font-weight:700;font-size:clamp(4rem,14vw,7rem);line-height:1;letter-spacing:-.03em;color:var(--primary);}
+  h1{font-family:var(--geo);font-weight:700;font-size:clamp(1.6rem,4vw,2.2rem);line-height:1.1;letter-spacing:-.02em;margin:14px 0 12px;}
+  p{color:var(--muted);margin-bottom:28px;max-width:42ch;}
+  .actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+  .btn{font-family:var(--geo);font-weight:600;font-size:14px;border-radius:10px;padding:12px 20px;display:inline-flex;align-items:center;gap:8px;border:1.5px solid transparent;}
+  .btn.pri{background:var(--primary);color:#fff;}
+  .btn.pri:hover{background:var(--deep);}
+  .btn.sec{background:#fff;color:var(--ink);border-color:var(--line-strong);}
+  .btn.sec:hover{border-color:var(--ink);}
 </style>
 </head>
 <body>
 <main class="wrap">
-  <div class="eyebrow">404</div>
+  <div class="big">404</div>
   <h1>{{ __('site.not_found_headline') }}</h1>
   <p>{{ __('site.not_found_body') }}</p>
   <div class="actions">
-    <a class="btn" href="{{ route('home') }}">{{ __('site.not_found_home') }}</a>
-    <a class="link" href="{{ route('work.index') }}">{{ __('site.not_found_work') }}</a>
+    <a class="btn pri" href="{{ route('home') }}">{{ __('site.not_found_home') }}</a>
+    <a class="btn sec" href="{{ route('work.index') }}">{{ __('site.not_found_work') }}</a>
   </div>
 </main>
 </body>
