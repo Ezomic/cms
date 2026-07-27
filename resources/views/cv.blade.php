@@ -89,6 +89,18 @@
   </div>
   @endif
 
+  <div class="section">
+    <div class="section-title">Education</div>
+    <div class="edu-row">
+      <div class="edu-degree">MBO level 4 <span>· Application Manager</span></div>
+      <div class="edu-place">2016-2017 &middot; ROC van Twente, Hengelo</div>
+    </div>
+    <div class="edu-row">
+      <div class="edu-degree">MBO level 3 <span>· Medewerker Beheer ICT</span></div>
+      <div class="edu-place">2013-2016 &middot; ROC van Twente, Hengelo</div>
+    </div>
+  </div>
+
   @if ($projects->isNotEmpty())
   <div class="section">
     <div class="section-title-row">
@@ -122,18 +134,6 @@
     @endforeach
   </div>
   @endif
-
-  <div class="section">
-    <div class="section-title">Education</div>
-    <div class="edu-row">
-      <div class="edu-degree">MBO level 4 <span>· Application Manager</span></div>
-      <div class="edu-place">ROC van Twente, Hengelo</div>
-    </div>
-    <div class="edu-row">
-      <div class="edu-degree">MBO level 3 <span>· Medewerker Beheer ICT</span></div>
-      <div class="edu-place">ROC van Twente, Hengelo</div>
-    </div>
-  </div>
 
   @if($profile->available)
     <div class="availability-box">

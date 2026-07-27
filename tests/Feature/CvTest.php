@@ -76,6 +76,8 @@ class CvTest extends TestCase
         $this->assertStringContainsString('MBO level 4', $html);
         $this->assertStringContainsString('MBO level 3', $html);
         $this->assertStringContainsString('ROC van Twente, Hengelo', $html);
+        $this->assertStringContainsString('2016-2017', $html);
+        $this->assertStringContainsString('2013-2016', $html);
     }
 
     public function test_cv_view_only_renders_the_projects_it_is_given(): void
