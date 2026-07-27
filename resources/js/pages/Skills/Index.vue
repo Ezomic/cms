@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import draggable from 'vuedraggable';
-import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AdminLayout from '@/layouts/AdminLayout.vue';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
