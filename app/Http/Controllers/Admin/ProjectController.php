@@ -12,7 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
-use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 use Intervention\Image\ImageManager;
 
 class ProjectController extends Controller
@@ -43,7 +44,7 @@ class ProjectController extends Controller
         }
     }
 
-    public function index(Request $request): View
+    public function index(Request $request): InertiaResponse
     {
         $search = $request->string('search')->trim()->toString();
 
@@ -53,17 +54,28 @@ class ProjectController extends Controller
                     ->orWhere('client_name', 'like', "%{$search}%");
             }))
             ->paginate(10)
-            ->withQueryString();
+            ->withQueryString()
+            ->through(fn (Project $project) => [
+                'id' => $project->id,
+                'name' => $project->name,
+                'slug' => $project->slug,
+                'client_name' => $project->client_name,
+                'year' => $project->year,
+                'published' => $project->published,
+                'tag_list' => $project->tagList(),
+                'image_url' => $project->imageUrl(),
+            ]);
 
-        return view('admin.projects.index', [
+        return Inertia::render('Projects/Index', [
             'projects' => $projects,
-            'search' => $search,
+            'filters' => ['search' => $search],
+            'trashCount' => Project::onlyTrashed()->count(),
         ]);
     }
 
-    public function create(): View
+    public function create(): InertiaResponse
     {
-        return view('admin.projects.form', ['project' => new Project]);
+        return Inertia::render('Projects/Form', ['project' => null]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -84,9 +96,39 @@ class ProjectController extends Controller
         return redirect()->route('admin.projects.index')->with('status', 'Project created.');
     }
 
-    public function edit(Project $project): View
+    public function edit(Project $project): InertiaResponse
     {
-        return view('admin.projects.form', compact('project'));
+        $project->load('images');
+
+        return Inertia::render('Projects/Form', [
+            'project' => [
+                'id' => $project->id,
+                'name' => $project->name,
+                'slug' => $project->slug,
+                'client_name' => $project->client_name,
+                'year' => $project->year,
+                'github_url' => $project->github_url,
+                'description' => $project->description,
+                'outcome' => $project->outcome,
+                'body' => $project->body,
+                'tags' => $project->tags,
+                'published' => $project->published,
+                'meta_title' => $project->meta_title,
+                'meta_description' => $project->meta_description,
+                'image_url' => $project->imageUrl(),
+                'image_alt' => $project->image_alt,
+                'description_nl' => $project->description_nl,
+                'outcome_nl' => $project->outcome_nl,
+                'body_nl' => $project->body_nl,
+                'image_alt_nl' => $project->image_alt_nl,
+                'meta_title_nl' => $project->meta_title_nl,
+                'meta_description_nl' => $project->meta_description_nl,
+                'images' => $project->images->map(fn ($image) => [
+                    'id' => $image->id,
+                    'url' => $image->imageUrl(),
+                ]),
+            ],
+        ]);
     }
 
     public function update(Request $request, Project $project): RedirectResponse
@@ -122,10 +164,15 @@ class ProjectController extends Controller
         return back()->with('status', 'Project deleted.');
     }
 
-    public function trash(): View
+    public function trash(): InertiaResponse
     {
-        return view('admin.projects.trash', [
-            'projects' => Project::onlyTrashed()->ordered()->get(),
+        return Inertia::render('Projects/Trash', [
+            'projects' => Project::onlyTrashed()->ordered()->get()->map(fn (Project $project) => [
+                'id' => $project->id,
+                'name' => $project->name,
+                'slug' => $project->slug,
+                'deleted_at' => $project->deleted_at?->diffForHumans(),
+            ]),
         ]);
     }
 
