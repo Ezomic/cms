@@ -3,10 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  /* Reset block-element margins explicitly rather than with `* { margin: 0 }`,
+     which dompdf also applies to the page box and would wipe the @page margin. */
+  * { padding: 0; box-sizing: border-box; }
+  body, p, ul, ol, dl, dd, dt, h1, h2, h3 { margin: 0; }
   /* accent updated to brand indigo (#4b3fd0) as part of the redesign; dompdf keeps table/inline layout */
   body { font-family: 'Inter', 'DejaVu Sans', sans-serif; font-size: 11px; color: #17181A; background: #fff; line-height: 1.5; }
-  @page { margin: 42px 52px 40px 52px; }
+  @page { margin: 14mm 15mm; }
   .page { max-width: 780px; margin: 0 auto; }
   .header { border-bottom: 2px solid #17181A; padding-bottom: 14px; margin-bottom: 18px; page-break-inside: avoid; }
   .name { font-family: 'Space Grotesk', 'Inter', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4px; }
