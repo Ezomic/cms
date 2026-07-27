@@ -12,11 +12,12 @@ use App\Models\Skill;
 use App\Models\Testimonial;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class DashboardController extends Controller
 {
-    public function index(): View
+    public function index(): Response
     {
         $dailyViews = PageView::select(
             DB::raw('date(created_at) as day'),
@@ -28,17 +29,30 @@ class DashboardController extends Controller
             ->pluck('views', 'day');
 
         $days = collect(range(29, 0))->map(fn ($i) => now()->subDays($i)->toDateString());
-        $sparkline = $days->map(fn ($d) => $dailyViews->get($d, 0));
+        $sparkline = $days->map(fn ($d) => (int) $dailyViews->get($d, 0))->values();
 
-        return view('admin.dashboard', [
+        return Inertia::render('Dashboard', [
             'projectCount' => Project::count(),
             'skillCount' => Skill::count(),
             'testimonialCount' => Testimonial::count(),
             'pageViewCount' => PageView::count() + (int) PageViewTotal::sum('views'),
-            'activity' => ActivityLog::with('user')->latest()->take(8)->get(),
+            'contactCount' => ContactSubmission::count(),
+            'unreadCount' => ContactSubmission::whereNull('read_at')->count(),
             'sparkline' => $sparkline,
             'topPaths' => $this->topPaths(),
-            'contactCount' => ContactSubmission::count(),
+            'activity' => ActivityLog::with('user')->latest()->take(8)->get()->map(function (ActivityLog $log) {
+                $subject = class_basename($log->subject_type);
+
+                return [
+                    'id' => $log->id,
+                    'action' => $log->action,
+                    'subject' => $subject,
+                    // Hide a label that just repeats the subject type (e.g. "Profile").
+                    'label' => $log->subject_label === $subject ? null : $log->subject_label,
+                    'user' => $log->user?->name,
+                    'when' => $log->created_at->diffForHumans(),
+                ];
+            }),
         ]);
     }
 
@@ -46,7 +60,7 @@ class DashboardController extends Controller
      * All-time top paths, combining live page_view rows with the per-path
      * totals rolled up from pruned history.
      *
-     * @return Collection<int, object{path: string, views: int}&\stdClass>
+     * @return Collection<int, array{path: string, views: int}>
      */
     private function topPaths(): Collection
     {
@@ -59,7 +73,7 @@ class DashboardController extends Controller
             ])
             ->sortDesc()
             ->take(5)
-            ->map(fn (int $views, string $path) => (object) ['path' => $path, 'views' => $views])
+            ->map(fn (int $views, string $path): array => ['path' => $path, 'views' => $views])
             ->values();
     }
 }
