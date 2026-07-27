@@ -91,9 +91,8 @@
       <a href="#contract"><span class="toc-num">06</span>{{ __('docs.toc_06') }}</a>
       <a href="#payment"><span class="toc-num">07</span>{{ __('docs.toc_07') }}</a>
       <a href="#privacy"><span class="toc-num">08</span>{{ __('docs.toc_08') }}</a>
-      <a href="#faq"><span class="toc-num">09</span>{{ __('docs.toc_09') }}</a>
-      <a href="#communication"><span class="toc-num">10</span>{{ __('docs.toc_10') }}</a>
-      <a href="#start"><span class="toc-num">11</span>{{ __('docs.toc_11') }}</a>
+      <a href="#communication"><span class="toc-num">09</span>{{ __('docs.toc_10') }}</a>
+      <a href="#start"><span class="toc-num">10</span>{{ __('docs.toc_11') }}</a>
     </div>
   </div>
 
@@ -241,21 +240,10 @@
     <div class="callout"><p>{{ __('docs.s08_callout') }}</p></div>
   </div>
 
-  <div class="doc-section" id="faq">
-    <div class="section-num">09</div>
-    <h2>{{ __('docs.s09_headline') }}</h2>
-    <div style="margin-top:28px;">
-      @foreach (range(1, 6) as $i)
-        <div style="padding:22px 0;border-top:1px solid var(--line);">
-          <h3>{{ __("docs.s09_q{$i}") }}</h3>
-          <p style="color:var(--muted);">{{ __("docs.s09_a{$i}") }}</p>
-        </div>
-      @endforeach
-    </div>
-  </div>
+  {{-- FAQ (section 09) hidden pre-launch (CMS-88); needs updating before it goes back. --}}
 
   <div class="doc-section" id="communication">
-    <div class="section-num">10</div>
+    <div class="section-num">09</div>
     <h2>{{ __('docs.s10_headline') }}</h2>
     <p>{{ __('docs.s10_lead') }}</p>
     <div style="margin-top:28px;">
@@ -271,7 +259,7 @@
   </div>
 
   <div class="doc-section" id="start">
-    <div class="section-num">11</div>
+    <div class="section-num">10</div>
     <h2>{{ __('docs.s11_headline') }}</h2>
     <p>{{ __('docs.s11_lead') }}</p>
     <ul class="check-list" style="margin-top:28px;">
