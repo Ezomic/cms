@@ -1,8 +1,6 @@
-<!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+@extends('layouts.public')
+
+@section('head')
 @include('partials.seo', [
     'title' => ($activeTag ? __('site.work_meta_title_tag', ['tag' => $activeTag]) : __('site.work_meta_title')).' — '.$profile->name,
     'description' => $activeTag
@@ -18,81 +16,26 @@
     ['name' => $activeTag, 'url' => localized_route('work.tag', $activeTag)],
 ]])
 @endif
-@include('partials.fonts')
+@endsection
+
+@push('styles')
 <style>
-  :root{
-    --bg:#F7F7F4; --ink:#17181A; --ink-soft:#63645F; --line:#DDDDD6;
-    --accent:#E8590C; --accent-soft:#FCE6D8; --white:#FFFFFF;
-    --display:'Space Grotesk',sans-serif; --body:'Inter',sans-serif; --mono:'IBM Plex Mono',monospace;
-  }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{transition-duration:.01ms !important;animation-duration:.01ms !important;}}
-  body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.5;-webkit-font-smoothing:antialiased;}
-  ::selection{background:var(--accent);color:var(--white);}
-  a{color:inherit;}
-  a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
-  .skip-link{position:absolute;left:-9999px;top:0;z-index:100;background:var(--ink);color:var(--white);font-family:var(--mono);font-size:13px;padding:10px 16px;text-decoration:none;}
-  .skip-link:focus{left:0;}
-  .wrap{max-width:1120px;margin:0 auto;padding:0 32px;}
-  nav{position:sticky;top:0;z-index:50;background:rgba(247,247,244,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
-  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;}
-  .logo{font-family:var(--mono);font-weight:500;font-size:14px;display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);white-space:nowrap;}
-  .logo .dot{width:6px;height:6px;background:var(--accent);border-radius:50%;flex-shrink:0;}
-  nav .wrap{flex-wrap:wrap;height:auto;min-height:64px;row-gap:8px;}
-  @media (max-width:420px){.logo .locale-suffix{display:none;}}
-  .back-link{font-family:var(--mono);font-size:13px;text-decoration:none;color:var(--ink-soft);}
-  .back-link:hover{color:var(--ink);}
-  .nav-right{display:flex;align-items:center;gap:16px;}
-  .lang-toggle{font-family:var(--mono);font-size:12px;color:var(--ink-soft);border:1px solid var(--line);padding:4px 10px;text-decoration:none;transition:color .15s,border-color .15s;}
-  .lang-toggle:hover{color:var(--ink);border-color:var(--ink);}
-
-  .page-header{padding:72px 0 56px;border-bottom:1px solid var(--line);}
-  .eyebrow{font-family:var(--mono);font-size:13px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:20px;}
-  h1{font-family:var(--display);font-weight:600;font-size:clamp(2rem,5vw,3.2rem);line-height:1.08;letter-spacing:-.02em;}
-
-  .filters{padding:24px 0;border-bottom:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
-  .filter-label{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin-right:8px;}
-  .filter-btn{font-family:var(--mono);font-size:12px;color:var(--ink-soft);border:1px solid var(--line);padding:5px 12px;border-radius:20px;cursor:pointer;background:transparent;transition:all .15s;}
-  .filter-btn:hover,.filter-btn.active{background:var(--ink);color:var(--white);border-color:var(--ink);}
-  .filter-btn.active{background:var(--accent);border-color:var(--accent);}
-
-  .work-list{padding:0;}
-  .work-item{display:grid;grid-template-columns:1fr 2fr 1fr;gap:24px;padding:32px 0;border-top:1px solid var(--line);align-items:start;}
-  .work-list .work-item:first-child{border-top:none;}
-  .work-item[data-hidden]{display:none;}
-  .work-year{font-family:var(--mono);font-size:13px;color:var(--ink-soft);}
-  .work-image{width:100%;aspect-ratio:16/10;object-fit:cover;border:1px solid var(--line);margin-bottom:12px;}
-  .work-name{font-family:var(--display);font-weight:600;font-size:22px;margin-bottom:8px;}
-  .work-name a{text-decoration:none;}
-  .work-name a:hover{color:var(--accent);}
-  .work-desc{color:var(--ink-soft);font-size:15px;max-width:48ch;}
-  .work-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;}
-  .tag{font-family:var(--mono);font-size:12px;color:var(--ink-soft);border:1px solid var(--line);padding:4px 10px;border-radius:20px;white-space:nowrap;}
-  @media (max-width:720px){.work-item{grid-template-columns:1fr;}.work-tags{justify-content:flex-start;}}
-
-  .empty-state{padding:64px 0;text-align:center;font-family:var(--mono);font-size:13px;color:var(--ink-soft);display:none;}
-  footer{padding:32px 0;font-family:var(--mono);font-size:12px;color:var(--ink-soft);border-top:1px solid var(--line);}
-  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+  .page-header{padding:56px 0 30px;}
+  .page-header .eyebrow{display:block;margin-bottom:12px;}
+  .page-header h1{font-size:clamp(2rem,4.4vw,3rem);line-height:1.05;max-width:18ch;}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:4px 0 26px;}
+  .filter-label{font-family:var(--mono);font-size:12px;color:var(--muted);margin-right:6px;}
+  .filter-btn{font-family:var(--mono);font-size:12px;color:var(--muted);border:1px solid var(--line-strong);border-radius:20px;padding:6px 13px;cursor:pointer;background:transparent;transition:all .15s;}
+  .filter-btn:hover{color:var(--ink);border-color:var(--ink);}
+  .filter-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+  .empty-state{padding:56px 0;text-align:center;font-family:var(--mono);font-size:13px;color:var(--muted);display:none;}
 </style>
-</head>
-<body>
+@endpush
 
-<a class="skip-link" href="#main">{{ __('site.skip_to_content') }}</a>
-
-<nav>
-  <div class="wrap">
-    <a class="logo" href="{{ localized_route('home') }}"><span class="dot"></span>{{ strtoupper($profile->name) }}<span class="locale-suffix"> / NL</span></a>
-    <div class="nav-right">
-      <a class="lang-toggle" href="{{ alternate_locale_url(app()->getLocale() === 'en' ? 'nl' : 'en') }}">{{ __('site.lang_toggle') }}</a>
-      <a class="back-link" href="{{ localized_route('home') }}">{{ __('site.back_to_site') }}</a>
-    </div>
-  </div>
-</nav>
-
-<main id="main" tabindex="-1" class="wrap">
+@section('content')
+<div class="wrap">
   <div class="page-header">
-    <div class="eyebrow">{{ __('site.work_page_label') }}</div>
+    <span class="eyebrow">{{ __('site.work_page_label') }}</span>
     <h1>{{ __('site.work_page_headline') }}</h1>
   </div>
 
@@ -106,59 +49,44 @@
   </div>
   @endif
 
-  <div class="work-list" id="work-list">
+  <div class="card-grid" id="work-list" style="padding-bottom:56px;">
     @forelse ($projects as $project)
-      <div class="work-item" data-tags="{{ implode(',', $project->tag_list) }}">
-        <div>
-          <div class="work-year">{{ $project->year }}</div>
-          <div style="font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin-top:4px;">{{ $project->client_name }}</div>
-        </div>
-        <div>
-          @if ($project->image_url)
-            <img class="work-image" src="{{ $project->image_url }}" alt="{{ $project->image_alt ?: $project->name }}" loading="lazy" decoding="async">
+      @php $clickable = (bool) $project->body; $tag = $clickable ? 'a' : 'div'; @endphp
+      <{{ $tag }} class="pcard work-item" data-tags="{{ implode(',', $project->tag_list) }}" @if($clickable) href="{{ localized_route('project.show', $project->slug) }}" @endif>
+        @if ($project->image_url)
+          <img class="thumb" src="{{ $project->image_url }}" alt="{{ $project->image_alt ?: $project->name }}" loading="lazy" decoding="async">
+        @else
+          <div class="thumb ph"><span class="k">{{ $project->year }}</span></div>
+        @endif
+        <div class="in">
+          <h3>{{ $project->name }}</h3>
+          <div class="meta">{{ $project->year }}{{ $project->year && $project->client_name ? ' · ' : '' }}{{ $project->client_name }}</div>
+          <p>{{ $project->description }}</p>
+          @if (count($project->tag_list))
+            <div class="tags">@foreach ($project->tag_list as $t)<span class="tag">{{ $t }}</span>@endforeach</div>
           @endif
-          <div class="work-name">
-            @if ($project->body)
-              <a href="{{ localized_route('project.show', $project->slug) }}">{{ $project->name }} →</a>
-            @else
-              {{ $project->name }}
-            @endif
-          </div>
-          <div class="work-desc">{{ $project->description }}</div>
         </div>
-        <div class="work-tags">
-          @foreach ($project->tag_list as $tag)
-            <span class="tag">{{ $tag }}</span>
-          @endforeach
-        </div>
-      </div>
+      </{{ $tag }}>
     @empty
-      <p style="padding:48px 0;color:var(--ink-soft);">{{ __('site.work_no_projects') }}</p>
+      <p style="padding:48px 0;color:var(--muted);">{{ __('site.work_no_projects') }}</p>
     @endforelse
   </div>
 
   <p class="empty-state" id="empty-state">{{ __('site.work_no_match') }}</p>
-</main>
+</div>
+@endsection
 
-<footer>
-  <div class="wrap">
-    <span>© {{ date('Y') }} {{ $profile->name }}. {{ __('site.footer_built') }}</span>
-    <a href="{{ localized_route('home') }}" style="font-family:var(--mono);font-size:12px;color:var(--ink-soft);text-decoration:none;">{{ __('site.back_to_site') }}</a>
-  </div>
-</footer>
-
+@push('scripts')
 <script>
   var btns = document.querySelectorAll('.filter-btn');
   var items = document.querySelectorAll('.work-item');
   var empty = document.getElementById('empty-state');
-
   btns.forEach(function(btn) {
     btn.addEventListener('click', function(e) {
       e.preventDefault();
       var tag = btn.dataset.tag;
       btns.forEach(function(b){ b.classList.remove('active'); });
       btn.classList.add('active');
-
       var visible = 0;
       items.forEach(function(item) {
         var tags = item.dataset.tags ? item.dataset.tags.split(',').map(function(t){ return t.trim(); }) : [];
@@ -167,11 +95,8 @@
         if (show) visible++;
       });
       empty.style.display = visible === 0 ? 'block' : 'none';
-
       history.replaceState(null, '', btn.href);
     });
   });
 </script>
-
-</body>
-</html>
+@endpush
