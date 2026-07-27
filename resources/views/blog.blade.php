@@ -2,7 +2,7 @@
 
 @section('head')
 @include('partials.seo', [
-    'title' => __('site.blog_meta_title').' — '.$profile->name,
+    'title' => __('site.blog_meta_title').' · '.$profile->name,
     'description' => __('site.blog_meta_description', ['name' => $profile->name]),
     'canonicalRoute' => 'blog.index',
 ])

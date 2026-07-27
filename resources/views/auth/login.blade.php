@@ -32,7 +32,7 @@
       <button type="button" id="passkey-login-btn" class="w-full border border-stone-300 text-stone-700 text-sm rounded px-3 py-2 hover:bg-stone-100 transition">
         Sign in with passkey
       </button>
-      <p id="passkey-unsupported" class="hidden text-xs text-stone-400 text-center">Your browser doesn't support passkeys — use a login code instead.</p>
+      <p id="passkey-unsupported" class="hidden text-xs text-stone-400 text-center">Your browser doesn't support passkeys. Use a login code instead.</p>
 
       <div class="flex items-center gap-3 text-xs text-stone-400">
         <div class="flex-1 border-t border-stone-200"></div>

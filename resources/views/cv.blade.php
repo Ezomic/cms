@@ -105,7 +105,7 @@
         <div class="project-client">{{ $project->client_name }}</div>
         <div class="project-desc">{{ $project->description }}</div>
         @if($project->outcome ?? null)
-          <div class="project-outcome"><span class="accent">Result &mdash;</span> {{ $project->outcome }}</div>
+          <div class="project-outcome"><span class="accent">Result:</span> {{ $project->outcome }}</div>
         @endif
         @if($project->tag_list)
           <div class="project-tags">
@@ -128,7 +128,7 @@
     </div>
   @else
     <div class="availability-line">
-      Currently booked{{ $profile->availability_from ? ' — available from '.$profile->availability_from : '' }}. Rate on request. Based in {{ $profile->city }}, NL.
+      Currently booked{{ $profile->availability_from ? ', available from '.$profile->availability_from : '' }}. Rate on request. Based in {{ $profile->city }}, NL.
     </div>
   @endif
 

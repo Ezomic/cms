@@ -2,7 +2,7 @@
 
 @section('head')
 @include('partials.seo', [
-    'title' => __('docs.page_title').' — '.$profile->name,
+    'title' => __('docs.page_title').' · '.$profile->name,
     'description' => __('docs.page_description'),
     'canonicalRoute' => 'docs',
 ])
