@@ -53,7 +53,10 @@ class HandleInertiaRequests extends Middleware
             ],
             'portalApps' => fn () => $user === null
                 ? []
-                : app(IdPortalClient::class)->appsFor($user),
+                : app(IdPortalClient::class)->appsFor($user)['apps'],
+            'portalCategories' => fn () => $user === null
+                ? []
+                : app(IdPortalClient::class)->appsFor($user)['categories'],
         ];
     }
 }
