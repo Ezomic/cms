@@ -13,6 +13,7 @@ import {
     ShieldCheck,
     Search,
 } from 'lucide-vue-next';
+import PortalSwitcher from '@/components/PortalSwitcher.vue';
 
 defineProps<{ title?: string }>();
 
@@ -99,6 +100,7 @@ const isActive = (match: string) => match === '/admin' ? url.value === '/admin' 
                     <a href="/" target="_blank" class="hidden sm:flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-foreground">
                         <Search class="size-4" /> View site
                     </a>
+                    <PortalSwitcher />
                 </div>
             </header>
 

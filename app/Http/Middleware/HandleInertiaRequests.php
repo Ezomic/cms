@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\ContactSubmission;
+use App\Services\Portal\IdPortalClient;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -50,6 +51,9 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'status' => fn () => $request->session()->get('status'),
             ],
+            'portalApps' => fn () => $user === null
+                ? []
+                : app(IdPortalClient::class)->appsFor($user),
         ];
     }
 }
