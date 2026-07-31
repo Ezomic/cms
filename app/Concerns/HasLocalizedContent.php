@@ -6,10 +6,16 @@ trait HasLocalizedContent
 {
     protected function localized(string $field): ?string
     {
-        if (app()->getLocale() === 'nl' && filled($this->{"{$field}_nl"} ?? null)) {
-            return $this->{"{$field}_nl"};
+        if (app()->getLocale() === 'nl') {
+            $dutch = $this->getAttribute("{$field}_nl");
+
+            if (is_string($dutch) && $dutch !== '') {
+                return $dutch;
+            }
         }
 
-        return $this->{$field};
+        $value = $this->getAttribute($field);
+
+        return is_string($value) ? $value : null;
     }
 }

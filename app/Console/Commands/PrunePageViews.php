@@ -28,11 +28,13 @@ class PrunePageViews extends Command
 
             foreach ($counts as $path => $count) {
                 $total = PageViewTotal::firstOrNew(['path' => $path]);
-                $total->views = ($total->views ?? 0) + (int) $count;
+                $total->views = ($total->views ?? 0) + (is_numeric($count) ? (int) $count : 0);
                 $total->save();
             }
 
-            return PageView::where('created_at', '<', $cutoff)->delete();
+            $pruned = PageView::where('created_at', '<', $cutoff)->delete();
+
+            return is_numeric($pruned) ? (int) $pruned : 0;
         });
 
         $this->info("Rolled up and pruned {$deleted} page_view rows older than {$days} days.");

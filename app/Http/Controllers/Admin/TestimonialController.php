@@ -114,8 +114,14 @@ class TestimonialController extends Controller
             'quote_nl' => ['nullable', 'string'],
         ]);
 
-        $data['featured'] = $request->boolean('featured');
+        $attributes = [];
 
-        return $data;
+        foreach (is_array($data) ? $data : [] as $key => $value) {
+            $attributes[(string) $key] = $value;
+        }
+
+        $attributes['featured'] = $request->boolean('featured');
+
+        return $attributes;
     }
 }

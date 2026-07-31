@@ -8,6 +8,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SetLocale
 {
+    /**
+     * @param  Closure(Request): Response  $next
+     */
     public function handle(Request $request, Closure $next): Response
     {
         app()->setLocale($request->segment(1) === 'nl' ? 'nl' : config()->string('app.locale'));

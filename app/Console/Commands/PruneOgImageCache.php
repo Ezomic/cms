@@ -23,13 +23,18 @@ class PruneOgImageCache extends Command
         $days = max(1, (int) $this->option('days'));
         $cutoff = now()->subDays($days)->getTimestamp();
 
-        $keyPrefix = config('cache.prefix', '').'og.';
+        $configuredPrefix = config('cache.prefix', '');
+        $keyPrefix = (is_string($configuredPrefix) ? $configuredPrefix : '').'og.';
 
         $keys = DB::table('cache')
             ->where('key', 'like', $keyPrefix.'%')
             ->pluck('key');
 
-        $toDelete = $keys->filter(function (string $key) use ($keyPrefix, $cutoff): bool {
+        $toDelete = $keys->filter(function (mixed $key) use ($keyPrefix, $cutoff): bool {
+            if (! is_string($key)) {
+                return false;
+            }
+
             $bare = substr($key, strlen($keyPrefix));
             $parts = explode('.', $bare);
             $ts = (int) end($parts);

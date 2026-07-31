@@ -114,7 +114,7 @@ class PostController extends Controller
      */
     private function validated(Request $request, Post $post): array
     {
-        return $request->validate([
+        $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', 'alpha_dash', Rule::unique('posts', 'slug')->ignore($post->id)],
             'excerpt' => ['nullable', 'string', 'max:500'],
@@ -127,5 +127,13 @@ class PostController extends Controller
             'meta_title_nl' => ['nullable', 'string', 'max:255'],
             'meta_description_nl' => ['nullable', 'string', 'max:255'],
         ]);
+
+        $attributes = [];
+
+        foreach (is_array($validated) ? $validated : [] as $key => $value) {
+            $attributes[(string) $key] = $value;
+        }
+
+        return $attributes;
     }
 }
