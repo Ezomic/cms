@@ -13,16 +13,18 @@ class BackupDatabase extends Command
 
     public function handle(): int
     {
-        if (config('database.default') !== 'sqlite') {
-            $this->error('backup:database only supports the sqlite connection currently in use elsewhere ('.config('database.default').' configured).');
+        $connection = config('database.default');
+
+        if ($connection !== 'sqlite') {
+            $this->error('backup:database only supports the sqlite connection currently in use elsewhere ('.(is_string($connection) ? $connection : '').' configured).');
 
             return self::FAILURE;
         }
 
         $source = config('database.connections.sqlite.database');
 
-        if (! $source || ! File::exists($source)) {
-            $this->error("Database file not found at [{$source}].");
+        if (! is_string($source) || $source === '' || ! File::exists($source)) {
+            $this->error('Database file not found at ['.(is_string($source) ? $source : '').'].');
 
             return self::FAILURE;
         }

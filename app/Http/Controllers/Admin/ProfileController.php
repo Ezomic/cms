@@ -52,9 +52,15 @@ class ProfileController extends Controller
             'meta_description_nl' => ['nullable', 'string', 'max:255'],
         ]);
 
-        $data['available'] = $request->boolean('available');
+        $attributes = [];
 
-        Profile::current()->update($data);
+        foreach (is_array($data) ? $data : [] as $key => $value) {
+            $attributes[(string) $key] = $value;
+        }
+
+        $attributes['available'] = $request->boolean('available');
+
+        Profile::current()->update($attributes);
 
         return back()->with('status', 'Profile updated.');
     }

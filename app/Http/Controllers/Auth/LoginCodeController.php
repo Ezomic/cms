@@ -15,16 +15,17 @@ class LoginCodeController extends Controller
 {
     public function send(Request $request, SendLoginCode $sendLoginCode): RedirectResponse
     {
-        $data = $request->validate(['email' => ['required', 'email']]);
+        $request->validate(['email' => ['required', 'email']]);
 
-        $user = User::where('email', $data['email'])->first();
+        $email = $request->string('email')->toString();
+        $user = User::where('email', $email)->first();
 
         if ($user) {
             $sendLoginCode->handle($user);
         }
 
         return redirect()->route('admin.login.code.challenge')
-            ->withInput($data)
+            ->withInput(['email' => $email])
             ->with('status', 'If that email belongs to an admin account, a login code is on its way.');
     }
 
@@ -35,20 +36,21 @@ class LoginCodeController extends Controller
 
     public function verify(Request $request, VerifyLoginCode $verifyLoginCode): RedirectResponse
     {
-        $data = $request->validate([
+        $request->validate([
             'email' => ['required', 'email'],
             'code' => ['required', 'string'],
         ]);
 
-        $user = User::where('email', $data['email'])->first();
+        $email = $request->string('email')->toString();
+        $user = User::where('email', $email)->first();
 
-        if ($user && $verifyLoginCode->handle($user, $data['code'])) {
+        if ($user && $verifyLoginCode->handle($user, $request->string('code')->toString())) {
             Auth::login($user);
             $request->session()->regenerate();
 
             return redirect()->intended(route('admin.dashboard'));
         }
 
-        return back()->withInput($data)->withErrors(['code' => 'That code is invalid or has expired.']);
+        return back()->withInput(['email' => $email])->withErrors(['code' => 'That code is invalid or has expired.']);
     }
 }

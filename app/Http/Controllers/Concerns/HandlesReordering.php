@@ -19,12 +19,12 @@ trait HandlesReordering
         $model = $this->reorderModel();
         $table = (new $model)->getTable();
 
-        $data = $request->validate([
+        $request->validate([
             'ids' => ['required', 'array'],
             'ids.*' => ['integer', Rule::exists($table, 'id')],
         ]);
 
-        foreach ($data['ids'] as $index => $id) {
+        foreach ($request->collect('ids')->values() as $index => $id) {
             $model::where('id', $id)->update(['sort_order' => $index]);
         }
 

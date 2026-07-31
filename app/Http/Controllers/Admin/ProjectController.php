@@ -181,7 +181,7 @@ class ProjectController extends Controller
      */
     private function validated(Request $request, Project $project): array
     {
-        return $request->validate([
+        $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'image' => ['nullable', 'image', 'max:4096'],
             'image_alt' => ['nullable', 'string', 'max:255'],
@@ -203,6 +203,14 @@ class ProjectController extends Controller
             'meta_title_nl' => ['nullable', 'string', 'max:255'],
             'meta_description_nl' => ['nullable', 'string', 'max:255'],
         ]);
+
+        $attributes = [];
+
+        foreach (is_array($validated) ? $validated : [] as $key => $value) {
+            $attributes[(string) $key] = $value;
+        }
+
+        return $attributes;
     }
 
     /**
@@ -241,9 +249,16 @@ class ProjectController extends Controller
             return;
         }
 
-        $nextSortOrder = $project->images()->max('sort_order') + 1;
+        $maxSortOrder = $project->images()->max('sort_order');
+        $nextSortOrder = (is_numeric($maxSortOrder) ? (int) $maxSortOrder : 0) + 1;
 
-        foreach ($request->file('gallery') as $file) {
+        $uploads = $request->file('gallery');
+
+        foreach (is_array($uploads) ? $uploads : [$uploads] as $file) {
+            if (! $file instanceof UploadedFile) {
+                continue;
+            }
+
             $project->images()->create([
                 'path' => $this->storeOptimizedImage($file),
                 'sort_order' => $nextSortOrder++,
@@ -253,16 +268,18 @@ class ProjectController extends Controller
 
     private function removeGalleryImages(Request $request, Project $project): void
     {
-        $data = $request->validate([
+        $request->validate([
             'remove_images' => ['nullable', 'array'],
             'remove_images.*' => ['integer', Rule::exists('project_images', 'id')],
         ]);
 
-        if (empty($data['remove_images'])) {
+        $removeImages = $request->collect('remove_images')->values()->all();
+
+        if ($removeImages === []) {
             return;
         }
 
-        $images = $project->images()->whereIn('id', $data['remove_images'])->get();
+        $images = $project->images()->whereIn('id', $removeImages)->get();
 
         foreach ($images as $image) {
             Storage::disk('public')->delete($image->path);

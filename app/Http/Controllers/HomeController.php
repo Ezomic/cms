@@ -54,29 +54,36 @@ class HomeController extends Controller
     {
         $profile = Profile::current();
 
+        $skills = [];
+
+        foreach (Skill::ordered()->get()->groupBy('category') as $category => $items) {
+            $skills[(string) $category] = $items
+                ->map(fn (Skill $skill): array => $this->stringKeyed($skill->toArray()))
+                ->values()
+                ->all();
+        }
+
         return [
-            'profile' => [
+            'profile' => $this->stringKeyed([
                 ...$profile->toArray(),
                 'tagline' => $profile->localizedTagline(),
                 'hero_headline' => $profile->heroHeadline(),
                 'hero_subtext' => $profile->heroSubtext(),
                 'meta_title' => $profile->metaTitle(),
                 'meta_description' => $profile->metaDescription(),
-            ],
-            'skills' => Skill::ordered()->get()->groupBy('category')
-                ->map(fn ($items) => $items->map(fn ($skill) => $skill->toArray())->all())
-                ->all(),
-            'projects' => Project::published()->ordered()->get()->map(fn ($project) => [
+            ]),
+            'skills' => $skills,
+            'projects' => Project::published()->ordered()->get()->map(fn (Project $project): array => $this->stringKeyed([
                 ...$project->toArray(),
                 'tag_list' => $project->tagList(),
                 'image_url' => $project->imageUrl(),
                 'description' => $project->localizedDescription(),
                 'outcome' => $project->localizedOutcome(),
-            ])->all(),
-            'testimonials' => Testimonial::where('featured', true)->latest()->get()->map(fn ($testimonial) => [
+            ]))->values()->all(),
+            'testimonials' => Testimonial::where('featured', true)->latest()->get()->map(fn (Testimonial $testimonial): array => $this->stringKeyed([
                 ...$testimonial->toArray(),
                 'quote' => $testimonial->localizedQuote(),
-            ])->all(),
+            ]))->values()->all(),
         ];
     }
 
@@ -112,7 +119,9 @@ class HomeController extends Controller
 
         PageView::create(['path' => '/'.ltrim(request()->path(), '/')]);
 
-        $projects = $allProjects->filter(fn (\stdClass $p) => in_array($tag, $p->tag_list))->values();
+        $projects = $allProjects->filter(
+            fn (\stdClass $p): bool => in_array($tag, is_array($p->tag_list) ? $p->tag_list : [], true)
+        )->values();
 
         return view('work', [
             'profile' => Profile::current(),
@@ -142,7 +151,12 @@ class HomeController extends Controller
      */
     private function tagsFrom(Collection $projects): Collection
     {
-        return $projects->flatMap(fn (\stdClass $p): array => $p->tag_list)->unique()->sort()->values();
+        return $projects
+            ->flatMap(fn (\stdClass $p): array => is_array($p->tag_list) ? $p->tag_list : [])
+            ->filter(fn (mixed $tag): bool => is_string($tag))
+            ->unique()
+            ->sort()
+            ->values();
     }
 
     public function cv(): Response
@@ -205,5 +219,20 @@ class HomeController extends Controller
             'profile' => Profile::current(),
             'post' => $post,
         ]);
+    }
+
+    /**
+     * @param  array<mixed>  $row
+     * @return array<string, mixed>
+     */
+    private function stringKeyed(array $row): array
+    {
+        $keyed = [];
+
+        foreach ($row as $key => $value) {
+            $keyed[(string) $key] = $value;
+        }
+
+        return $keyed;
     }
 }

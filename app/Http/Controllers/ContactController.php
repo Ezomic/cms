@@ -24,11 +24,19 @@ class ContactController extends Controller
         // Bot signals: a hidden field real visitors never fill, and a budget the
         // form's <select> cannot emit. Both get the success response so a
         // spammer learns nothing about why the message was dropped.
-        if ($request->filled('website') || ! $this->budgetIsFromForm($data['budget'] ?? null)) {
+        $budget = $request->string('budget')->toString() ?: null;
+
+        if ($request->filled('website') || ! $this->budgetIsFromForm($budget)) {
             return back()->with('status', __('site.contact_success'));
         }
 
-        $submission = ContactSubmission::create($data);
+        $attributes = [];
+
+        foreach (is_array($data) ? $data : [] as $key => $value) {
+            $attributes[(string) $key] = $value;
+        }
+
+        $submission = ContactSubmission::create($attributes);
 
         $profileEmail = Profile::current()->email;
         if ($profileEmail) {

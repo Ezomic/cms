@@ -40,7 +40,10 @@ class UserController extends Controller
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
         ]);
 
-        User::create($data);
+        User::create([
+            'name' => $request->string('name')->toString(),
+            'email' => $request->string('email')->toString(),
+        ]);
 
         return redirect()->route('admin.users.index')->with('status', 'Admin user created. They can sign in with an emailed login code, then register a passkey.');
     }
@@ -63,7 +66,10 @@ class UserController extends Controller
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
         ]);
 
-        $user->forceFill($data)->save();
+        $user->forceFill([
+            'name' => $request->string('name')->toString(),
+            'email' => $request->string('email')->toString(),
+        ])->save();
 
         return redirect()->route('admin.users.index')->with('status', 'Admin user updated.');
     }

@@ -288,6 +288,13 @@ class OgImageController extends Controller
     {
         $box = imagettfbbox($size, 0, $font, $text);
 
-        return $box === false ? 0 : abs($box[2] - $box[0]);
+        if ($box === false) {
+            return 0;
+        }
+
+        $right = $box[2] ?? 0;
+        $left = $box[0] ?? 0;
+
+        return abs((is_numeric($right) ? (int) $right : 0) - (is_numeric($left) ? (int) $left : 0));
     }
 }

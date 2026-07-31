@@ -105,10 +105,18 @@ class SkillController extends Controller
      */
     private function validated(Request $request): array
     {
-        return $request->validate([
+        $validated = $request->validate([
             'category' => ['required', 'string', 'max:100'],
             'name' => ['required', 'string', 'max:255'],
             'sort_order' => ['nullable', 'integer'],
         ]);
+
+        $attributes = [];
+
+        foreach (is_array($validated) ? $validated : [] as $key => $value) {
+            $attributes[(string) $key] = $value;
+        }
+
+        return $attributes;
     }
 }

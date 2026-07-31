@@ -9,9 +9,9 @@ trait LogsActivity
 {
     public static function bootLogsActivity(): void
     {
-        static::created(fn ($model) => $model->recordActivity('created'));
-        static::updated(fn ($model) => $model->recordActivity('updated'));
-        static::deleted(fn ($model) => $model->recordActivity('deleted'));
+        static::created(fn (self $model) => $model->recordActivity('created'));
+        static::updated(fn (self $model) => $model->recordActivity('updated'));
+        static::deleted(fn (self $model) => $model->recordActivity('deleted'));
     }
 
     protected function recordActivity(string $action): void
@@ -27,11 +27,15 @@ trait LogsActivity
     public function activityLabel(): string
     {
         foreach (['name', 'author_name', 'title'] as $attribute) {
-            if (! empty($this->{$attribute})) {
-                return (string) $this->{$attribute};
+            $value = $this->getAttribute($attribute);
+
+            if (is_scalar($value) && (string) $value !== '') {
+                return (string) $value;
             }
         }
 
-        return class_basename($this).' #'.$this->getKey();
+        $key = $this->getKey();
+
+        return class_basename($this).' #'.(is_scalar($key) ? (string) $key : '');
     }
 }

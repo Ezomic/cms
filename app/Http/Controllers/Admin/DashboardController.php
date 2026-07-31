@@ -29,7 +29,11 @@ class DashboardController extends Controller
             ->pluck('views', 'day');
 
         $days = collect(range(29, 0))->map(fn ($i) => now()->subDays($i)->toDateString());
-        $sparkline = $days->map(fn ($d) => (int) $dailyViews->get($d, 0))->values();
+        $sparkline = $days->map(function (string $d) use ($dailyViews): int {
+            $views = $dailyViews->get($d, 0);
+
+            return is_numeric($views) ? (int) $views : 0;
+        })->values();
 
         return Inertia::render('Dashboard', [
             'projectCount' => Project::count(),
@@ -69,11 +73,16 @@ class DashboardController extends Controller
 
         return collect($live)->keys()->merge($rolled->keys())->unique()
             ->mapWithKeys(fn (string $path): array => [
-                $path => (int) $live->get($path, 0) + (int) $rolled->get($path, 0),
+                $path => $this->toInt($live->get($path, 0)) + $this->toInt($rolled->get($path, 0)),
             ])
             ->sortDesc()
             ->take(5)
             ->map(fn (int $views, string $path): array => ['path' => $path, 'views' => $views])
             ->values();
+    }
+
+    private function toInt(mixed $value): int
+    {
+        return is_numeric($value) ? (int) $value : 0;
     }
 }
