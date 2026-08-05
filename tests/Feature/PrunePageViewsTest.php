@@ -39,7 +39,7 @@ class PrunePageViewsTest extends TestCase
     public function test_it_keeps_rows_within_the_window(): void
     {
         $this->pageViewAgedDays('/', 10);
-        $this->pageViewAgedDays('/blog', 45);
+        $this->pageViewAgedDays('/docs', 45);
 
         $this->artisan('page-views:prune', ['--days' => 90])
             ->expectsOutputToContain('pruned 0 page_view rows')

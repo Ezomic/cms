@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\PageView;
-use App\Models\Post;
 use App\Models\Profile;
 use App\Models\Project;
 use App\Models\Skill;
@@ -198,28 +197,6 @@ class HomeController extends Controller
         return view('project', [
             'profile' => Profile::current(),
             'project' => $project,
-        ]);
-    }
-
-    public function blog(): View
-    {
-        PageView::create(['path' => '/'.ltrim(request()->path(), '/')]);
-
-        return view('blog', [
-            'profile' => Profile::current(),
-            'posts' => Post::published()->latest('published_at')->get(),
-        ]);
-    }
-
-    public function post(Post $post): View
-    {
-        abort_unless($post->published, 404);
-
-        PageView::create(['path' => '/'.ltrim(request()->path(), '/')]);
-
-        return view('blog-post', [
-            'profile' => Profile::current(),
-            'post' => $post,
         ]);
     }
 

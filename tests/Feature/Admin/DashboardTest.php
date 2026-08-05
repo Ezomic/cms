@@ -86,9 +86,9 @@ class DashboardTest extends TestCase
         $user = User::factory()->create();
 
         PageView::create(['path' => '/']);
-        PageView::create(['path' => '/blog']);
-        PageView::create(['path' => '/blog']);
-        PageView::create(['path' => '/blog']);
+        PageView::create(['path' => '/docs']);
+        PageView::create(['path' => '/docs']);
+        PageView::create(['path' => '/docs']);
         PageViewTotal::create(['path' => '/', 'views' => 10]);
         PageViewTotal::create(['path' => '/work', 'views' => 4]);
 
@@ -98,7 +98,7 @@ class DashboardTest extends TestCase
                 ->where('topPaths.0.views', 11)
                 ->where('topPaths.1.path', '/work')
                 ->where('topPaths.1.views', 4)
-                ->where('topPaths.2.path', '/blog')
+                ->where('topPaths.2.path', '/docs')
                 ->where('topPaths.2.views', 3)
         );
     }
