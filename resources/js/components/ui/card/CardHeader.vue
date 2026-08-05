@@ -4,7 +4,7 @@ const props = defineProps<{ class?: string }>();
 </script>
 
 <template>
-    <div :class="cn('flex items-center justify-between gap-3 border-b border-border px-5 py-4', props.class)">
+    <div :class="cn('border-border flex items-center justify-between gap-3 border-b px-5 py-4', props.class)">
         <slot />
     </div>
 </template>

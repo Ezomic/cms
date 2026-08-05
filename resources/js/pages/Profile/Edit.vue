@@ -9,7 +9,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 
-interface Profile { [key: string]: string | boolean | null }
+interface Profile {
+    [key: string]: string | boolean | null;
+}
 const props = defineProps<{ profile: Profile }>();
 const p = props.profile;
 const lang = ref<'en' | 'nl'>('en');
@@ -58,7 +60,10 @@ const submit = () => form.put('/admin/profile', { preserveScroll: true });
                     </CardHeader>
                     <CardContent class="flex flex-col gap-4">
                         <div class="grid grid-cols-2 gap-3">
-                            <div><Label for="name">Name</Label><Input id="name" v-model="form.name" /><p v-if="form.errors.name" class="mt-1 text-xs text-destructive">{{ form.errors.name }}</p></div>
+                            <div>
+                                <Label for="name">Name</Label><Input id="name" v-model="form.name" />
+                                <p v-if="form.errors.name" class="text-destructive mt-1 text-xs">{{ form.errors.name }}</p>
+                            </div>
                             <div><Label for="city">City</Label><Input id="city" v-model="form.city" /></div>
                         </div>
                         <template v-if="lang === 'en'">
@@ -70,8 +75,12 @@ const submit = () => form.put('/admin/profile', { preserveScroll: true });
                         <template v-else>
                             <div><Label for="tagline_nl">Tagline (NL)</Label><Input id="tagline_nl" v-model="form.tagline_nl" /></div>
                             <div><Label for="hh_nl">Hero headline (NL)</Label><Input id="hh_nl" v-model="form.hero_headline_nl" /></div>
-                            <div><Label for="hs_nl">Hero subtext (NL)</Label><Textarea id="hs_nl" v-model="form.hero_subtext_nl" :rows="3" /></div>
-                            <div><Label for="di_nl">Docs intro (NL)</Label><Textarea id="di_nl" v-model="form.docs_intro_nl" :rows="3" /></div>
+                            <div>
+                                <Label for="hs_nl">Hero subtext (NL)</Label><Textarea id="hs_nl" v-model="form.hero_subtext_nl" :rows="3" />
+                            </div>
+                            <div>
+                                <Label for="di_nl">Docs intro (NL)</Label><Textarea id="di_nl" v-model="form.docs_intro_nl" :rows="3" />
+                            </div>
                         </template>
                     </CardContent>
                 </Card>
@@ -87,11 +96,16 @@ const submit = () => form.put('/admin/profile', { preserveScroll: true });
                     <CardContent class="flex flex-col gap-4">
                         <template v-if="lang === 'en'">
                             <div><Label for="mt">Meta title</Label><Input id="mt" v-model="form.meta_title" /></div>
-                            <div><Label for="md">Meta description</Label><Textarea id="md" v-model="form.meta_description" :rows="3" /></div>
+                            <div>
+                                <Label for="md">Meta description</Label><Textarea id="md" v-model="form.meta_description" :rows="3" />
+                            </div>
                         </template>
                         <template v-else>
                             <div><Label for="mt_nl">Meta title (NL)</Label><Input id="mt_nl" v-model="form.meta_title_nl" /></div>
-                            <div><Label for="md_nl">Meta description (NL)</Label><Textarea id="md_nl" v-model="form.meta_description_nl" :rows="3" /></div>
+                            <div>
+                                <Label for="md_nl">Meta description (NL)</Label
+                                ><Textarea id="md_nl" v-model="form.meta_description_nl" :rows="3" />
+                            </div>
                         </template>
                     </CardContent>
                 </Card>
@@ -103,20 +117,29 @@ const submit = () => form.put('/admin/profile', { preserveScroll: true });
                     <CardContent class="flex flex-col gap-4">
                         <div>
                             <Label>Available for work</Label>
-                            <div class="flex items-center gap-2.5"><Switch v-model="form.available" /><span class="text-sm">{{ form.available ? 'Open for work' : 'Booked' }}</span></div>
+                            <div class="flex items-center gap-2.5">
+                                <Switch v-model="form.available" /><span class="text-sm">{{
+                                    form.available ? 'Open for work' : 'Booked'
+                                }}</span>
+                            </div>
                         </div>
-                        <div><Label for="af">Available from</Label><Input id="af" v-model="form.availability_from" placeholder="Q3 2026" /></div>
+                        <div>
+                            <Label for="af">Available from</Label><Input id="af" v-model="form.availability_from" placeholder="Q3 2026" />
+                        </div>
                         <div>
                             <Label for="rate">Rate (internal)</Label>
                             <Input id="rate" v-model="form.rate" />
-                            <p class="mt-1 text-xs text-muted-foreground">Not shown publicly — the site shows “On request”.</p>
+                            <p class="text-muted-foreground mt-1 text-xs">Not shown publicly — the site shows “On request”.</p>
                         </div>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader><CardTitle>Links</CardTitle></CardHeader>
                     <CardContent class="flex flex-col gap-4">
-                        <div><Label for="email">Email</Label><Input id="email" v-model="form.email" class="font-mono" /><p v-if="form.errors.email" class="mt-1 text-xs text-destructive">{{ form.errors.email }}</p></div>
+                        <div>
+                            <Label for="email">Email</Label><Input id="email" v-model="form.email" class="font-mono" />
+                            <p v-if="form.errors.email" class="text-destructive mt-1 text-xs">{{ form.errors.email }}</p>
+                        </div>
                         <div><Label for="li">LinkedIn URL</Label><Input id="li" v-model="form.linkedin_url" class="font-mono" /></div>
                         <div><Label for="gh">GitHub URL</Label><Input id="gh" v-model="form.github_url" class="font-mono" /></div>
                         <div><Label for="kvk">KVK number</Label><Input id="kvk" v-model="form.kvk_number" class="font-mono" /></div>

@@ -4,7 +4,7 @@ const props = defineProps<{ class?: string }>();
 </script>
 
 <template>
-    <div :class="cn('rounded-xl border border-border bg-card text-card-foreground', props.class)">
+    <div :class="cn('border-border bg-card text-card-foreground rounded-xl border', props.class)">
         <slot />
     </div>
 </template>
