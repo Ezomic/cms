@@ -119,6 +119,8 @@ return [
     'project_eyebrow' => 'Case study',
     'project_github_link' => 'Bekijk de code op GitHub →',
     'project_gallery_label' => 'Schermen',
+    'preview_banner' => 'Preview-link. Niet geïndexeerd, niet openbaar.',
+    'preview_unpublished' => 'Niet gepubliceerd',
     'project_cta_lead' => 'Interesse in dit soort werk?',
     'project_cta_headline' => 'Laten we praten over jouw project.',
     'project_cta_button' => 'Start een vergelijkbaar project →',

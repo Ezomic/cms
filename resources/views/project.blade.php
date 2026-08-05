@@ -8,6 +8,7 @@
     'canonicalParams' => ['project' => $project->slug],
     'ogType' => 'article',
     'ogImage' => route('og.project', $project->slug),
+    'noindex' => $preview ?? false,
 ])
 @include('partials.schema.creative-work')
 @include('partials.schema.breadcrumbs', ['items' => [
@@ -47,10 +48,18 @@
   .cs-cta{padding:32px 0 72px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
   .cs-cta .lab{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:6px;}
   .cs-cta h3{font-size:1.2rem;}
+  .preview-bar{background:var(--primary);color:#fff;font-family:var(--mono);font-size:12px;letter-spacing:.04em;text-align:center;padding:10px 20px;}
+  .preview-state{margin-left:10px;padding:2px 8px;border:1px solid rgba(255,255,255,.5);border-radius:99px;}
 </style>
 @endpush
 
 @section('content')
+@if ($preview ?? false)
+  <div class="preview-bar">
+    {{ __('site.preview_banner') }}
+    @unless ($project->published)<span class="preview-state">{{ __('site.preview_unpublished') }}</span>@endunless
+  </div>
+@endif
 <div class="cs">
   <header class="cs-hero">
     <div class="breadcrumb"><a href="{{ localized_route('work.index') }}">{{ __('site.breadcrumb_work') }}</a> / {{ $project->name }}</div>

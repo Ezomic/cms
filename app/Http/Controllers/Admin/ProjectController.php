@@ -11,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
@@ -131,6 +132,7 @@ class ProjectController extends Controller
                     'id' => $image->id,
                     'url' => $image->imageUrl(),
                 ]),
+                'preview_url' => $this->previewUrl($project),
             ],
         ]);
     }
@@ -177,6 +179,15 @@ class ProjectController extends Controller
                 'deleted_at' => $project->deleted_at?->diffForHumans(),
             ]),
         ]);
+    }
+
+    /**
+     * A signed link to the public case-study page, so a draft can be reviewed
+     * as visitors would see it without publishing it first.
+     */
+    private function previewUrl(Project $project): string
+    {
+        return URL::temporarySignedRoute('project.preview', now()->addDay(), ['project' => $project->slug]);
     }
 
     /**

@@ -7,6 +7,9 @@
 @endphp
 <title>{{ $title }}</title>
 <meta name="description" content="{{ $description }}">
+@if ($noindex ?? false)
+<meta name="robots" content="noindex, nofollow">
+@endif
 <meta property="og:title" content="{{ $title }}">
 <meta property="og:description" content="{{ $description }}">
 <meta property="og:type" content="{{ $ogType ?? 'website' }}">

@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { UploadCloud, X } from 'lucide-vue-next';
+import { UploadCloud, X, Eye } from 'lucide-vue-next';
 
 interface ProjectData {
     id: number;
@@ -19,6 +19,7 @@ interface ProjectData {
     description_nl: string | null; outcome_nl: string | null; body_nl: string | null;
     image_alt_nl: string | null; meta_title_nl: string | null; meta_description_nl: string | null;
     images: { id: number; url: string }[];
+    preview_url: string;
 }
 
 const props = defineProps<{ project: ProjectData | null }>();
@@ -79,6 +80,17 @@ const submit = () => {
     <AdminLayout :title="isEdit ? 'Edit project' : 'New project'">
         <template #actions>
             <Button as="a" href="/admin/projects" variant="ghost">Cancel</Button>
+            <Button
+                v-if="project"
+                as="a"
+                :href="project.preview_url"
+                target="_blank"
+                rel="noopener"
+                variant="ghost"
+                title="Signed link, valid for 24 hours"
+            >
+                <Eye class="mr-1.5 size-4" /> Preview
+            </Button>
             <Button :disabled="form.processing" @click="submit">{{ isEdit ? 'Save changes' : 'Create project' }}</Button>
         </template>
 
