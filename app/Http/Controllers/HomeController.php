@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PageView;
+use App\Http\Controllers\Concerns\RecordsPageViews;
 use App\Models\Profile;
 use App\Models\Project;
 use App\Models\Skill;
@@ -15,9 +15,11 @@ use Illuminate\View\View;
 
 class HomeController extends Controller
 {
+    use RecordsPageViews;
+
     public function index(): View
     {
-        PageView::create(['path' => '/'.ltrim(request()->path(), '/')]);
+        $this->recordPageView();
 
         // Cached as plain arrays rather than raw Eloquent instances: caching
         // model objects directly proved unreliable to unserialize reliably
@@ -88,7 +90,7 @@ class HomeController extends Controller
 
     public function docs(): View
     {
-        PageView::create(['path' => '/'.ltrim(request()->path(), '/')]);
+        $this->recordPageView();
 
         return view('docs', [
             'profile' => Profile::current(),
@@ -99,7 +101,7 @@ class HomeController extends Controller
 
     public function work(): View
     {
-        PageView::create(['path' => '/'.ltrim(request()->path(), '/')]);
+        $this->recordPageView();
 
         $projects = $this->publishedProjects();
 
@@ -118,7 +120,7 @@ class HomeController extends Controller
 
         abort_unless($tags->contains($tag), 404);
 
-        PageView::create(['path' => '/'.ltrim(request()->path(), '/')]);
+        $this->recordPageView();
 
         $projects = $allProjects->filter(
             fn (\stdClass $p): bool => in_array($tag, is_array($p->tag_list) ? $p->tag_list : [], true)
@@ -192,7 +194,7 @@ class HomeController extends Controller
     {
         abort_unless($project->published, 404);
 
-        PageView::create(['path' => '/'.ltrim(request()->path(), '/')]);
+        $this->recordPageView();
 
         return view('project', [
             'profile' => Profile::current(),
