@@ -41,6 +41,8 @@ return [
         'client_secret' => env('THIJSSENSOFTWARE_ID_CLIENT_SECRET'),
         'slug' => env('THIJSSENSOFTWARE_ID_APP_SLUG', 'cms'),
         'portal_cache_ttl' => (int) env('THIJSSENSOFTWARE_ID_PORTAL_TTL', 300),
+        'portal_connect_timeout' => (int) env('THIJSSENSOFTWARE_ID_CONNECT_TIMEOUT', 2),
+        'portal_timeout' => (int) env('THIJSSENSOFTWARE_ID_TIMEOUT', 4),
     ],
 
 ];

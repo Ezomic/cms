@@ -85,6 +85,8 @@ class IdPortalClient
             }
 
             $response = Http::withToken($token)
+                ->connectTimeout($this->connectTimeout())
+                ->timeout($this->timeout())
                 ->acceptJson()
                 ->asJson()
                 ->post($this->url('/api/portal/apps'), ['email' => $user->email]);
@@ -113,11 +115,15 @@ class IdPortalClient
             return $cached;
         }
 
-        $response = Http::acceptJson()->asForm()->post($this->url('/oauth/token'), [
-            'grant_type' => 'client_credentials',
-            'client_id' => config('services.thijssensoftware.client_id'),
-            'client_secret' => config('services.thijssensoftware.client_secret'),
-        ]);
+        $response = Http::connectTimeout($this->connectTimeout())
+            ->timeout($this->timeout())
+            ->acceptJson()
+            ->asForm()
+            ->post($this->url('/oauth/token'), [
+                'grant_type' => 'client_credentials',
+                'client_id' => config('services.thijssensoftware.client_id'),
+                'client_secret' => config('services.thijssensoftware.client_secret'),
+            ]);
 
         if ($response->failed()) {
             return null;
@@ -134,6 +140,22 @@ class IdPortalClient
         Cache::put(self::TOKEN_CACHE_KEY, $token, max(60, $ttl - 30));
 
         return $token;
+    }
+
+    /**
+     * Both portal calls are made inline while an admin page renders, so a slow
+     * ID host must fail fast rather than hold the request open for Guzzle's
+     * default. A timeout is treated like any other failure: nothing is cached
+     * and the next request retries.
+     */
+    private function connectTimeout(): int
+    {
+        return Config::integer('services.thijssensoftware.portal_connect_timeout', 2);
+    }
+
+    private function timeout(): int
+    {
+        return Config::integer('services.thijssensoftware.portal_timeout', 4);
     }
 
     private function configured(): bool
