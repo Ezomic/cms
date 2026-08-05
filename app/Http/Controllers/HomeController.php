@@ -201,6 +201,20 @@ class HomeController extends Controller
     }
 
     /**
+     * The same case-study page for an unpublished project, reachable only
+     * through a signed link from the admin. No page view is recorded: these
+     * hits are the author checking their own draft, not an audience.
+     */
+    public function projectPreview(Project $project): View
+    {
+        return view('project', [
+            'profile' => Profile::current(),
+            'project' => $project,
+            'preview' => true,
+        ]);
+    }
+
+    /**
      * @param  array<mixed>  $row
      * @return array<string, mixed>
      */
