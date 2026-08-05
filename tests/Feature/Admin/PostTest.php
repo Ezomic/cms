@@ -78,4 +78,29 @@ class PostTest extends TestCase
         $response->assertRedirect();
         $this->assertDatabaseHas('posts', ['id' => $post->id, 'deleted_at' => null]);
     }
+
+    public function test_creating_a_post_titled_like_a_trashed_one_gets_a_unique_slug(): void
+    {
+        $trashed = Post::create(['title' => 'Hello World']);
+        $trashed->delete();
+
+        $post = Post::create(['title' => 'Hello World']);
+
+        $this->assertSame('hello-world-2', $post->slug);
+    }
+
+    public function test_manually_reusing_a_trashed_posts_slug_is_a_validation_error(): void
+    {
+        $user = User::factory()->create();
+        $trashed = Post::create(['title' => 'Hello World']);
+        $trashed->delete();
+
+        $response = $this->actingAs($user)->post('/admin/posts', [
+            'title' => 'Something Else',
+            'slug' => 'hello-world',
+        ]);
+
+        $response->assertSessionHasErrors('slug');
+        $this->assertDatabaseMissing('posts', ['title' => 'Something Else']);
+    }
 }

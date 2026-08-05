@@ -325,4 +325,29 @@ class ProjectTest extends TestCase
         Storage::disk('public')->assertMissing($imageOne->path);
         Storage::disk('public')->assertMissing($imageTwo->path);
     }
+
+    public function test_creating_a_project_named_like_a_trashed_one_gets_a_unique_slug(): void
+    {
+        $trashed = Project::create(['name' => 'Acme Site', 'sort_order' => 0]);
+        $trashed->delete();
+
+        $project = Project::create(['name' => 'Acme Site', 'sort_order' => 1]);
+
+        $this->assertSame('acme-site-2', $project->slug);
+    }
+
+    public function test_manually_reusing_a_trashed_projects_slug_is_a_validation_error(): void
+    {
+        $user = User::factory()->create();
+        $trashed = Project::create(['name' => 'Acme Site', 'sort_order' => 0]);
+        $trashed->delete();
+
+        $response = $this->actingAs($user)->post('/admin/projects', [
+            'name' => 'Something Else',
+            'slug' => 'acme-site',
+        ]);
+
+        $response->assertSessionHasErrors('slug');
+        $this->assertDatabaseMissing('projects', ['name' => 'Something Else']);
+    }
 }

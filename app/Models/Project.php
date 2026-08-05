@@ -126,7 +126,10 @@ class Project extends Model
         $slug = $base;
         $i = 2;
 
-        while (static::where('slug', $slug)->where('id', '!=', $this->id ?? 0)->exists()) {
+        // withTrashed: the slug column is uniquely indexed, and that index does
+        // not honour the soft-delete scope. Without this, reusing a trashed
+        // project's slug passes the check and then fails on insert.
+        while (static::withTrashed()->where('slug', $slug)->where('id', '!=', $this->id ?? 0)->exists()) {
             $slug = "{$base}-{$i}";
             $i++;
         }
