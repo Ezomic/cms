@@ -2,7 +2,6 @@
 
 return [
     'nav_work' => 'Werk',
-    'nav_blog' => 'Blog',
     'nav_services' => 'Diensten',
     'nav_process' => 'Aanpak',
     'nav_docs' => 'Docs',
@@ -104,7 +103,6 @@ return [
 
     'breadcrumb_home' => 'Home',
     'breadcrumb_work' => 'Case studies',
-    'breadcrumb_blog' => 'Blog',
 
     'not_found_headline' => 'Pagina niet gevonden.',
     'not_found_body' => 'De pagina die je zoekt bestaat niet of is verplaatst.',
@@ -125,11 +123,4 @@ return [
     'project_cta_headline' => 'Laten we praten over jouw project.',
     'project_cta_button' => 'Start een vergelijkbaar project →',
 
-    'blog_meta_title' => 'Blog',
-    'blog_meta_description' => 'Artikelen over software, tools en werkwijze door :name.',
-    'blog_page_label' => 'Blog',
-    'blog_page_headline' => 'Vanaf de blog.',
-    'blog_no_posts' => 'Nog geen artikelen.',
-    'blog_eyebrow' => 'Blog',
-    'blog_back_link' => '← Terug naar blog',
 ];

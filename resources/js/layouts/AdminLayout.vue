@@ -6,7 +6,6 @@ import {
     FolderKanban,
     Quote,
     ListChecks,
-    FileText,
     Inbox,
     User,
     Users,
@@ -39,7 +38,6 @@ const content = [
     { label: 'Projects', href: '/admin/projects', match: '/admin/projects', icon: FolderKanban },
     { label: 'Testimonials', href: '/admin/testimonials', match: '/admin/testimonials', icon: Quote },
     { label: 'Skills', href: '/admin/skills', match: '/admin/skills', icon: ListChecks },
-    { label: 'Posts', href: '/admin/posts', match: '/admin/posts', icon: FileText },
 ];
 const settings = [
     { label: 'Profile', href: '/admin/profile', match: '/admin/profile', icon: User },

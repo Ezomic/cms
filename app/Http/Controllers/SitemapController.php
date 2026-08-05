@@ -14,7 +14,6 @@ class SitemapController extends Controller
         $tags = $projects->flatMap(fn (Project $project) => $project->tagList())->unique()->sort()->values();
         $profileUpdatedAt = Profile::current()->updated_at;
 
-        // Blog is hidden pre-launch (CMS-88), so its URLs are left out of the sitemap.
         $entries = collect([
             ['route' => 'home', 'params' => [], 'lastmod' => $profileUpdatedAt],
             ['route' => 'work.index', 'params' => [], 'lastmod' => $projects->max('updated_at')],

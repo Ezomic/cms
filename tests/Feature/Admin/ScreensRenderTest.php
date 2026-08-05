@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Models\Post;
 use App\Models\Project;
 use App\Models\Skill;
 use App\Models\Testimonial;
@@ -24,7 +23,6 @@ class ScreensRenderTest extends TestCase
         $project = Project::create(['name' => 'P', 'body' => 'x', 'published' => true, 'sort_order' => 0]);
         $testimonial = Testimonial::create(['quote' => 'Great', 'author_name' => 'A']);
         $skill = Skill::create(['name' => 'PHP', 'category' => 'Backend', 'sort_order' => 0]);
-        $post = Post::create(['title' => 'Post', 'published' => true]);
 
         $screens = [
             '/admin' => 'Dashboard',
@@ -40,10 +38,6 @@ class ScreensRenderTest extends TestCase
             '/admin/skills/create' => 'Skills/Form',
             "/admin/skills/{$skill->id}/edit" => 'Skills/Form',
             '/admin/skills/trash' => 'Skills/Trash',
-            '/admin/posts' => 'Posts/Index',
-            '/admin/posts/create' => 'Posts/Form',
-            "/admin/posts/{$post->id}/edit" => 'Posts/Form',
-            '/admin/posts/trash' => 'Posts/Trash',
             '/admin/contact-submissions' => 'ContactSubmissions/Index',
             '/admin/profile' => 'Profile/Edit',
             '/admin/users' => 'Users/Index',

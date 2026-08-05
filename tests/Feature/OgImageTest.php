@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\OgImageController;
-use App\Models\Post;
 use App\Models\Profile;
 use App\Models\Project;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -47,36 +46,6 @@ class OgImageTest extends TestCase
         $size = getimagesizefromstring($response->getContent());
         $this->assertSame(1200, $size[0]);
         $this->assertSame(630, $size[1]);
-    }
-
-    public function test_post_og_image_renders_a_valid_png(): void
-    {
-        $post = Post::create([
-            'title' => 'Test Post',
-            'excerpt' => 'A short summary of the post.',
-            'body' => 'Some blog post body.',
-            'published' => true,
-        ]);
-
-        $response = $this->get("/og/blog/{$post->slug}.png");
-
-        $response->assertOk();
-        $response->assertHeader('content-type', 'image/png');
-
-        $size = getimagesizefromstring($response->getContent());
-        $this->assertSame(1200, $size[0]);
-        $this->assertSame(630, $size[1]);
-    }
-
-    public function test_post_og_image_404s_for_unpublished_post(): void
-    {
-        $post = Post::create([
-            'title' => 'Draft Post',
-            'body' => 'Draft body.',
-            'published' => false,
-        ]);
-
-        $this->get("/og/blog/{$post->slug}.png")->assertNotFound();
     }
 
     public function test_og_image_renders_truetype_title_text(): void
