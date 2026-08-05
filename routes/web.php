@@ -14,6 +14,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OgImageController;
 use App\Http\Controllers\SitemapController;
+use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Support\Facades\Route;
 
 // Public site — registered twice: unprefixed English (default) and Dutch under /nl
@@ -45,8 +46,9 @@ Route::prefix('admin')->name('admin.login.code.')->group(function () {
     Route::post('/login/code/verify', [LoginCodeController::class, 'verify'])->name('verify')->middleware('throttle:login');
 });
 
-// Admin panel (CMS)
-Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+// Admin panel (CMS) — the only Inertia surface, so the Inertia middleware is
+// scoped here rather than to the whole web group.
+Route::middleware(['auth', HandleInertiaRequests::class])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::post('/projects/reorder', [ProjectController::class, 'reorder'])->name('projects.reorder');

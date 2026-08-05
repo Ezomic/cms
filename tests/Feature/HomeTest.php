@@ -74,4 +74,17 @@ class HomeTest extends TestCase
         $response->assertSee('2025');
         $response->assertDontSee('2025 ·');
     }
+
+    /**
+     * The Inertia middleware is scoped to /admin, so an X-Inertia header on a
+     * public page must not turn the Blade response into an Inertia one.
+     */
+    public function test_public_pages_ignore_the_inertia_header(): void
+    {
+        $response = $this->withHeaders(['X-Inertia' => 'true'])->get('/');
+
+        $response->assertOk();
+        $response->assertHeaderMissing('X-Inertia');
+        $this->assertStringContainsString('<!DOCTYPE html>', $response->getContent());
+    }
 }
