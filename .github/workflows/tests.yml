@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   test:
-    name: Pint + Tests
+    name: Lint + Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -41,8 +41,20 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Typecheck frontend (vue-tsc)
+        run: npm run typecheck
+
+      - name: Lint frontend (ESLint)
+        run: npm run lint
+
+      - name: Check frontend formatting (Prettier)
+        run: npm run format:check
+
       - name: Build frontend assets
-        run: npm ci && npm run build
+        run: npm run build
 
       - name: Check code style (Pint)
         run: vendor/bin/pint --test

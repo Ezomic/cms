@@ -4,7 +4,14 @@ const props = defineProps<{ class?: string }>();
 </script>
 
 <template>
-    <th :class="cn('px-3.5 py-3 text-left align-middle font-mono text-[10.5px] font-medium uppercase tracking-[.08em] text-muted-foreground', props.class)">
+    <th
+        :class="
+            cn(
+                'text-muted-foreground px-3.5 py-3 text-left align-middle font-mono text-[10.5px] font-medium tracking-[.08em] uppercase',
+                props.class,
+            )
+        "
+    >
         <slot />
     </th>
 </template>

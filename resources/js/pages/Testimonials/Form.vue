@@ -9,7 +9,15 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 
-interface Data { id: number; quote: string; quote_nl: string | null; author_name: string | null; author_role: string | null; company_name: string | null; featured: boolean }
+interface Data {
+    id: number;
+    quote: string;
+    quote_nl: string | null;
+    author_name: string | null;
+    author_role: string | null;
+    company_name: string | null;
+    featured: boolean;
+}
 const props = defineProps<{ testimonial: Data | null }>();
 const isEdit = computed(() => props.testimonial !== null);
 const lang = ref<'en' | 'nl'>('en');
@@ -23,9 +31,7 @@ const form = useForm({
     featured: props.testimonial?.featured ?? false,
 });
 
-const submit = () => isEdit.value
-    ? form.put(`/admin/testimonials/${props.testimonial!.id}`)
-    : form.post('/admin/testimonials');
+const submit = () => (isEdit.value ? form.put(`/admin/testimonials/${props.testimonial!.id}`) : form.post('/admin/testimonials'));
 </script>
 
 <template>
@@ -49,7 +55,7 @@ const submit = () => isEdit.value
                     <div v-if="lang === 'en'">
                         <Label for="quote">Quote</Label>
                         <Textarea id="quote" v-model="form.quote" :rows="4" />
-                        <p v-if="form.errors.quote" class="mt-1 text-xs text-destructive">{{ form.errors.quote }}</p>
+                        <p v-if="form.errors.quote" class="text-destructive mt-1 text-xs">{{ form.errors.quote }}</p>
                     </div>
                     <div v-else>
                         <Label for="quote_nl">Quote (NL)</Label>
@@ -62,7 +68,9 @@ const submit = () => isEdit.value
                     <div><Label for="co">Company</Label><Input id="co" v-model="form.company_name" /></div>
                     <div>
                         <Label>Featured on home page</Label>
-                        <div class="flex items-center gap-2.5"><Switch v-model="form.featured" /><span class="text-sm">{{ form.featured ? 'Featured' : 'Not featured' }}</span></div>
+                        <div class="flex items-center gap-2.5">
+                            <Switch v-model="form.featured" /><span class="text-sm">{{ form.featured ? 'Featured' : 'Not featured' }}</span>
+                        </div>
                     </div>
                 </CardContent>
             </Card>

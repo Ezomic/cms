@@ -4,7 +4,7 @@ const props = defineProps<{ class?: string }>();
 </script>
 
 <template>
-    <tr :class="cn('border-b border-border transition-colors hover:bg-muted/50', props.class)">
+    <tr :class="cn('border-border hover:bg-muted/50 border-b transition-colors', props.class)">
         <slot />
     </tr>
 </template>

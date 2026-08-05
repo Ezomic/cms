@@ -61,11 +61,11 @@ const pill = (action: string) => {
     <AdminLayout title="Dashboard">
         <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
             <Card v-for="t in tiles" :key="t.label" class="p-4">
-                <div class="flex items-center gap-2 font-mono text-[11px] uppercase tracking-wide text-muted-foreground">
+                <div class="text-muted-foreground flex items-center gap-2 font-mono text-[11px] tracking-wide uppercase">
                     <component :is="t.icon" class="size-4" /> {{ t.label }}
                 </div>
-                <div class="mt-2 font-display text-3xl font-bold tabular-nums tracking-tight">{{ fmt(t.value) }}</div>
-                <div class="text-xs text-muted-foreground">{{ t.sub }}</div>
+                <div class="font-display mt-2 text-3xl font-bold tracking-tight tabular-nums">{{ fmt(t.value) }}</div>
+                <div class="text-muted-foreground text-xs">{{ t.sub }}</div>
             </Card>
         </div>
 
@@ -73,12 +73,12 @@ const pill = (action: string) => {
             <Card>
                 <CardHeader>
                     <CardTitle>Page views</CardTitle>
-                    <span class="rounded-full bg-accent px-2.5 py-1 font-mono text-[11px] text-accent-foreground">last 30 days</span>
+                    <span class="bg-accent text-accent-foreground rounded-full px-2.5 py-1 font-mono text-[11px]">last 30 days</span>
                 </CardHeader>
                 <CardContent>
                     <div class="mb-3 flex items-baseline gap-3">
                         <span class="font-display text-2xl font-bold tabular-nums">{{ fmt(total30) }}</span>
-                        <span class="font-mono text-xs text-muted-foreground">in the last 30 days · {{ fmt(pageViewCount) }} all-time</span>
+                        <span class="text-muted-foreground font-mono text-xs">in the last 30 days · {{ fmt(pageViewCount) }} all-time</span>
                     </div>
                     <svg :viewBox="`0 0 ${chart.w} ${chart.h}`" preserveAspectRatio="none" class="h-36 w-full">
                         <defs>
@@ -97,7 +97,7 @@ const pill = (action: string) => {
             <Card>
                 <CardHeader>
                     <CardTitle>Top pages</CardTitle>
-                    <span class="font-mono text-[11px] text-muted-foreground">all-time</span>
+                    <span class="text-muted-foreground font-mono text-[11px]">all-time</span>
                 </CardHeader>
                 <CardContent class="p-0">
                     <div v-if="topPaths.length" class="flex flex-col">
@@ -107,11 +107,11 @@ const pill = (action: string) => {
                             class="flex items-center justify-between px-5 py-2.5 text-sm"
                             :class="i % 2 ? 'bg-muted/40' : ''"
                         >
-                            <span class="truncate font-mono text-muted-foreground">{{ p.path }}</span>
+                            <span class="text-muted-foreground truncate font-mono">{{ p.path }}</span>
                             <span class="font-mono font-semibold tabular-nums">{{ fmt(p.views) }}</span>
                         </div>
                     </div>
-                    <p v-else class="px-5 py-6 text-sm text-muted-foreground">No page views recorded yet.</p>
+                    <p v-else class="text-muted-foreground px-5 py-6 text-sm">No page views recorded yet.</p>
                 </CardContent>
             </Card>
         </div>
@@ -125,14 +125,16 @@ const pill = (action: string) => {
                     <div
                         v-for="a in activity"
                         :key="a.id"
-                        class="flex flex-wrap items-center gap-3 border-b border-border px-5 py-3 text-sm last:border-b-0"
+                        class="border-border flex flex-wrap items-center gap-3 border-b px-5 py-3 text-sm last:border-b-0"
                     >
                         <span class="rounded-full px-2.5 py-0.5 font-mono text-[11px]" :class="pill(a.action)">{{ a.action }}</span>
-                        <span>{{ a.subject }} <b v-if="a.label" class="font-semibold">{{ a.label }}</b></span>
-                        <span class="ml-auto font-mono text-[11px] text-muted-foreground">{{ a.user }} · {{ a.when }}</span>
+                        <span
+                            >{{ a.subject }} <b v-if="a.label" class="font-semibold">{{ a.label }}</b></span
+                        >
+                        <span class="text-muted-foreground ml-auto font-mono text-[11px]">{{ a.user }} · {{ a.when }}</span>
                     </div>
                 </div>
-                <p v-else class="px-5 py-6 text-sm text-muted-foreground">No activity yet.</p>
+                <p v-else class="text-muted-foreground px-5 py-6 text-sm">No activity yet.</p>
             </CardContent>
         </Card>
     </AdminLayout>
