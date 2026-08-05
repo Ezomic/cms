@@ -39,6 +39,10 @@ class ProjectController extends Controller
             return;
         }
 
+        if ($model->image) {
+            Storage::disk('public')->delete($model->image);
+        }
+
         foreach ($model->images as $image) {
             Storage::disk('public')->delete($image->path);
         }
@@ -155,10 +159,9 @@ class ProjectController extends Controller
 
     public function destroy(Project $project): RedirectResponse
     {
-        if ($project->image) {
-            Storage::disk('public')->delete($project->image);
-        }
-
+        // The image file stays on disk: this only soft-deletes, and a restored
+        // project whose image column points at a deleted file renders broken.
+        // Cleanup happens in beforeForceDelete(), alongside the gallery files.
         $project->delete();
 
         return back()->with('status', 'Project deleted.');
