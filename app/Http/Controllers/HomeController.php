@@ -89,6 +89,8 @@ class HomeController extends Controller
 
     public function docs(): View
     {
+        PageView::create(['path' => '/'.ltrim(request()->path(), '/')]);
+
         return view('docs', [
             'profile' => Profile::current(),
             'skills' => Skill::ordered()->get()->groupBy('category'),
