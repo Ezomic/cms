@@ -326,6 +326,70 @@ class ProjectTest extends TestCase
         Storage::disk('public')->assertMissing($imageTwo->path);
     }
 
+    public function test_soft_deleting_a_project_keeps_its_hero_image_file(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        $project = Project::create(['name' => 'Soft Delete Hero', 'image' => 'projects/hero.jpg', 'sort_order' => 0]);
+        Storage::disk('public')->put('projects/hero.jpg', 'fake-contents');
+
+        $this->actingAs($user)->delete("/admin/projects/{$project->id}");
+
+        $this->assertSoftDeleted('projects', ['id' => $project->id]);
+        $this->assertSame('projects/hero.jpg', $project->fresh()->image);
+        Storage::disk('public')->assertExists('projects/hero.jpg');
+    }
+
+    public function test_restoring_a_project_keeps_its_hero_image(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        $project = Project::create(['name' => 'Restore Hero', 'image' => 'projects/restore-hero.jpg', 'sort_order' => 0]);
+        Storage::disk('public')->put('projects/restore-hero.jpg', 'fake-contents');
+
+        $this->actingAs($user)->delete("/admin/projects/{$project->id}");
+        $this->actingAs($user)->post("/admin/projects/{$project->id}/restore");
+
+        $this->assertNotSoftDeleted($project->fresh());
+        $this->assertSame('projects/restore-hero.jpg', $project->fresh()->image);
+        Storage::disk('public')->assertExists('projects/restore-hero.jpg');
+    }
+
+    public function test_force_deleting_a_project_removes_its_hero_image_file(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        $project = Project::create(['name' => 'Force Delete Hero', 'image' => 'projects/force-hero.jpg', 'sort_order' => 0]);
+        Storage::disk('public')->put('projects/force-hero.jpg', 'fake-contents');
+
+        $this->actingAs($user)->delete("/admin/projects/{$project->id}");
+        $this->actingAs($user)->delete("/admin/projects/{$project->id}/force");
+
+        $this->assertDatabaseMissing('projects', ['id' => $project->id]);
+        Storage::disk('public')->assertMissing('projects/force-hero.jpg');
+    }
+
+    public function test_replacing_a_hero_image_deletes_the_previous_file(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        $project = Project::create(['name' => 'Replace Hero', 'image' => 'projects/old-hero.jpg', 'sort_order' => 0]);
+        Storage::disk('public')->put('projects/old-hero.jpg', 'fake-contents');
+
+        $this->actingAs($user)->put("/admin/projects/{$project->id}", [
+            'name' => 'Replace Hero',
+            'sort_order' => 0,
+            'image' => UploadedFile::fake()->image('new-hero.jpg'),
+        ]);
+
+        Storage::disk('public')->assertMissing('projects/old-hero.jpg');
+        $this->assertNotSame('projects/old-hero.jpg', $project->fresh()->image);
+    }
+
     public function test_creating_a_project_named_like_a_trashed_one_gets_a_unique_slug(): void
     {
         $trashed = Project::create(['name' => 'Acme Site', 'sort_order' => 0]);
