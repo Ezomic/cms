@@ -20,7 +20,9 @@ data migration, but nothing in `app/` references the model.
 ## Stack
 
 - **PHP 8.4, Laravel 13**
-- **SQLite**: single file at `database/database.sqlite`
+- **SQLite locally**, single file at `database/database.sqlite`. **Production runs MySQL**
+  (database `cms` on `127.0.0.1`). Do not assume SQLite when writing anything that touches the
+  database directly rather than going through Eloquent.
 - **Inertia 3 + Vue 3 + TypeScript** for the admin (`inertiajs/inertia-laravel`, `@inertiajs/vue3`)
 - **Tailwind CSS v4** (`@tailwindcss/vite`) for the admin; the public Blade views use inline
   `<style>` blocks with CSS custom properties instead
@@ -305,6 +307,13 @@ written from now on is affected; historical rows were left alone.
 suffix, pruning to the 14 most recent. Scheduled daily in `routes/console.php`, alongside
 `og:prune-cache` (weekly) and `page-views:prune` (daily). Each scheduled task appends output to
 `storage/logs/schedule.log`, because the provisioning cron pipes `schedule:run` to `/dev/null`.
+
+**Neither of those works in production today** (found during the 2026-08-06 deploy, tickets filed):
+
+- `backup:database` refuses to run on anything but SQLite, and production is MySQL, so there is no
+  automated production backup. Take one by hand with `mysqldump` before risky work.
+- There is no `schedule:run` cron entry for cms on the droplet (every other app has one), so
+  `backup:database`, `og:prune-cache` and `page-views:prune` have never run in production.
 
 ## Testing
 
