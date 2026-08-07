@@ -247,11 +247,17 @@ ok "Queue worker configured"
 
 # ── 9. Cron — Laravel scheduler ───────────────────────────────────────────────
 step "Installing cron for Laravel scheduler"
-CRON_LINE="* * * * * php $APP_DIR/artisan schedule:run >> /dev/null 2>&1"
-(crontab -u "$DEPLOY_USER" -l 2>/dev/null | grep -qF "schedule:run") \
-  || (crontab -u "$DEPLOY_USER" -l 2>/dev/null; echo "$CRON_LINE") \
-  | crontab -u "$DEPLOY_USER" -
-ok "Cron installed"
+CRON_LINE="* * * * * cd $APP_DIR && php artisan schedule:run >> /dev/null 2>&1"
+# The guard matches this app's own path, not any schedule:run line. On a shared
+# droplet the old bare `grep -qF "schedule:run"` matched a *different* app's
+# entry and silently skipped installing ours, which is how cms ended up with no
+# scheduler at all while every other app had one (CMS-112).
+if crontab -u "$DEPLOY_USER" -l 2>/dev/null | grep -qF "cd $APP_DIR && php artisan schedule:run"; then
+  ok "Cron already installed"
+else
+  (crontab -u "$DEPLOY_USER" -l 2>/dev/null; echo "$CRON_LINE") | crontab -u "$DEPLOY_USER" -
+  ok "Cron installed"
+fi
 
 # ── 10. Firewall ───────────────────────────────────────────────────────────────
 step "Configuring UFW firewall"
