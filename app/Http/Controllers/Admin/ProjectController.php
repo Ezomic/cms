@@ -134,6 +134,8 @@ class ProjectController extends Controller
                 'images' => $project->images->map(fn ($image) => [
                     'id' => $image->id,
                     'url' => $image->imageUrl(),
+                    'caption' => $image->caption,
+                    'caption_nl' => $image->caption_nl,
                 ]),
                 'preview_url' => $this->previewUrl($project),
             ],
@@ -158,6 +160,7 @@ class ProjectController extends Controller
         $project->update($data);
 
         $this->removeGalleryImages($request, $project);
+        $this->saveGalleryCaptions($request, $project);
         $this->storeGalleryUploads($request, $project);
 
         return redirect()->route('admin.projects.index')->with('status', 'Project updated.');
@@ -281,6 +284,34 @@ class ProjectController extends Controller
             $project->images()->create([
                 'path' => $this->storeOptimizedImage($file),
                 'sort_order' => $nextSortOrder++,
+            ]);
+        }
+    }
+
+    /**
+     * Captions arrive keyed by image id. Only ids belonging to this project are
+     * touched, so a crafted payload cannot caption someone else's image.
+     */
+    private function saveGalleryCaptions(Request $request, Project $project): void
+    {
+        $request->validate([
+            'captions' => ['nullable', 'array'],
+            'captions.*' => ['nullable', 'string', 'max:255'],
+            'captions_nl' => ['nullable', 'array'],
+            'captions_nl.*' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $en = $request->collect('captions');
+        $nl = $request->collect('captions_nl');
+
+        if ($en->isEmpty() && $nl->isEmpty()) {
+            return;
+        }
+
+        foreach ($project->images as $image) {
+            $image->update([
+                'caption' => $en->get((string) $image->id) ?: null,
+                'caption_nl' => $nl->get((string) $image->id) ?: null,
             ]);
         }
     }

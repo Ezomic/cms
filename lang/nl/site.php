@@ -119,6 +119,7 @@ return [
     'project_eyebrow' => 'Case study',
     'project_github_link' => 'Bekijk de code op GitHub →',
     'project_related_label' => 'Meer werk',
+    'lightbox_close' => 'Sluiten',
     'project_gallery_label' => 'Schermen',
     'preview_banner' => 'Preview-link. Niet geïndexeerd, niet openbaar.',
     'preview_unpublished' => 'Niet gepubliceerd',

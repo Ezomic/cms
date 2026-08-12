@@ -33,7 +33,7 @@ interface ProjectData {
     image_alt_nl: string | null;
     meta_title_nl: string | null;
     meta_description_nl: string | null;
-    images: { id: number; url: string }[];
+    images: { id: number; url: string; caption: string | null; caption_nl: string | null }[];
     preview_url: string;
 }
 
@@ -65,6 +65,8 @@ const form = useForm({
     image: null as File | null,
     gallery: [] as File[],
     remove_images: [] as number[],
+    captions: Object.fromEntries((props.project?.images ?? []).map((i) => [i.id, i.caption ?? ''])) as Record<number, string>,
+    captions_nl: Object.fromEntries((props.project?.images ?? []).map((i) => [i.id, i.caption_nl ?? ''])) as Record<number, string>,
 });
 
 const imagePreview = ref<string | null>(props.project?.image_url ?? null);
@@ -183,23 +185,40 @@ const submit = () => {
                         </div>
                         <div v-if="project?.images.length">
                             <Label>Gallery</Label>
-                            <div class="flex flex-wrap gap-2">
-                                <div v-for="img in project.images" :key="img.id" class="relative">
-                                    <img
-                                        :src="img.url"
-                                        alt=""
-                                        class="border-border h-16 w-24 rounded-md border object-cover"
-                                        :class="form.remove_images.includes(img.id) ? 'opacity-30' : ''"
-                                    />
-                                    <button
-                                        type="button"
-                                        class="bg-destructive text-destructive-foreground absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full"
-                                        @click="toggleRemove(img.id)"
-                                    >
-                                        <X class="size-3" />
-                                    </button>
+                            <div class="flex flex-col gap-3">
+                                <div v-for="img in project.images" :key="img.id" class="flex items-start gap-3">
+                                    <div class="relative shrink-0">
+                                        <img
+                                            :src="img.url"
+                                            alt=""
+                                            class="border-border h-16 w-24 rounded-md border object-cover"
+                                            :class="form.remove_images.includes(img.id) ? 'opacity-30' : ''"
+                                        />
+                                        <button
+                                            type="button"
+                                            class="bg-destructive text-destructive-foreground absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full"
+                                            @click="toggleRemove(img.id)"
+                                        >
+                                            <X class="size-3" />
+                                        </button>
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <Input
+                                            v-if="lang === 'en'"
+                                            v-model="form.captions[img.id]"
+                                            placeholder="Caption (also used as alt text)"
+                                        />
+                                        <Input
+                                            v-else
+                                            v-model="form.captions_nl[img.id]"
+                                            placeholder="Bijschrift (ook gebruikt als alt-tekst)"
+                                        />
+                                    </div>
                                 </div>
                             </div>
+                            <p class="text-muted-foreground mt-1 text-xs">
+                                Captions follow the EN/NL switch above. Empty falls back to the project name.
+                            </p>
                         </div>
                         <div>
                             <Label for="gallery">Add gallery images</Label>
