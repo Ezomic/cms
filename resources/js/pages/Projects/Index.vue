@@ -18,6 +18,7 @@ interface ProjectRow {
     client_name: string | null;
     year: string | null;
     published: boolean;
+    featured: boolean;
     tag_list: string[];
     image_url: string | null;
 }
@@ -127,6 +128,7 @@ const destroy = (row: ProjectRow) => {
                                     ><span class="size-1.5 rounded-full bg-current"></span> Published</Badge
                                 >
                                 <Badge v-else variant="muted"><span class="size-1.5 rounded-full bg-current"></span> Draft</Badge>
+                                <Badge v-if="row.featured" variant="outline" class="ml-1">Featured</Badge>
                             </TableCell>
                             <TableCell>
                                 <div class="flex justify-end gap-1">
