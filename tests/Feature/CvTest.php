@@ -382,28 +382,11 @@ class CvTest extends TestCase
         $this->assertStringNotContainsString('<div class="hero-line">', $html);
     }
 
-    public function test_cv_view_omits_hero_line_when_hero_headline_key_is_missing(): void
-    {
-        $profile = (object) [
-            'name' => 'Jane Doe',
-            'city' => 'Amsterdam',
-            'tagline' => 'Developer',
-            'hero_subtext' => 'I build things.',
-            'available' => false,
-            'email' => null,
-            'linkedin_url' => null,
-            'github_url' => null,
-            'rate' => null,
-            'availability_from' => null,
-            'kvk_number' => null,
-        ];
-        $skills = Skill::query()->get()->groupBy('category');
-
-        $html = view('cv', ['profile' => $profile, 'skills' => $skills, 'projects' => collect()])->render();
-
-        $this->assertStringNotContainsString('<div class="hero-line">', $html);
-        $this->assertStringContainsString('<p class="intro">I build things.</p>', $html);
-    }
+    // The former "hero_headline key is missing" case passed a bare stdClass as
+    // the profile. Since CMS-117 the view resolves translatable fields through
+    // Profile's localized accessors, so it takes a Profile, where the column is
+    // NOT NULL and always present. The blank-headline test above is now the
+    // same scenario, so that duplicate was removed rather than reworded.
 
     public function test_cv_view_renders_first_skill_of_each_category_in_lowest_sort_order(): void
     {
@@ -483,5 +466,94 @@ class CvTest extends TestCase
         $this->assertStringContainsString('<a href="'.route('home').'">'.$host.'</a>', $html);
         $this->assertStringNotContainsString('>http://'.$host.'</a>', $html);
         $this->assertStringNotContainsString('>https://'.$host.'</a>', $html);
+    }
+
+    public function test_the_dutch_cv_downloads_as_a_pdf(): void
+    {
+        $response = $this->get('/nl/cv.pdf');
+
+        $response->assertOk();
+        $response->assertHeader('content-type', 'application/pdf');
+    }
+
+    public function test_the_two_cvs_use_different_filenames(): void
+    {
+        Profile::current()->update(['name' => 'Robbin Thijssen']);
+
+        $this->get('/cv.pdf')
+            ->assertHeader('content-disposition', 'attachment; filename=robbin-thijssen-cv.pdf');
+
+        $this->get('/nl/cv.pdf')
+            ->assertHeader('content-disposition', 'attachment; filename=robbin-thijssen-cv-nl.pdf');
+    }
+
+    public function test_the_dutch_cv_renders_dutch_section_headings(): void
+    {
+        app()->setLocale('nl');
+
+        $html = view('cv', [
+            'profile' => Profile::current(),
+            'skills' => Skill::query()->get()->groupBy('category'),
+            'projects' => collect(),
+        ])->render();
+
+        $this->assertStringContainsString('Over mij', $html);
+        $this->assertStringContainsString('Opleiding', $html);
+        $this->assertStringContainsString('Tarief op aanvraag', $html);
+        $this->assertStringContainsString('Nederland', $html);
+        $this->assertStringNotContainsString('>About<', $html);
+        $this->assertStringNotContainsString('>Education<', $html);
+    }
+
+    public function test_the_english_cv_stays_english(): void
+    {
+        $html = view('cv', [
+            'profile' => Profile::current(),
+            'skills' => Skill::query()->get()->groupBy('category'),
+            'projects' => collect(),
+        ])->render();
+
+        $this->assertStringContainsString('About', $html);
+        $this->assertStringContainsString('Education', $html);
+        $this->assertStringContainsString('Rate on request', $html);
+        $this->assertStringNotContainsString('Opleiding', $html);
+    }
+
+    public function test_the_dutch_cv_uses_dutch_project_copy(): void
+    {
+        app()->setLocale('nl');
+
+        $projects = collect([(object) [
+            'name' => 'Acme Site',
+            'client_name' => 'Acme',
+            'year' => '2025',
+            'github_url' => null,
+            'tag_list' => ['laravel'],
+            'description' => 'Nederlandse omschrijving.',
+            'outcome' => 'Nederlands resultaat.',
+        ]]);
+
+        $html = view('cv', [
+            'profile' => Profile::current(),
+            'skills' => collect(),
+            'projects' => $projects,
+        ])->render();
+
+        $this->assertStringContainsString('Nederlandse omschrijving.', $html);
+        $this->assertStringContainsString('Resultaat:', $html);
+        $this->assertStringNotContainsString('Result:', $html);
+    }
+
+    public function test_the_dutch_cv_carries_the_dutch_lang_attribute(): void
+    {
+        app()->setLocale('nl');
+
+        $html = view('cv', [
+            'profile' => Profile::current(),
+            'skills' => collect(),
+            'projects' => collect(),
+        ])->render();
+
+        $this->assertStringContainsString('<html lang="nl">', $html);
     }
 }

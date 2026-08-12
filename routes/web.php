@@ -27,12 +27,12 @@ $publicRoutes = function (): void {
     Route::get('/work/{project:slug}/preview', [HomeController::class, 'projectPreview'])
         ->name('project.preview')
         ->middleware('signed');
+    Route::get('/cv.pdf', [HomeController::class, 'cv'])->name('cv');
 };
 
 Route::group([], $publicRoutes);
 Route::prefix('nl')->name('nl.')->group($publicRoutes);
 
-Route::get('/cv.pdf', [HomeController::class, 'cv'])->name('cv');
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 Route::get('/robots.txt', fn () => response("User-agent: *\nDisallow: /admin\n\nSitemap: ".route('sitemap')."\n", 200, ['Content-Type' => 'text/plain']))->name('robots');
 Route::get('/og/home.png', [OgImageController::class, 'home'])->name('og.home');

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ app()->getLocale() }}">
 <head>
 <meta charset="UTF-8">
 <style>
@@ -58,26 +58,26 @@
 
   <div class="header">
     <div class="name">{{ $profile->name }}</div>
-    <div class="tagline">{{ $profile->tagline }} · {{ $profile->city }}, Netherlands</div>
+    <div class="tagline">{{ $profile->localizedTagline() }} · {{ $profile->city }}, {{ __('cv.country') }}</div>
     <div class="contact-row">
       @if($profile->email)<span><a href="mailto:{{ $profile->email }}">{{ $profile->email }}</a></span>@endif
       @if($profile->linkedin_url)<span><a href="{{ $profile->linkedin_url }}">{{ $profile->linkedin_url }}</a></span>@endif
       @if($profile->github_url)<span><a href="{{ $profile->github_url }}">{{ $profile->github_url }}</a></span>@endif
-      <span>Rate on request</span>
+      <span>{{ __('cv.rate_on_request') }}</span>
     </div>
   </div>
 
   <div class="section">
-    <div class="section-title">About</div>
-    @if($profile->hero_headline ?? null)
-      <div class="hero-line">{{ $profile->hero_headline }}</div>
+    <div class="section-title">{{ __('cv.section_about') }}</div>
+    @if($profile->heroHeadline())
+      <div class="hero-line">{{ $profile->heroHeadline() }}</div>
     @endif
-    <p class="intro">{{ $profile->hero_subtext }}</p>
+    <p class="intro">{{ $profile->heroSubtext() }}</p>
   </div>
 
   @if ($skills->isNotEmpty())
   <div class="section">
-    <div class="section-title">Skills &amp; stack</div>
+    <div class="section-title">{{ __('cv.section_skills') }}</div>
     <div class="skills-grid">
       @foreach ($skills as $category => $items)
         <div class="skills-col">
@@ -94,22 +94,22 @@
   @endif
 
   <div class="section">
-    <div class="section-title">Education</div>
+    <div class="section-title">{{ __('cv.section_education') }}</div>
     <div class="edu-row">
-      <div class="edu-degree">MBO level 3 <span>· Medewerker Beheer ICT</span></div>
-      <div class="edu-place">2013-2016 &middot; ROC van Twente, Hengelo</div>
+      <div class="edu-degree">{{ __('cv.education.mbo3_degree') }} <span>· {{ __('cv.education.mbo3_field') }}</span></div>
+      <div class="edu-place">2013-2016 &middot; {{ __('cv.education.school') }}</div>
     </div>
     <div class="edu-row">
-      <div class="edu-degree">MBO level 4 <span>· Application Manager</span></div>
-      <div class="edu-place">2016-2017 &middot; ROC van Twente, Hengelo</div>
+      <div class="edu-degree">{{ __('cv.education.mbo4_degree') }} <span>· {{ __('cv.education.mbo4_field') }}</span></div>
+      <div class="edu-place">2016-2017 &middot; {{ __('cv.education.school') }}</div>
     </div>
   </div>
 
   @if ($projects->isNotEmpty())
   <div class="section">
     <div class="section-title-row">
-      <div class="section-title">Case studies</div>
-      <a class="section-cta" href="{{ route('work.index') }}">See all work &rarr;</a>
+      <div class="section-title">{{ __('cv.section_case_studies') }}</div>
+      <a class="section-cta" href="{{ localized_route('work.index') }}">{{ __('cv.see_all_work') }} &rarr;</a>
     </div>
     @foreach ($projects as $project)
       <div class="project">
@@ -125,7 +125,7 @@
         <div class="project-client">{{ $project->client_name }}</div>
         <div class="project-desc">{{ $project->description }}</div>
         @if($project->outcome ?? null)
-          <div class="project-outcome"><span class="accent">Result:</span> {{ $project->outcome }}</div>
+          <div class="project-outcome"><span class="accent">{{ __('cv.result_label') }}</span> {{ $project->outcome }}</div>
         @endif
         @if($project->tag_list)
           <div class="project-tags">
@@ -141,14 +141,16 @@
 
   @if($profile->available)
     <div class="availability-box">
-      <strong>Currently available</strong> for new projects. Rate on request. Based in {{ $profile->city }}, NL. Works remote EU-wide and on-site.
+      <strong>{{ __('cv.available_heading') }}</strong> {{ __('cv.available_body', ['city' => $profile->city]) }}
       @if($profile->email)
-        <a href="mailto:{{ $profile->email }}">Get in touch &rarr;</a>
+        <a href="mailto:{{ $profile->email }}">{{ __('cv.get_in_touch') }} &rarr;</a>
       @endif
     </div>
   @else
     <div class="availability-line">
-      Currently booked{{ $profile->availability_from ? ', available from '.$profile->availability_from : '' }}. Rate on request. Based in {{ $profile->city }}, NL.
+      {{ $profile->availability_from
+          ? __('cv.booked_from', ['date' => $profile->availability_from, 'city' => $profile->city])
+          : __('cv.booked', ['city' => $profile->city]) }}
     </div>
   @endif
 
@@ -156,8 +158,8 @@
     @if ($profile->kvk_number)
       KVK {{ $profile->kvk_number }} ·
     @endif
-    Generated {{ date('F Y') }} ·
-    <a href="{{ route('home') }}">{{ parse_url(route('home'), PHP_URL_HOST) }}</a>
+    {{ __('cv.generated', ['date' => now()->locale(app()->getLocale())->isoFormat('MMMM YYYY')]) }} ·
+    <a href="{{ localized_route('home') }}">{{ parse_url(route('home'), PHP_URL_HOST) }}</a>
   </div>
 
 </div>

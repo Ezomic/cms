@@ -170,6 +170,8 @@ class HomeController extends Controller
         $projects = Project::published()->ordered()->get()->map(fn ($p) => (object) [
             ...$p->toArray(),
             'tag_list' => $p->tagList(),
+            'description' => $p->localizedDescription(),
+            'outcome' => $p->localizedOutcome(),
         ]);
 
         $pdf = Pdf::loadView('cv', compact('profile', 'skills', 'projects'))
@@ -185,7 +187,10 @@ class HomeController extends Controller
             497, 812, 'Page {PAGE_NUM} of {PAGE_COUNT}', $fontMetrics->getFont('Inter', 'normal') ?? 'serif', 8, [0.66, 0.66, 0.66]
         );
 
-        $filename = str($profile->name)->slug()->append('-cv.pdf')->toString();
+        // Locale suffix so a Dutch CV downloaded next to the English one does
+        // not silently overwrite it in the reader's downloads folder.
+        $suffix = app()->getLocale() === 'nl' ? '-cv-nl.pdf' : '-cv.pdf';
+        $filename = str($profile->name)->slug()->append($suffix)->toString();
 
         return $pdf->download($filename);
     }
