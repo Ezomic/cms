@@ -44,7 +44,15 @@
   .body-content strong{font-weight:600;color:var(--ink);}
   .gallery-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--primary);margin:0 0 14px;}
   .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:0 0 40px;}
-  .gallery img{width:100%;aspect-ratio:16/10;object-fit:cover;border:1px solid var(--line);border-radius:var(--r);}
+  .gallery img{width:100%;aspect-ratio:16/10;object-fit:cover;border:1px solid var(--line);border-radius:var(--r);display:block;}
+  .shot{margin:0;}
+  .shot-trigger{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;font:inherit;}
+  .shot figcaption{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.45;}
+  .lb{position:fixed;inset:0;background:rgba(34,29,23,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:28px;z-index:60;}
+  .lb[hidden]{display:none;}
+  .lb img{max-width:100%;max-height:80vh;object-fit:contain;border-radius:var(--r);background:var(--surface);}
+  .lb-cap{color:#fff;font-size:13px;font-family:var(--mono);text-align:center;max-width:60ch;}
+  .lb-close{position:absolute;top:18px;right:20px;background:none;border:1px solid rgba(255,255,255,.5);color:#fff;border-radius:99px;width:34px;height:34px;font-size:17px;cursor:pointer;line-height:1;}
   .cs-cta{padding:32px 0 72px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
   .cs-cta .lab{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:6px;}
   .cs-cta h3{font-size:1.2rem;}
@@ -100,7 +108,15 @@
     <div class="gallery-label">{{ __('site.project_gallery_label') }}</div>
     <div class="gallery">
       @foreach ($project->images as $image)
-        <img src="{{ $image->imageUrl() }}" alt="{{ $project->name }}" loading="lazy" decoding="async">
+        <figure class="shot">
+          {{-- A button, not a bare image: it must be reachable and operable from the keyboard. --}}
+          <button type="button" class="shot-trigger" data-full="{{ $image->imageUrl() }}" data-caption="{{ $image->altText() }}">
+            <img src="{{ $image->imageUrl() }}" alt="{{ $image->altText() }}" loading="lazy" decoding="async">
+          </button>
+          @if ($image->localizedCaption())
+            <figcaption>{{ $image->localizedCaption() }}</figcaption>
+          @endif
+        </figure>
       @endforeach
     </div>
   @endif
@@ -131,3 +147,50 @@
   </div>
 </div>
 @endsection
+
+@if ($project->images->isNotEmpty())
+@push('scripts')
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="{{ __('site.project_gallery_label') }}" hidden>
+  <button type="button" class="lb-close" id="lb-close" aria-label="{{ __('site.lightbox_close') }}">&times;</button>
+  <img id="lb-img" src="" alt="">
+  <p class="lb-cap" id="lb-cap"></p>
+</div>
+<script>
+  (function () {
+    var lb = document.getElementById('lb');
+    var img = document.getElementById('lb-img');
+    var cap = document.getElementById('lb-cap');
+    var close = document.getElementById('lb-close');
+    var opener = null;
+
+    function open(btn) {
+      opener = btn;
+      img.src = btn.dataset.full;
+      img.alt = btn.dataset.caption || '';
+      cap.textContent = btn.dataset.caption || '';
+      lb.hidden = false;
+      close.focus();
+      document.body.style.overflow = 'hidden';
+    }
+
+    function shut() {
+      lb.hidden = true;
+      img.src = '';
+      document.body.style.overflow = '';
+      // Return focus to the thumbnail the visitor came from, so keyboard
+      // users are not dumped back at the top of the document.
+      if (opener) { opener.focus(); opener = null; }
+    }
+
+    document.querySelectorAll('.shot-trigger').forEach(function (btn) {
+      btn.addEventListener('click', function () { open(btn); });
+    });
+    close.addEventListener('click', shut);
+    lb.addEventListener('click', function (e) { if (e.target === lb) shut(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !lb.hidden) shut();
+    });
+  })();
+</script>
+@endpush
+@endif
