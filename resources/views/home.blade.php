@@ -113,7 +113,7 @@
         <div class="acts">
           <a class="btn pri" href="#contact">{{ __('site.hero_actions_primary') }}</a>
           <a class="btn sec" href="{{ localized_route('work.index') }}">{{ __('site.hero_actions_secondary') }}</a>
-          <a class="btn sec" href="{{ route('cv') }}">{{ __('site.hero_download_cv') }}</a>
+          <a class="btn sec" href="{{ localized_route('cv') }}">{{ __('site.hero_download_cv') }}</a>
         </div>
       </div>
       <dl class="facts">
