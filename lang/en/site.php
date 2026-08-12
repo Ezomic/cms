@@ -118,6 +118,7 @@ return [
 
     'project_eyebrow' => 'Case study',
     'project_github_link' => 'View source on GitHub →',
+    'project_related_label' => 'More work',
     'project_gallery_label' => 'Screens',
     'preview_banner' => 'Preview link. Not indexed, not public.',
     'preview_unpublished' => 'Unpublished',

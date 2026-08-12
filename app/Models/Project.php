@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class Project extends Model
@@ -71,6 +72,39 @@ class Project extends Model
         }
 
         return array_map('trim', explode(',', $this->tags));
+    }
+
+    /**
+     * Published projects sharing the most tags with this one, for the "more
+     * work" section. Falls back to filling the remaining slots by sort_order
+     * so a project with unique tags is not a dead end.
+     *
+     * @return Collection<int, Project>
+     */
+    public function relatedProjects(int $limit = 3): Collection
+    {
+        $candidates = static::published()->ordered()->where('id', '!=', $this->id)->get();
+        $tags = $this->tagList();
+
+        $scored = $candidates
+            ->map(fn (Project $project): array => [
+                'project' => $project,
+                'shared' => count(array_intersect($tags, $project->tagList())),
+            ])
+            ->filter(fn (array $row): bool => $row['shared'] > 0)
+            ->sortByDesc('shared')
+            ->map(fn (array $row): Project => $row['project'])
+            ->values();
+
+        if ($scored->count() >= $limit) {
+            return $scored->take($limit);
+        }
+
+        $filler = $candidates->reject(
+            fn (Project $project): bool => $scored->contains(fn (Project $p): bool => $p->id === $project->id)
+        );
+
+        return $scored->concat($filler)->take($limit)->values();
     }
 
     public function imageUrl(): ?string

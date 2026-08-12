@@ -48,6 +48,12 @@
   .cs-cta{padding:32px 0 72px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
   .cs-cta .lab{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:6px;}
   .cs-cta h3{font-size:1.2rem;}
+  .related{margin:34px 0 4px;}
+  .related-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;}
+  .related-card{display:block;border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;background:var(--surface);}
+  .related-card:hover{border-color:var(--primary);}
+  .related-name{display:block;font-family:var(--geo);font-weight:700;font-size:15px;}
+  .related-meta{display:block;font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:4px;}
   .preview-bar{background:var(--primary);color:#fff;font-family:var(--mono);font-size:12px;letter-spacing:.04em;text-align:center;padding:10px 20px;}
   .preview-state{margin-left:10px;padding:2px 8px;border:1px solid rgba(255,255,255,.5);border-radius:99px;}
 </style>
@@ -96,6 +102,23 @@
       @foreach ($project->images as $image)
         <img src="{{ $image->imageUrl() }}" alt="{{ $project->name }}" loading="lazy" decoding="async">
       @endforeach
+    </div>
+  @endif
+
+  @php($related = $project->relatedProjects())
+  @if ($related->isNotEmpty())
+    <div class="related">
+      <div class="gallery-label">{{ __('site.project_related_label') }}</div>
+      <div class="related-grid">
+        @foreach ($related as $other)
+          <a class="related-card" href="{{ localized_route('project.show', $other->slug) }}">
+            <span class="related-name">{{ $other->name }}</span>
+            @if ($other->client_name || $other->year)
+              <span class="related-meta">{{ trim($other->client_name.' '.$other->year) }}</span>
+            @endif
+          </a>
+        @endforeach
+      </div>
     </div>
   @endif
 
