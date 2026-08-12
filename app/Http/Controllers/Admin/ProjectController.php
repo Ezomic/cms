@@ -67,6 +67,7 @@ class ProjectController extends Controller
                 'client_name' => $project->client_name,
                 'year' => $project->year,
                 'published' => $project->published,
+                'featured' => $project->featured,
                 'tag_list' => $project->tagList(),
                 'image_url' => $project->imageUrl(),
             ]);
@@ -89,6 +90,7 @@ class ProjectController extends Controller
 
         $data = $this->validated($request, new Project);
         $data['published'] = $request->boolean('published');
+        $data['featured'] = $request->boolean('featured');
 
         if ($request->hasFile('image')) {
             $data['image'] = $this->storeOptimizedImage($request->file('image'));
@@ -118,6 +120,7 @@ class ProjectController extends Controller
                 'body' => $project->body,
                 'tags' => $project->tags,
                 'published' => $project->published,
+                'featured' => $project->featured,
                 'meta_title' => $project->meta_title,
                 'meta_description' => $project->meta_description,
                 'image_url' => $project->imageUrl(),
@@ -143,6 +146,7 @@ class ProjectController extends Controller
 
         $data = $this->validated($request, $project);
         $data['published'] = $request->boolean('published');
+        $data['featured'] = $request->boolean('featured');
 
         if ($request->hasFile('image')) {
             if ($project->image) {
@@ -206,6 +210,7 @@ class ProjectController extends Controller
             'description' => ['nullable', 'string'],
             'outcome' => ['nullable', 'string', 'max:255'],
             'body' => ['nullable', 'string'],
+            'featured' => ['nullable', 'boolean'],
             'tags' => ['nullable', 'string', 'max:255'],
             'sort_order' => ['nullable', 'integer'],
             'meta_title' => ['nullable', 'string', 'max:255'],

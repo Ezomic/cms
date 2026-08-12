@@ -74,7 +74,7 @@ class HomeController extends Controller
                 'meta_description' => $profile->metaDescription(),
             ]),
             'skills' => $skills,
-            'projects' => Project::published()->ordered()->get()->map(fn (Project $project): array => $this->stringKeyed([
+            'projects' => $this->homeProjects()->map(fn (Project $project): array => $this->stringKeyed([
                 ...$project->toArray(),
                 'tag_list' => $project->tagList(),
                 'image_url' => $project->imageUrl(),
@@ -86,6 +86,25 @@ class HomeController extends Controller
                 'quote' => $testimonial->localizedQuote(),
             ]))->values()->all(),
         ];
+    }
+
+    /**
+     * Featured projects for the home page, falling back to every published
+     * project when nothing is featured.
+     *
+     * The fallback is deliberate: an empty featured set is the state every
+     * install starts in, and a home page with no work section reads as broken
+     * rather than as unconfigured. /work always shows everything regardless.
+     *
+     * @return Collection<int, Project>
+     */
+    private function homeProjects(): Collection
+    {
+        $featured = Project::published()->featured()->ordered()->get();
+
+        return $featured->isNotEmpty()
+            ? $featured
+            : Project::published()->ordered()->get();
     }
 
     public function docs(): View

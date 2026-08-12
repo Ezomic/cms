@@ -22,6 +22,7 @@ interface ProjectData {
     body: string | null;
     tags: string | null;
     published: boolean;
+    featured: boolean;
     meta_title: string | null;
     meta_description: string | null;
     image_url: string | null;
@@ -51,6 +52,7 @@ const form = useForm({
     body: props.project?.body ?? '',
     tags: props.project?.tags ?? '',
     published: props.project?.published ?? false,
+    featured: props.project?.featured ?? false,
     meta_title: props.project?.meta_title ?? '',
     meta_description: props.project?.meta_description ?? '',
     image_alt: props.project?.image_alt ?? '',
@@ -224,6 +226,17 @@ const submit = () => {
                                 <Switch v-model="form.published" />
                                 <span class="text-sm">{{ form.published ? 'Published' : 'Draft' }}</span>
                             </div>
+                        </div>
+                        <div>
+                            <Label>Featured</Label>
+                            <div class="flex items-center gap-2.5">
+                                <Switch v-model="form.featured" />
+                                <span class="text-sm">{{ form.featured ? 'On the home page' : 'Archive only' }}</span>
+                            </div>
+                            <p class="text-muted-foreground mt-1 text-xs">
+                                Featured projects lead the home page. With none featured, the home page falls back to every published
+                                project.
+                            </p>
                         </div>
                         <div>
                             <Label for="gh">GitHub URL</Label>

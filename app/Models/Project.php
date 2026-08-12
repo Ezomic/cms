@@ -16,12 +16,13 @@ class Project extends Model
     use BustsHomeCache, HasLocalizedContent, LogsActivity, SoftDeletes;
 
     protected $fillable = [
-        'name', 'image', 'image_alt', 'slug', 'github_url', 'client_name', 'year', 'description', 'outcome', 'body', 'published', 'tags', 'sort_order', 'meta_title', 'meta_description',
+        'name', 'image', 'image_alt', 'slug', 'github_url', 'client_name', 'year', 'description', 'outcome', 'body', 'published', 'featured', 'tags', 'sort_order', 'meta_title', 'meta_description',
         'description_nl', 'outcome_nl', 'body_nl', 'image_alt_nl', 'meta_title_nl', 'meta_description_nl',
     ];
 
     protected $casts = [
         'published' => 'boolean',
+        'featured' => 'boolean',
     ];
 
     protected static function booted(): void
@@ -49,6 +50,15 @@ class Project extends Model
     public function scopePublished(Builder $query): Builder
     {
         return $query->where('published', true);
+    }
+
+    /**
+     * @param  Builder<Project>  $query
+     * @return Builder<Project>
+     */
+    public function scopeFeatured(Builder $query): Builder
+    {
+        return $query->where('featured', true);
     }
 
     /**
