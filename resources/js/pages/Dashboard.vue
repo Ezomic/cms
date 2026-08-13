@@ -23,6 +23,7 @@ const props = defineProps<{
     unreadCount: number;
     sparkline: number[];
     topPaths: { path: string; views: number }[];
+    topReferrers: { host: string; views: number }[];
     activity: ActivityItem[];
 }>();
 
@@ -112,6 +113,27 @@ const pill = (action: string) => {
                         </div>
                     </div>
                     <p v-else class="text-muted-foreground px-5 py-6 text-sm">No page views recorded yet.</p>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Top referrers</CardTitle>
+                    <span class="text-muted-foreground font-mono text-[11px]">last 30 days</span>
+                </CardHeader>
+                <CardContent class="p-0">
+                    <div v-if="topReferrers.length" class="flex flex-col">
+                        <div
+                            v-for="(r, i) in topReferrers"
+                            :key="r.host"
+                            class="flex items-center justify-between px-5 py-2.5 text-sm"
+                            :class="i % 2 ? 'bg-muted/40' : ''"
+                        >
+                            <span class="text-muted-foreground truncate font-mono">{{ r.host }}</span>
+                            <span class="font-mono font-semibold tabular-nums">{{ fmt(r.views) }}</span>
+                        </div>
+                    </div>
+                    <p v-else class="text-muted-foreground px-5 py-6 text-sm">No referrers recorded yet.</p>
                 </CardContent>
             </Card>
         </div>
