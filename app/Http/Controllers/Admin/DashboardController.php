@@ -10,6 +10,7 @@ use App\Models\PageViewTotal;
 use App\Models\Project;
 use App\Models\Skill;
 use App\Models\Testimonial;
+use App\Services\ContentCompleteness;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -45,6 +46,7 @@ class DashboardController extends Controller
             'sparkline' => $sparkline,
             'topPaths' => $this->topPaths(),
             'topReferrers' => $this->topReferrers(),
+            'contentGapCount' => app(ContentCompleteness::class)->count(),
             'activity' => ActivityLog::with('user')->latest()->take(8)->get()->map(function (ActivityLog $log) {
                 $subject = class_basename($log->subject_type);
 
