@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ContactAcknowledgement;
 use App\Mail\ContactFormSubmitted;
 use App\Models\ContactSubmission;
 use App\Models\Profile;
@@ -54,9 +55,34 @@ class ContactController extends Controller
             } catch (\Throwable $e) {
                 report($e);
             }
+
+            $this->acknowledge($submission, $profileEmail);
         }
 
         return back()->with('status', __('site.contact_success'));
+    }
+
+    /**
+     * Confirms receipt to the sender.
+     *
+     * Only reached once every bot signal has passed, because the checks above
+     * return early. That ordering is the whole safety story: this email goes
+     * to an address the submitter chose, so a dropped submission must stay
+     * silent rather than become a way to mail strangers.
+     *
+     * Queued, so a slow mail host cannot hold the visitor's request open, and
+     * wrapped like the owner notification so a failure is logged rather than
+     * surfaced: the message is already saved to the inbox either way.
+     */
+    private function acknowledge(ContactSubmission $submission, string $ownerEmail): void
+    {
+        try {
+            Mail::to($submission->email)
+                ->locale(app()->getLocale())
+                ->queue(new ContactAcknowledgement($submission, $ownerEmail));
+        } catch (\Throwable $e) {
+            report($e);
+        }
     }
 
     /**

@@ -254,7 +254,7 @@
           <div class="form-status" role="status" id="form-feedback">{{ session('status') }}</div>
         @endif
 
-        <form method="POST" action="{{ route('contact.store') }}">
+        <form method="POST" action="{{ localized_route('contact.store') }}">
           @csrf
           <input type="hidden" name="form_token" value="{{ ContactFormToken::issue() }}">
           <input type="text" name="website" class="honeypot" tabindex="-1" autocomplete="off">

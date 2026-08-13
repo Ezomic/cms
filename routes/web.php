@@ -28,6 +28,10 @@ $publicRoutes = function (): void {
         ->name('project.preview')
         ->middleware('signed');
     Route::get('/cv.pdf', [HomeController::class, 'cv'])->name('cv');
+    // Registered per locale so SetLocale can see the prefix. Posting a Dutch
+    // form to the unprefixed /contact would run the request in English and
+    // return an English confirmation and acknowledgement (CMS-116).
+    Route::post('/contact', [ContactController::class, 'store'])->name('contact.store')->middleware('throttle:contact');
 };
 
 Route::group([], $publicRoutes);
@@ -37,7 +41,6 @@ Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 Route::get('/robots.txt', fn () => response("User-agent: *\nDisallow: /admin\n\nSitemap: ".route('sitemap')."\n", 200, ['Content-Type' => 'text/plain']))->name('robots');
 Route::get('/og/home.png', [OgImageController::class, 'home'])->name('og.home');
 Route::get('/og/work/{project:slug}.png', [OgImageController::class, 'project'])->name('og.project');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store')->middleware('throttle:contact');
 
 // Admin auth
 Route::get('/admin/login', [AdminLoginController::class, 'show'])->name('admin.login');
