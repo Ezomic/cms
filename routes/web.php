@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ContactSubmissionController;
+use App\Http\Controllers\Admin\ContentGapController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProjectController;
@@ -86,6 +87,8 @@ Route::middleware(['auth', HandleInertiaRequests::class])->prefix('admin')->name
     Route::post('/contact-submissions/{contactSubmission}/unreplied', [ContactSubmissionController::class, 'markUnreplied'])->name('contact-submissions.unreplied');
     Route::post('/contact-submissions/{contactSubmission}/note', [ContactSubmissionController::class, 'saveNote'])->name('contact-submissions.note');
     Route::delete('/contact-submissions/{contactSubmission}', [ContactSubmissionController::class, 'destroy'])->name('contact-submissions.destroy');
+
+    Route::get('/content-gaps', [ContentGapController::class, 'index'])->name('content-gaps.index');
 
     Route::get('/security', [SecurityController::class, 'show'])->name('security.show');
 });

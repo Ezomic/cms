@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import AdminLayout from '@/layouts/AdminLayout.vue';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { FolderKanban, Quote, ListChecks, Inbox } from 'lucide-vue-next';
+import { FolderKanban, Quote, ListChecks, Inbox, FileWarning } from 'lucide-vue-next';
 
 interface ActivityItem {
     id: number;
@@ -24,6 +24,7 @@ const props = defineProps<{
     sparkline: number[];
     topPaths: { path: string; views: number }[];
     topReferrers: { host: string; views: number }[];
+    contentGapCount: number;
     activity: ActivityItem[];
 }>();
 
@@ -32,6 +33,13 @@ const tiles = computed(() => [
     { label: 'Testimonials', value: props.testimonialCount, sub: 'total', icon: Quote },
     { label: 'Skills', value: props.skillCount, sub: 'total', icon: ListChecks },
     { label: 'Inbox', value: props.contactCount, sub: props.unreadCount ? `${props.unreadCount} unread` : 'all read', icon: Inbox },
+    {
+        label: 'Content gaps',
+        value: props.contentGapCount,
+        sub: props.contentGapCount ? 'needs attention' : 'all complete',
+        icon: FileWarning,
+        href: '/admin/content-gaps',
+    },
 ]);
 
 const chart = computed(() => {
@@ -60,14 +68,23 @@ const pill = (action: string) => {
 <template>
     <Head title="Dashboard" />
     <AdminLayout title="Dashboard">
-        <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            <Card v-for="t in tiles" :key="t.label" class="p-4">
+        <div class="grid grid-cols-2 gap-4 lg:grid-cols-5">
+            <component
+                :is="t.href ? Link : Card"
+                v-for="t in tiles"
+                :key="t.label"
+                :href="t.href"
+                :class="[
+                    'bg-card text-card-foreground border-border block rounded-xl border p-4',
+                    t.href ? 'hover:border-primary transition-colors' : '',
+                ]"
+            >
                 <div class="text-muted-foreground flex items-center gap-2 font-mono text-[11px] tracking-wide uppercase">
                     <component :is="t.icon" class="size-4" /> {{ t.label }}
                 </div>
                 <div class="font-display mt-2 text-3xl font-bold tracking-tight tabular-nums">{{ fmt(t.value) }}</div>
                 <div class="text-muted-foreground text-xs">{{ t.sub }}</div>
-            </Card>
+            </component>
         </div>
 
         <div class="grid gap-5 lg:grid-cols-[1.6fr_1fr]">

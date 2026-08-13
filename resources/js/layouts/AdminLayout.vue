@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
-import { LayoutDashboard, FolderKanban, Quote, ListChecks, Inbox, User, Users, ShieldCheck, Search } from 'lucide-vue-next';
+import { LayoutDashboard, FolderKanban, Quote, ListChecks, Inbox, User, Users, ShieldCheck, Search, FileWarning } from 'lucide-vue-next';
 import PortalSwitcher from '@/components/PortalSwitcher.vue';
 
 defineProps<{ title?: string }>();
@@ -34,6 +34,7 @@ const content = [
     { label: 'Testimonials', href: '/admin/testimonials', match: '/admin/testimonials', icon: Quote },
     { label: 'Skills', href: '/admin/skills', match: '/admin/skills', icon: ListChecks },
 ];
+const insights = [{ label: 'Content gaps', href: '/admin/content-gaps', match: '/admin/content-gaps', icon: FileWarning }];
 const settings = [
     { label: 'Profile', href: '/admin/profile', match: '/admin/profile', icon: User },
     { label: 'Users', href: '/admin/users', match: '/admin/users', icon: Users },
@@ -65,6 +66,11 @@ const isActive = (match: string) => (match === '/admin' ? url.value === '/admin'
                     class="bg-accent text-accent-foreground ml-auto rounded-full px-1.5 py-0.5 font-mono text-[11px]"
                     >{{ shared.counts.unread }}</span
                 >
+            </a>
+
+            <div class="text-muted-foreground/70 px-2.5 pt-3.5 pb-1.5 font-mono text-[10px] tracking-[.12em] uppercase">Insights</div>
+            <a v-for="i in insights" :key="i.href" :href="i.href" class="nav" :class="isActive(i.match) ? 'nav-on' : ''">
+                <component :is="i.icon" class="size-[17px]" /> {{ i.label }}
             </a>
 
             <div class="text-muted-foreground/70 px-2.5 pt-3.5 pb-1.5 font-mono text-[10px] tracking-[.12em] uppercase">Settings</div>
