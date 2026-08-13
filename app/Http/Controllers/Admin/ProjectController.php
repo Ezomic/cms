@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Concerns\HandlesReordering;
 use App\Http\Controllers\Concerns\HandlesSoftDeleteActions;
 use App\Http\Controllers\Controller;
+use App\Models\PageView;
+use App\Models\PageViewTotal;
 use App\Models\Project;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
@@ -53,6 +55,8 @@ class ProjectController extends Controller
     {
         $search = $request->string('search')->trim()->toString();
 
+        $viewsBySlug = $this->viewCountsBySlug();
+
         $projects = Project::ordered()
             ->when($search, fn ($query) => $query->where(function ($query) use ($search) {
                 $query->where('name', 'like', "%{$search}%")
@@ -70,6 +74,7 @@ class ProjectController extends Controller
                 'featured' => $project->featured,
                 'tag_list' => $project->tagList(),
                 'image_url' => $project->imageUrl(),
+                'views' => $viewsBySlug[$project->slug] ?? 0,
             ]);
 
         return Inertia::render('Projects/Index', [
@@ -186,6 +191,44 @@ class ProjectController extends Controller
                 'deleted_at' => $project->deleted_at?->diffForHumans(),
             ]),
         ]);
+    }
+
+    /**
+     * All-time views per project slug, resolved in two queries rather than per
+     * row.
+     *
+     * Two things this has to get right, both easy to miss:
+     *
+     * 1. A project is reachable at /work/{slug} and /nl/work/{slug}. Counting
+     *    only the unprefixed path silently halves every number.
+     * 2. page-views:prune moves rows older than 90 days into page_view_totals
+     *    and deletes them, so counting page_views alone makes figures shrink
+     *    over time. Both sources are summed, as the dashboard already does.
+     *
+     * Counts are keyed by path, so renaming a slug orphans that project's
+     * history. That is accepted rather than papered over.
+     *
+     * @return array<string, int>
+     */
+    private function viewCountsBySlug(): array
+    {
+        $live = PageView::selectRaw('path, count(*) as views')->groupBy('path')->pluck('views', 'path');
+        $rolled = PageViewTotal::pluck('views', 'path');
+
+        $totals = [];
+
+        foreach ([$live, $rolled] as $source) {
+            foreach ($source as $path => $views) {
+                if (! is_string($path) || ! preg_match('#^/(?:nl/)?work/([^/]+)$#', $path, $matches)) {
+                    continue;
+                }
+
+                $slug = $matches[1];
+                $totals[$slug] = ($totals[$slug] ?? 0) + (is_numeric($views) ? (int) $views : 0);
+            }
+        }
+
+        return $totals;
     }
 
     /**

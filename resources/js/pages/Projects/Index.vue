@@ -20,6 +20,7 @@ interface ProjectRow {
     published: boolean;
     featured: boolean;
     tag_list: string[];
+    views: number;
     image_url: string | null;
 }
 
@@ -94,6 +95,7 @@ const destroy = (row: ProjectRow) => {
                         <TableHead>Project</TableHead>
                         <TableHead>Tags</TableHead>
                         <TableHead>Year</TableHead>
+                        <TableHead class="text-right">Views</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead class="text-right">Actions</TableHead>
                     </TableRow>
@@ -123,6 +125,11 @@ const destroy = (row: ProjectRow) => {
                             <TableCell
                                 ><span class="text-muted-foreground font-mono text-xs">{{ row.year }}</span></TableCell
                             >
+                            <TableCell class="text-right">
+                                <span class="font-mono text-xs tabular-nums" :class="row.views ? '' : 'text-muted-foreground/50'">{{
+                                    row.views.toLocaleString()
+                                }}</span>
+                            </TableCell>
                             <TableCell>
                                 <Badge v-if="row.published" variant="success"
                                     ><span class="size-1.5 rounded-full bg-current"></span> Published</Badge
