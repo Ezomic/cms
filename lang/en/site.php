@@ -61,6 +61,12 @@ return [
     'contact_response_time' => 'I typically respond within 1 business day.',
     'contact_success' => 'Thanks, your message is in. I typically reply within 1 business day.',
 
+    'contact_ack_subject' => 'Thanks, your message arrived',
+    'contact_ack_heading' => 'Your message arrived',
+    'contact_ack_body' => 'Thanks for getting in touch, :name. I have your message and I typically reply within one business day.',
+    'contact_ack_reply' => 'If it is urgent, reply to this email or write to :email directly.',
+    'contact_ack_signoff' => 'Speak soon,',
+
     'meta_availability_now' => 'Now',
     'meta_availability_from' => 'From :date',
     'meta_languages' => 'NL / EN',

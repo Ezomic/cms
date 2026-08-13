@@ -61,6 +61,12 @@ return [
     'contact_response_time' => 'Ik reageer doorgaans binnen één werkdag.',
     'contact_success' => 'Bedankt, je bericht is binnen. Ik reageer doorgaans binnen één werkdag.',
 
+    'contact_ack_subject' => 'Bedankt, je bericht is binnen',
+    'contact_ack_heading' => 'Je bericht is binnen',
+    'contact_ack_body' => 'Bedankt voor je bericht, :name. Ik heb het ontvangen en reageer doorgaans binnen één werkdag.',
+    'contact_ack_reply' => 'Is het dringend? Beantwoord deze e-mail of mail direct naar :email.',
+    'contact_ack_signoff' => 'Tot snel,',
+
     'meta_availability_now' => 'Nu',
     'meta_availability_from' => 'Vanaf :date',
     'meta_languages' => 'NL / EN',
