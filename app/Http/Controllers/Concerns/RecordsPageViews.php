@@ -19,7 +19,39 @@ trait RecordsPageViews
             return;
         }
 
-        PageView::create(['path' => '/'.ltrim(request()->path(), '/')]);
+        PageView::create([
+            'path' => '/'.ltrim(request()->path(), '/'),
+            'referrer_host' => $this->referrerHost(request()->headers->get('referer')),
+        ]);
+    }
+
+    /**
+     * The host, never the full referrer.
+     *
+     * A referrer URL can carry search terms, session ids and usernames in its
+     * query string, so storing it whole would put personal data in the
+     * database and drag the site into consent-banner territory. The host alone
+     * answers the only question being asked: where did this visit come from.
+     * Own-domain referrals are internal navigation, not a traffic source, and
+     * are recorded as direct.
+     */
+    private function referrerHost(?string $referrer): string
+    {
+        if ($referrer === null || trim($referrer) === '') {
+            return PageView::DIRECT;
+        }
+
+        $host = parse_url(trim($referrer), PHP_URL_HOST);
+
+        if (! is_string($host) || $host === '') {
+            return PageView::DIRECT;
+        }
+
+        $host = Str::of($host)->lower()->ltrim('www.')->toString();
+
+        return $host === Str::of((string) parse_url(config()->string('app.url'), PHP_URL_HOST))->lower()->ltrim('www.')->toString()
+            ? PageView::DIRECT
+            : Str::limit($host, 255, '');
     }
 
     /**

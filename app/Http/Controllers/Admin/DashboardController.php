@@ -44,6 +44,7 @@ class DashboardController extends Controller
             'unreadCount' => ContactSubmission::whereNull('read_at')->count(),
             'sparkline' => $sparkline,
             'topPaths' => $this->topPaths(),
+            'topReferrers' => $this->topReferrers(),
             'activity' => ActivityLog::with('user')->latest()->take(8)->get()->map(function (ActivityLog $log) {
                 $subject = class_basename($log->subject_type);
 
@@ -78,6 +79,34 @@ class DashboardController extends Controller
             ->sortDesc()
             ->take(5)
             ->map(fn (int $views, string $path): array => ['path' => $path, 'views' => $views])
+            ->values();
+    }
+
+    /**
+     * Top referrer hosts over the last 30 days.
+     *
+     * Deliberately a rolling window rather than all-time: page-views:prune
+     * rolls rows older than 90 days into page_view_totals, which is keyed by
+     * path only, so referrers do not survive pruning and an all-time figure
+     * would quietly decay.
+     *
+     * @return Collection<int, array{host: string, views: int}>
+     */
+    private function topReferrers(): Collection
+    {
+        $counts = PageView::selectRaw('referrer_host, count(*) as views')
+            ->whereNotNull('referrer_host')
+            ->where('created_at', '>=', now()->subDays(29))
+            ->groupBy('referrer_host')
+            ->orderByDesc('views')
+            ->limit(5)
+            ->pluck('views', 'referrer_host');
+
+        return collect($counts)
+            ->map(fn (mixed $views, mixed $host): array => [
+                'host' => (string) $host,
+                'views' => $this->toInt($views),
+            ])
             ->values();
     }
 
