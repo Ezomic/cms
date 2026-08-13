@@ -79,6 +79,9 @@ Route::middleware(['auth', HandleInertiaRequests::class])->prefix('admin')->name
     Route::get('/contact-submissions', [ContactSubmissionController::class, 'index'])->name('contact-submissions.index');
     Route::post('/contact-submissions/{contactSubmission}/read', [ContactSubmissionController::class, 'markRead'])->name('contact-submissions.read');
     Route::post('/contact-submissions/{contactSubmission}/unread', [ContactSubmissionController::class, 'markUnread'])->name('contact-submissions.unread');
+    Route::post('/contact-submissions/{contactSubmission}/replied', [ContactSubmissionController::class, 'markReplied'])->name('contact-submissions.replied');
+    Route::post('/contact-submissions/{contactSubmission}/unreplied', [ContactSubmissionController::class, 'markUnreplied'])->name('contact-submissions.unreplied');
+    Route::post('/contact-submissions/{contactSubmission}/note', [ContactSubmissionController::class, 'saveNote'])->name('contact-submissions.note');
     Route::delete('/contact-submissions/{contactSubmission}', [ContactSubmissionController::class, 'destroy'])->name('contact-submissions.destroy');
 
     Route::get('/security', [SecurityController::class, 'show'])->name('security.show');
