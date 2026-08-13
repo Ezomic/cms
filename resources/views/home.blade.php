@@ -1,3 +1,5 @@
+@use('App\Support\ContactFormToken')
+
 @extends('layouts.public')
 
 @section('head')
@@ -254,6 +256,7 @@
 
         <form method="POST" action="{{ route('contact.store') }}">
           @csrf
+          <input type="hidden" name="form_token" value="{{ ContactFormToken::issue() }}">
           <input type="text" name="website" class="honeypot" tabindex="-1" autocomplete="off">
           <div class="cf-grid">
             <div>
