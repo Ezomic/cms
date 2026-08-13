@@ -84,12 +84,16 @@ never fires on merge to `main`.
 | `GET /og/work/{project:slug}.png` | `og.project` | `OgImageController@project` | Per-project OG image |
 | `GET /sitemap.xml` | `sitemap` | `SitemapController` | Projects and tags, both locales, with hreflang alternates |
 | `GET /robots.txt` | `robots` | closure | Disallows `/admin` |
-| `POST /contact` | `contact.store` | `ContactController@store` | Throttled via `throttle:contact` |
+| `POST /contact` | `contact.store` | `ContactController@store` | Throttled via `throttle:contact`; **inside** the locale group, so `/nl/contact` exists too (CMS-116) |
 
 Every route in the `$publicRoutes` closure is registered **twice**: unprefixed (English default) and
-under a `/nl` prefix (`nl.` name prefix). `/cv.pdf`, the OG images, the sitemap, robots and the
-contact endpoint sit outside that closure and exist once. There is no locale-switch route; locale
-comes from the URL prefix.
+under a `/nl` prefix (`nl.` name prefix). The OG images, sitemap and robots sit outside that closure
+and exist once. There is no locale-switch route; locale comes from the URL prefix.
+
+`/cv.pdf` and `POST /contact` are both **inside** the closure. The contact endpoint has to be:
+`SetLocale` reads the first URL segment, so a Dutch form posting to an unprefixed `/contact` would
+run the request in English and return an English confirmation and acknowledgement (CMS-116). The
+form uses `localized_route('contact.store')` for the same reason.
 
 ### Admin (behind `auth`, prefix `/admin`, name prefix `admin.`)
 
@@ -102,7 +106,9 @@ The admin group also carries `HandleInertiaRequests`; it is **not** in the globa
 - Skills: full CRUD + trash/restore/force-delete + `POST /admin/skills/reorder`
 - `GET|PUT /admin/profile`: profile edit
 - Users: full CRUD
-- Contact submissions: `index`, mark read/unread, destroy
+- Contact submissions: `index` (filterable by unread/read/replied), mark read/unread, mark
+  replied/unreplied, save an internal note, destroy (CMS-123)
+- `GET /admin/content-gaps`: content completeness report (`content-gaps.index`, CMS-120)
 - `GET /admin/security`: passkey management (`security.show`)
 
 ### Auth (not behind `auth`)
@@ -121,16 +127,16 @@ The admin group also carries `HandleInertiaRequests`; it is **not** in the globa
 | Model | Traits | Notes |
 |-------|--------|-------|
 | `Profile` | `BustsHomeCache`, `HasLocalizedContent`, `LogsActivity` | Always access via `Profile::current()`, never `find(1)` |
-| `Project` | `BustsHomeCache`, `HasLocalizedContent`, `LogsActivity`, `SoftDeletes` | Slug auto-generated on save; `published()` and `ordered()` scopes; `tagList()`, `imageUrl()`, `imageAlt()` helpers; `images()` hasMany |
-| `ProjectImage` | (none) | Gallery images for a project, ordered by `sort_order` |
+| `Project` | `BustsHomeCache`, `HasLocalizedContent`, `LogsActivity`, `SoftDeletes` | Slug auto-generated on save; `published()`, `featured()` and `ordered()` scopes; `tagList()`, `imageUrl()`, `imageAlt()`, `relatedProjects()` helpers; `images()` hasMany |
+| `ProjectImage` | `HasLocalizedContent` | Gallery images, ordered by `sort_order`; `caption`/`caption_nl` double as alt text via `altText()`, falling back to the project name (CMS-124) |
 | `Skill` | `BustsHomeCache`, `LogsActivity`, `SoftDeletes` | `ordered()` scope; grouped by `category` in views |
 | `Testimonial` | `BustsHomeCache`, `HasLocalizedContent`, `LogsActivity`, `SoftDeletes` | `featured=true` + latest shown on home |
 | `Post` | `BustsHomeCache`, `HasLocalizedContent`, `LogsActivity`, `SoftDeletes` | **Orphaned.** Kept for a possible blog return; no controller, route or view uses it |
 | `User` | (none) | Passkey login + emailed login code (`login_code_hash`, `login_code_expires_at`); uses `#[Fillable]`/`#[Hidden]` attributes, no password |
 | `ActivityLog` | (none) | Append-only; written by `LogsActivity` |
-| `PageView` | (none) | Append-only path+timestamp; written via the `RecordsPageViews` concern |
+| `PageView` | (none) | Append-only path + timestamp + `referrer_host`; written via the `RecordsPageViews` concern. Referrer is the **host only**, never a full URL, and own-domain referrals are stored as `direct` (CMS-115) |
 | `PageViewTotal` | (none) | Per-path lifetime totals rolled up from pruned `page_views` |
-| `ContactSubmission` | (none) | Saved on every valid contact form submit; `read_at` inbox flag |
+| `ContactSubmission` | (none) | Saved on every valid contact form submit; `read_at`, `replied_at` and an admin-only `note` (CMS-123) |
 
 ### Traits
 
@@ -155,12 +161,28 @@ The admin group also carries `HandleInertiaRequests`; it is **not** in the globa
 | `HomeController` | `index`, `docs`, `work`, `workTag`, `project`, `projectPreview`, `cv` |
 | `OgImageController` | `home`, `project` (plus private `generate()`, `wrapText()`, `textWidth()` helpers) |
 | `SitemapController` | `__invoke` (XML sitemap) |
-| `ContactController` | `store`: validates, saves `ContactSubmission`, sends `ContactFormSubmitted` synchronously |
+| `ContactController` | `store`: validates, runs the bot checks, saves `ContactSubmission`, sends `ContactFormSubmitted` synchronously and queues `ContactAcknowledgement` to the sender |
 
 **Admin** (`app/Http/Controllers/Admin/`): all return `Inertia::render`
 
-`ContactSubmissionController`, `DashboardController`, `ProfileController`, `ProjectController`,
-`SecurityController`, `SkillController`, `TestimonialController`, `UserController`
+`ContactSubmissionController`, `ContentGapController`, `DashboardController`, `ProfileController`,
+`ProjectController`, `SecurityController`, `SkillController`, `TestimonialController`,
+`UserController`
+
+### Services (`app/Services/`)
+
+- **`ContentCompleteness`** (+ the `ContentGap` value object): finds gaps that the fallbacks hide,
+  missing Dutch translations, SEO fields, alt text, cover images and gallery captions. Published
+  records only, read-only, no writes (CMS-120).
+- **`Portal\IdPortalClient`**: the admin app switcher, with short connect and request timeouts.
+
+### Support (`app/Support/`)
+
+- **`helpers.php`**: `localized_route()` and `alternate_locale_url()`.
+- **`ContactFormToken`**: signs a timestamp into the contact form and validates it on submit. The
+  token must be at least a few seconds old and at most two hours old, so a script that fetches the
+  page and posts straight back is rejected (CMS-125). **Any test that posts the contact form has to
+  issue its token in the past**, or the submission is silently dropped as scripted.
 
 `Project`, `Skill` and `Testimonial` share `HandlesSoftDeleteActions`; `Project` and `Skill` also
 use `HandlesReordering`.
@@ -360,6 +382,23 @@ php artisan test --filter ProjectTest
 
 8. **The public site is not Inertia**: do not reach for `Inertia::render` in a public controller.
    The middleware is not even applied there, and the SEO surface depends on server-rendered HTML.
+
+9. **Contact form tests need an aged token**: `ContactFormToken` enforces a minimum dwell time, so
+   a token issued in the same instant is rejected as scripted and the submission is dropped
+   silently, with a success response. Issue it in the past:
+   `$this->travelTo(now()->subSeconds(10), fn () => ContactFormToken::issue())`.
+
+10. **The contact acknowledgement must stay behind every bot check**: it emails an address the
+    submitter chose, so anything the checks reject has to stay silent, and the submitted message is
+    never quoted back. Otherwise the form becomes a way to mail strangers (CMS-116).
+
+11. **Traffic counts live in two tables**: `page-views:prune` moves rows older than 90 days into
+    `page_view_totals`, so anything counting views must sum both, and a project is reachable at
+    `/work/{slug}` *and* `/nl/work/{slug}`. Missing either makes numbers quietly wrong (CMS-121).
+
+12. **Fallbacks hide gaps**: `HasLocalizedContent` falls back to English, `meta_description` falls
+    back to the description, and `image_alt` falls back to the project name, so half-translated
+    content looks fine on the site. `/admin/content-gaps` is what surfaces it (CMS-120).
 
 ## Tracker
 
