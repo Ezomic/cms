@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\ContactFormSubmitted;
 use App\Models\ContactSubmission;
 use App\Models\Profile;
+use App\Support\ContactFormToken;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -21,12 +22,16 @@ class ContactController extends Controller
             'message' => ['required', 'string', 'max:5000'],
         ]);
 
-        // Bot signals: a hidden field real visitors never fill, and a budget the
-        // form's <select> cannot emit. Both get the success response so a
-        // spammer learns nothing about why the message was dropped.
+        // Bot signals: a token proving the form was rendered by us and sat on
+        // for a plausible amount of time, a hidden field real visitors never
+        // fill, and a budget the form's <select> cannot emit. All get the
+        // success response so a spammer learns nothing about why the message
+        // was dropped.
         $budget = $request->string('budget')->toString() ?: null;
 
-        if ($request->filled('website') || ! $this->budgetIsFromForm($budget)) {
+        if (! ContactFormToken::isValid($request->string('form_token')->toString())
+            || $request->filled('website')
+            || ! $this->budgetIsFromForm($budget)) {
             return back()->with('status', __('site.contact_success'));
         }
 

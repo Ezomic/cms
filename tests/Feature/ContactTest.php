@@ -4,8 +4,10 @@ namespace Tests\Feature;
 
 use App\Mail\ContactFormSubmitted;
 use App\Models\Profile;
+use App\Support\ContactFormToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 class ContactTest extends TestCase
@@ -23,7 +25,7 @@ class ContactTest extends TestCase
         Profile::current()->update(['email' => 'owner@example.com']);
         Mail::fake();
 
-        $this->post(route('contact.store'), $this->valid)
+        $this->submit()
             ->assertRedirect()
             ->assertSessionHas('status');
 
@@ -38,7 +40,7 @@ class ContactTest extends TestCase
         Profile::current()->update(['email' => 'owner@example.com']);
         Mail::shouldReceive('to')->andThrow(new \RuntimeException('SMTP unavailable'));
 
-        $this->post(route('contact.store'), $this->valid)
+        $this->submit()
             ->assertRedirect()
             ->assertSessionHas('status');
 
@@ -50,7 +52,7 @@ class ContactTest extends TestCase
         Profile::current()->update(['email' => 'owner@example.com']);
         Mail::fake();
 
-        $this->post(route('contact.store'), [...$this->valid, 'budget' => '> €50k'])
+        $this->submit(['budget' => '> €50k'])
             ->assertRedirect()
             ->assertSessionHas('status');
 
@@ -63,7 +65,7 @@ class ContactTest extends TestCase
         Profile::current()->update(['email' => 'owner@example.com']);
         Mail::fake();
 
-        $this->post(route('contact.store'), $this->valid)
+        $this->submit()
             ->assertRedirect()
             ->assertSessionHas('status');
 
@@ -77,7 +79,7 @@ class ContactTest extends TestCase
         Profile::current()->update(['email' => 'owner@example.com']);
         Mail::fake();
 
-        $this->post(route('contact.store'), [...$this->valid, 'budget' => '&gt; €50k'])
+        $this->submit(['budget' => '&gt; €50k'])
             ->assertRedirect()
             ->assertSessionHas('status')
             ->assertSessionHasNoErrors();
@@ -91,11 +93,92 @@ class ContactTest extends TestCase
         Profile::current()->update(['email' => 'owner@example.com']);
         Mail::fake();
 
-        $this->post(route('contact.store'), [...$this->valid, 'website' => 'http://spam.test'])
+        $this->submit(['website' => 'http://spam.test'])
             ->assertRedirect()
             ->assertSessionHas('status');
 
         $this->assertDatabaseCount('contact_submissions', 0);
         Mail::assertNothingSent();
+    }
+
+    public function test_the_rendered_form_carries_a_token_that_passes_validation(): void
+    {
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('name="form_token"', false);
+    }
+
+    public function test_submission_without_a_form_token_is_dropped_silently(): void
+    {
+        // CMS-125: a bot posting straight to the endpoint never renders the form.
+        Profile::current()->update(['email' => 'owner@example.com']);
+        Mail::fake();
+
+        $this->post(route('contact.store'), $this->valid)
+            ->assertRedirect()
+            ->assertSessionHas('status')
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseCount('contact_submissions', 0);
+        Mail::assertNothingSent();
+    }
+
+    public function test_forged_form_token_is_dropped_silently(): void
+    {
+        Profile::current()->update(['email' => 'owner@example.com']);
+        Mail::fake();
+
+        $this->post(route('contact.store'), [
+            ...$this->valid,
+            'form_token' => (string) now()->subMinute()->getTimestamp().'.not-a-real-signature',
+        ])
+            ->assertRedirect()
+            ->assertSessionHas('status');
+
+        $this->assertDatabaseCount('contact_submissions', 0);
+        Mail::assertNothingSent();
+    }
+
+    public function test_submission_faster_than_the_minimum_dwell_time_is_dropped_silently(): void
+    {
+        Profile::current()->update(['email' => 'owner@example.com']);
+        Mail::fake();
+
+        $this->post(route('contact.store'), [
+            ...$this->valid,
+            'form_token' => ContactFormToken::issue(),
+        ])
+            ->assertRedirect()
+            ->assertSessionHas('status');
+
+        $this->assertDatabaseCount('contact_submissions', 0);
+        Mail::assertNothingSent();
+    }
+
+    public function test_stale_form_token_is_dropped_silently(): void
+    {
+        // A harvested token must not stay usable indefinitely.
+        Profile::current()->update(['email' => 'owner@example.com']);
+        Mail::fake();
+
+        $payload = [...$this->valid, 'form_token' => ContactFormToken::issue()];
+
+        $this->travel(3)->hours();
+
+        $this->post(route('contact.store'), $payload)
+            ->assertRedirect()
+            ->assertSessionHas('status');
+
+        $this->assertDatabaseCount('contact_submissions', 0);
+        Mail::assertNothingSent();
+    }
+
+    private function submit(array $extra = []): TestResponse
+    {
+        $payload = [...$this->valid, 'form_token' => ContactFormToken::issue(), ...$extra];
+
+        $this->travel(5)->seconds();
+
+        return $this->post(route('contact.store'), $payload);
     }
 }
