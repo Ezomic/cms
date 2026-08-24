@@ -26,3 +26,7 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 .claude/launch.json
+
+# Stray PDFs rendered into the repo root during verification (CMS-127).
+# The app serves its CV from a route, so no PDF belongs at the root.
+/*.pdf
