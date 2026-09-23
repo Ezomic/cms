@@ -11,5 +11,8 @@
 </head>
 <body>
     @inertia
+
+    {{-- Renders nothing unless snag is configured and someone is signed in. --}}
+    @snag
 </body>
 </html>

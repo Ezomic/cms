@@ -1,8 +1,8 @@
 <?php
 
+use Illuminate\Console\Scheduling\Schedule as IlluminateSchedule;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Console\Scheduling\Schedule as IlluminateSchedule;
 use Illuminate\Support\Facades\Schedule;
 
 Artisan::command('inspire', function () {
