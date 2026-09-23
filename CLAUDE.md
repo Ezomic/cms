@@ -328,14 +328,18 @@ written from now on is affected; historical rows were left alone.
 `php artisan backup:database` copies the SQLite file to `storage/app/backups/` with a timestamp
 suffix, pruning to the 14 most recent. Scheduled daily in `routes/console.php`, alongside
 `og:prune-cache` (weekly) and `page-views:prune` (daily). Each scheduled task appends output to
-`storage/logs/schedule.log`, because the provisioning cron pipes `schedule:run` to `/dev/null`.
+`storage/logs/schedule.log`, because `cms-schedule.service` sets `StandardOutput=null`: "no
+scheduled commands are ready to run" every minute is noise, so only the journal's errors survive.
 
-**Neither of those works in production today** (found during the 2026-08-06 deploy, tickets filed):
+**`backup:database` still does not work in production** (found during the 2026-08-06 deploy):
+it refuses to run on anything but SQLite, and production is MySQL, so there is no automated
+production backup from the app. Take one by hand with `mysqldump` before risky work. The nightly
+`app-backup` on the server does archive cms's database and `storage/app`, encrypted to the
+operator's key, so this is a missing app-level backup rather than no backup at all.
 
-- `backup:database` refuses to run on anything but SQLite, and production is MySQL, so there is no
-  automated production backup. Take one by hand with `mysqldump` before risky work.
-- There is no `schedule:run` cron entry for cms on the droplet (every other app has one), so
-  `backup:database`, `og:prune-cache` and `page-views:prune` have never run in production.
+The scheduler itself is fine now. cms has `schedule: timer` in the infra playbook, so
+`cms-schedule.timer` fires `schedule:run` every minute as the `cms` user. On the old droplet cms
+was the one app with no cron entry, which is why these three tasks had never run in production.
 
 ## Testing
 
