@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Process\PendingProcess;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Process;
@@ -26,7 +27,7 @@ class BackupDatabaseTest extends TestCase
         parent::tearDown();
     }
 
-    private function useMysql(): void
+    private function useMysql(string $socket = ''): void
     {
         Config::set('database.default', 'mysql');
         Config::set('database.connections.mysql', [
@@ -36,7 +37,31 @@ class BackupDatabaseTest extends TestCase
             'database' => 'cms',
             'username' => 'cms_user',
             'password' => 's3cr#t"pass\\word',
+            'unix_socket' => $socket,
         ]);
+    }
+
+    /**
+     * The command deletes the defaults file once mysqldump returns, so it is
+     * read while the faked mysqldump call is still running.
+     */
+    private function defaultsFileWrittenForTheDump(): string
+    {
+        $contents = '';
+
+        Process::fake(function (PendingProcess $process) use (&$contents) {
+            foreach (is_array($process->command) ? $process->command : [] as $argument) {
+                if (str_starts_with($argument, '--defaults-extra-file=')) {
+                    $contents = File::get(substr($argument, strlen('--defaults-extra-file=')));
+                }
+            }
+
+            return Process::result();
+        });
+
+        $this->artisan('backup:database')->assertExitCode(0);
+
+        return $contents;
     }
 
     public function test_it_dumps_and_compresses_on_mysql(): void
@@ -114,6 +139,29 @@ class BackupDatabaseTest extends TestCase
             ->filter(fn ($file) => str_starts_with($file->getFilename(), '.my.cnf'));
 
         $this->assertCount(0, $leftovers);
+    }
+
+    public function test_the_defaults_file_uses_the_socket_when_one_is_configured(): void
+    {
+        $this->useMysql(socket: '/run/mysqld/mysqld.sock');
+
+        $defaults = $this->defaultsFileWrittenForTheDump();
+
+        $this->assertStringContainsString("\nsocket=/run/mysqld/mysqld.sock\n", $defaults);
+        $this->assertStringNotContainsString('host=', $defaults, 'a host line would send mysqldump over TCP');
+        $this->assertStringNotContainsString('port=', $defaults);
+        $this->assertStringContainsString("\nuser=cms_user\n", $defaults);
+    }
+
+    public function test_the_defaults_file_uses_host_and_port_without_a_socket(): void
+    {
+        $this->useMysql();
+
+        $defaults = $this->defaultsFileWrittenForTheDump();
+
+        $this->assertStringContainsString("\nhost=127.0.0.1\nport=3306\n", $defaults);
+        $this->assertStringNotContainsString('socket=', $defaults);
+        $this->assertStringContainsString("\nuser=cms_user\n", $defaults);
     }
 
     public function test_it_still_backs_up_sqlite(): void

@@ -130,15 +130,19 @@ class BackupDatabase extends Command
      */
     private function defaultsFileContents(array $config): string
     {
+        $socket = is_string($config['unix_socket'] ?? null) ? $config['unix_socket'] : '';
         $host = is_string($config['host'] ?? null) ? $config['host'] : '127.0.0.1';
         $port = is_scalar($config['port'] ?? null) ? (string) $config['port'] : '3306';
         $username = is_string($config['username'] ?? null) ? $config['username'] : '';
         $password = is_string($config['password'] ?? null) ? $config['password'] : '';
 
+        // Production connects as an auth_socket user, which MySQL refuses over TCP (CMS-132).
+        $server = $socket !== '' ? "socket={$socket}\n" : "host={$host}\nport={$port}\n";
+
         // MySQL option files process backslash escapes inside double quotes.
         $quoted = '"'.str_replace(['\\', '"'], ['\\\\', '\\"'], $password).'"';
 
-        return "[client]\nhost={$host}\nport={$port}\nuser={$username}\npassword={$quoted}\n";
+        return "[client]\n{$server}user={$username}\npassword={$quoted}\n";
     }
 
     private function prune(string $backupDir, int $keep): void
