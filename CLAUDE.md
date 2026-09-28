@@ -325,17 +325,30 @@ written from now on is affected; historical rows were left alone.
 
 ### Database backups
 
-`php artisan backup:database` copies the SQLite file to `storage/app/backups/` with a timestamp
-suffix, pruning to the 14 most recent. Scheduled daily in `routes/console.php`, alongside
-`og:prune-cache` (weekly) and `page-views:prune` (daily). Each scheduled task appends output to
-`storage/logs/schedule.log`, because the provisioning cron pipes `schedule:run` to `/dev/null`.
+`php artisan backup:database` writes a timestamped backup to `storage/app/backups/` and prunes to
+the 14 most recent (`--keep`). Since CMS-111 it handles both drivers: on SQLite it copies the
+database file to `backup-<timestamp>.sqlite`, and on MySQL it runs
+`mysqldump --single-transaction --no-tablespaces` and gzips the result to
+`backup-<timestamp>.sql.gz`. Scheduled daily in `routes/console.php`, alongside `og:prune-cache`
+(weekly) and `page-views:prune` (daily). Each scheduled task appends output to
+`storage/logs/schedule.log`, because `cms-schedule.service` sets `StandardOutput=null`: "no
+scheduled commands are ready to run" every minute is noise, so only the journal's errors survive.
 
-**Neither of those works in production today** (found during the 2026-08-06 deploy, tickets filed):
+**On production it stopped producing backups at the move to the new server**: the last one is
+`backup-2026-09-23_000033.sql.gz`. The defaults file it hands to mysqldump ignored `DB_SOCKET` and
+set `host=` from `DB_HOST` (default `127.0.0.1`), so mysqldump connected over TCP, and the `cms`
+MySQL user authenticates with auth_socket, which only accepts the Unix socket. Fixed by CMS-132,
+which writes `socket=` instead when the connection has one. Meanwhile the server's nightly
+`app-backup` (02:20) covers cms: it dumps the database and archives `shared/storage/app`, encrypted
+with age to the operator's key, into `/var/backups/apps`. As root, `app-backup pre-deploy` takes an
+extra copy before risky work.
 
-- `backup:database` refuses to run on anything but SQLite, and production is MySQL, so there is no
-  automated production backup. Take one by hand with `mysqldump` before risky work.
-- There is no `schedule:run` cron entry for cms on the droplet (every other app has one), so
-  `backup:database`, `og:prune-cache` and `page-views:prune` have never run in production.
+The scheduler runs, with one exception. cms has `schedule: timer` in the infra playbook, so
+`cms-schedule.timer` starts the oneshot `cms-schedule.service` (`schedule:run`) every minute as the
+`cms` user, and the three tasks above run in the foreground. flare-client's `flare:flush` is
+registered with `runInBackground()`, and systemd kills whatever a oneshot leaves behind when
+`schedule:run` exits, so spooled flare events are not reliably sent from cms (FLARE-50). On the old
+droplet cms had no cron entry at all until CMS-112 fixed the setup script's guard (2026-08-07).
 
 ## Testing
 
