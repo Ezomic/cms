@@ -4,6 +4,9 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Testing\TestResponse;
 use Laravel\Socialite\Contracts\Provider;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\User as SocialiteUser;
@@ -75,5 +78,54 @@ class SsoLoginTest extends TestCase
         $this->get(route('sso.callback'))->assertForbidden();
 
         $this->assertGuest();
+    }
+
+    public function test_the_remember_me_cookie_alone_signs_the_user_back_in(): void
+    {
+        $cookie = $this->rememberCookieFromSsoSignIn();
+
+        $this->returnWithOnlyRememberCookie($cookie)->assertOk();
+
+        $this->assertAuthenticatedAs(User::where('idp_id', '42')->sole());
+    }
+
+    public function test_the_remember_me_cookie_is_refused_once_id_signs_the_user_out(): void
+    {
+        config(['id-client.logout_secret' => 'test-logout-secret']);
+        $cookie = $this->rememberCookieFromSsoSignIn();
+
+        $body = json_encode(['event' => 'logout', 'sub' => '42', 'issued_at' => Carbon::now()->getTimestamp()], JSON_THROW_ON_ERROR);
+
+        $this->call('POST', route('sso.logout'), server: [
+            'HTTP_X_ID_SIGNATURE' => hash_hmac('sha256', $body, 'test-logout-secret'),
+            'CONTENT_TYPE' => 'application/json',
+        ], content: $body)->assertOk();
+
+        $this->returnWithOnlyRememberCookie($cookie)->assertRedirect(route('admin.login'));
+
+        $this->assertGuest();
+    }
+
+    private function rememberCookieFromSsoSignIn(): string
+    {
+        $this->mockSocialite(fn ($provider) => $provider->shouldReceive('user')->andReturn($this->fakeIdUser()));
+
+        $cookie = $this->get(route('sso.callback'))->getCookie(Auth::guard('web')->getRecallerName());
+
+        $this->assertNotNull($cookie);
+
+        return (string) $cookie->getValue();
+    }
+
+    /**
+     * The same browser after its session has idled out: the remember-me cookie
+     * is all it still has.
+     */
+    private function returnWithOnlyRememberCookie(string $cookie): TestResponse
+    {
+        $this->flushSession();
+        Auth::forgetGuards();
+
+        return $this->withCookie(Auth::guard('web')->getRecallerName(), $cookie)->get(route('admin.dashboard'));
     }
 }

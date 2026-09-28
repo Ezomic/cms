@@ -31,4 +31,13 @@ class User extends Authenticatable implements PasskeyUser
             'login_code_expires_at' => 'datetime',
         ];
     }
+
+    /**
+     * The app is passwordless and has no password column, but Laravel refuses
+     * a remember-me cookie unless this returns a string.
+     */
+    public function getAuthPassword(): string
+    {
+        return '';
+    }
 }
