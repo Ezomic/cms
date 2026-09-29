@@ -74,7 +74,7 @@ class ProjectController extends Controller
                 'featured' => $project->featured,
                 'tag_list' => $project->tagList(),
                 'image_url' => $project->imageUrl(),
-                'views' => $viewsBySlug[$project->slug] ?? 0,
+                'views' => $viewsBySlug[$project->slug ?? ''] ?? 0,
             ]);
 
         return Inertia::render('Projects/Index', [
