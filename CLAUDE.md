@@ -284,6 +284,11 @@ Driver: `database`. The contact notification (`ContactFormSubmitted`) is a plain
 send is wrapped in try/catch: the submission is saved to the admin inbox first, so an SMTP failure
 is logged without breaking the visitor's success response.
 
+The weekly digest (CMS-122) is queued. `digest:weekly` runs Mondays at 07:00 (UTC) and queues one
+email to the profile address for the Monday-to-Sunday week that just ended: page views against the
+week before, top 5 paths, top 5 referrer hosts and unread enquiries. A week with no views and no
+unread enquiries sends nothing. A failure to queue is reported and the command still exits 0.
+
 ### Images
 
 `intervention/image ^3.0` (GD driver): scaled to max 1600px width at quality 82, stored in
