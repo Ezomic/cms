@@ -158,13 +158,18 @@ class HomeController extends Controller
      */
     private function publishedProjects(): Collection
     {
-        return Project::published()->ordered()->get()->map(fn ($p) => (object) [
+        return Project::published()->ordered()->get()->map(fn (Project $p): \stdClass => $this->listing($p));
+    }
+
+    private function listing(Project $p): \stdClass
+    {
+        return (object) [
             ...$p->toArray(),
             'tag_list' => $p->tagList(),
             'image_url' => $p->imageUrl(),
             'image_alt' => $p->imageAlt(),
             'description' => $p->localizedDescription(),
-        ]);
+        ];
     }
 
     /**

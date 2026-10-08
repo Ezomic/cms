@@ -28,8 +28,7 @@ class PrunePageViews extends Command
 
             foreach ($counts as $path => $count) {
                 $total = PageViewTotal::firstOrNew(['path' => $path]);
-                $total->views = ($total->views ?? 0) + (is_numeric($count) ? (int) $count : 0);
-                $total->save();
+                $total->forceFill(['views' => ($total->views ?? 0) + (is_numeric($count) ? (int) $count : 0)])->save();
             }
 
             $pruned = PageView::where('created_at', '<', $cutoff)->delete();
