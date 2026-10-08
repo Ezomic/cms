@@ -7865,7 +7865,7 @@
             "version": "0.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:Ezomic/id-client.git",
+                "url": "https://github.com/Ezomic/id-client.git",
                 "reference": "941119bdea6efd424e88949fb69efa824e76454d"
             },
             "dist": {
