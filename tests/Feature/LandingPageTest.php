@@ -175,31 +175,55 @@ class LandingPageTest extends TestCase
     {
         $blocks = $this->jsonLd($this->get('/laravel-developer-enschede')->getContent() ?: '');
 
-        $this->assertCount(2, $blocks);
+        $this->assertCount(3, $blocks);
 
-        $graph = $blocks[0]['@graph'];
-        $this->assertSame('ProfessionalService', $graph[0]['@type']);
+        $organization = $blocks[0];
+        $this->assertSame('ProfessionalService', $organization['@type']);
+        $this->assertSame(route('home').'#organization', $organization['@id']);
+
+        $graph = $blocks[1]['@graph'];
+        $this->assertSame('Service', $graph[0]['@type']);
         $this->assertSame('WebPage', $graph[1]['@type']);
         $this->assertSame($graph[0]['@id'], $graph[1]['about']['@id']);
+        $this->assertSame($organization['@id'], $graph[0]['provider']['@id']);
         $this->assertSame(
             ['Enschede', 'Hengelo', 'Almelo', 'Twente', 'Netherlands'],
             array_column($graph[0]['areaServed'], 'name'),
         );
         $this->assertCount(5, $graph[0]['hasOfferCatalog']['itemListElement']);
-        $this->assertSame('BreadcrumbList', $blocks[1]['@type']);
+        $this->assertSame('BreadcrumbList', $blocks[2]['@type']);
+    }
+
+    public function test_the_business_node_is_defined_once_per_page_with_the_same_id_on_home_and_landing(): void
+    {
+        $ids = [];
+
+        foreach (['/', '/laravel-developer-enschede'] as $path) {
+            $services = array_values(array_filter(
+                $this->jsonLd($this->get($path)->getContent() ?: ''),
+                fn (array $block): bool => ($block['@type'] ?? null) === 'ProfessionalService',
+            ));
+
+            $this->assertCount(1, $services);
+            $this->assertContains('Twente', array_column($services[0]['areaServed'], 'name'));
+            $ids[] = $services[0]['@id'];
+        }
+
+        $this->assertSame($ids[0], $ids[1]);
     }
 
     public function test_the_dutch_landing_page_json_ld_declares_the_dutch_language(): void
     {
         $blocks = $this->jsonLd($this->get('/nl/laravel-ontwikkelaar-enschede')->getContent() ?: '');
 
-        $this->assertSame('nl', $blocks[0]['@graph'][1]['inLanguage']);
-        $this->assertSame(route('nl.landing.enschede'), $blocks[0]['@graph'][0]['url']);
+        $this->assertSame('nl', $blocks[1]['@graph'][1]['inLanguage']);
+        $this->assertSame(route('nl.landing.enschede'), $blocks[1]['@graph'][0]['url']);
     }
 
     public function test_the_home_person_json_ld_carries_the_service_area(): void
     {
         $person = $this->jsonLd($this->get('/')->getContent() ?: '')[0];
+        $this->assertSame(route('home').'#person', $person['@id']);
 
         $this->assertSame('Person', $person['@type']);
         $this->assertContains('Laravel', $person['knowsAbout']);

@@ -6,6 +6,7 @@
     'description' => __('landing.meta_description'),
     'canonicalRoute' => 'landing.enschede',
 ])
+@include('partials.schema.organization')
 @include('partials.schema.landing')
 @include('partials.schema.breadcrumbs', ['items' => [
     ['name' => __('site.breadcrumb_home'), 'url' => localized_route('home')],
