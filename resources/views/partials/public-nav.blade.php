@@ -4,7 +4,7 @@
 @endphp
 <nav class="site">
   <div class="wrap">
-    <a class="logo" href="{{ localized_route('home') }}"><span class="b"></span>{{ $profile->name }}</a>
+    <a class="logo" href="{{ localized_route('home') }}"><img src="/logo-lockup.svg" alt="Thijssen Software" width="173" height="28"></a>
     <div class="nav-links nav-desktop">
       <a class="link {{ request()->routeIs('work.*') || request()->routeIs('nl.work.*') || request()->routeIs('project.show') || request()->routeIs('nl.project.show') ? 'on' : '' }}" href="{{ localized_route('work.index') }}">{{ __('site.nav_work') }}</a>
       <a class="link" href="{{ $homeBase }}#services">{{ __('site.nav_services') }}</a>

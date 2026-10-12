@@ -4,13 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin login</title>
+@include('partials.icons')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <script src="https://cdn.tailwindcss.com"></script>
 <style>body{font-family:Inter,system-ui,sans-serif;}</style>
 </head>
 <body class="bg-[#fbf7ef] min-h-screen flex items-center justify-center">
   <div class="w-full max-w-sm">
-    <div class="font-mono text-sm mb-8 text-center"><span style="display:inline-block;width:12px;height:12px;background:#4b3fd0;border-radius:3px;vertical-align:middle;margin-right:7px;"></span>Portfolio CMS</div>
+    <div class="font-mono text-sm mb-8 text-center"><img src="/favicon.svg" alt="" width="24" height="24" style="display:inline-block;vertical-align:middle;margin-right:7px;border-radius:0px;">Portfolio CMS</div>
     <div class="bg-white border border-stone-200 rounded p-8 space-y-4">
       <div id="passkey-error" class="hidden text-sm text-red-700 bg-red-50 border border-red-200 rounded px-3 py-2"></div>
       @if ($errors->any())

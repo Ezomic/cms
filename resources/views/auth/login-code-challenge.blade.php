@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Enter login code</title>
+@include('partials.icons')
 <script src="https://cdn.tailwindcss.com"></script>
 <style>body{font-family:Inter,system-ui,sans-serif;}</style>
 </head>
 <body class="bg-[#fbf7ef] min-h-screen flex items-center justify-center">
   <div class="w-full max-w-sm">
-    <div class="font-mono text-sm mb-8 text-center"><span style="display:inline-block;width:12px;height:12px;background:#4b3fd0;border-radius:3px;vertical-align:middle;margin-right:7px;"></span>Portfolio CMS</div>
+    <div class="font-mono text-sm mb-8 text-center"><img src="/favicon.svg" alt="" width="24" height="24" style="display:inline-block;vertical-align:middle;margin-right:7px;border-radius:0px;">Portfolio CMS</div>
     <form method="POST" action="{{ route('admin.login.code.verify') }}" class="bg-white border border-stone-200 rounded p-8 space-y-4">
       @csrf
       <h1 class="text-lg font-semibold">Enter your login code</h1>

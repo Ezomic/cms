@@ -2,6 +2,7 @@
 $personSchema = [
     '@context' => 'https://schema.org',
     '@type'    => 'Person',
+    '@id'      => route('home').'#person',
     'name'     => $profile->name,
     'jobTitle' => $profile->tagline,
     'url'      => route('home'),
