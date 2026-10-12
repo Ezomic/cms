@@ -25,6 +25,8 @@
   .hero .eyebrow{display:block;margin:22px 0 14px;}
   .hero h1{font-size:clamp(2.4rem,5.4vw,4rem);line-height:1.03;max-width:16ch;}
   .hero .sub{margin-top:22px;font-size:18px;color:var(--muted);max-width:48ch;}
+  .hero .sub-link{display:inline-block;margin-top:14px;font-family:var(--mono);font-size:13px;color:var(--primary);}
+  .hero .sub-link:hover{color:var(--deep);}
   .hero .acts{margin-top:30px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
   .facts{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:22px 24px;}
   .facts dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:16px;}
@@ -113,6 +115,7 @@
         <div class="eyebrow">{{ $profile->tagline }}</div>
         <h1>{{ $profile->hero_headline }}</h1>
         <p class="sub">{{ $profile->hero_subtext }}</p>
+        <a class="sub-link" href="{{ localized_route('landing.enschede') }}">{{ __('landing.home_link') }}</a>
         <div class="acts">
           <a class="btn pri" href="#contact">{{ __('site.hero_actions_primary') }}</a>
           <a class="btn sec" href="{{ localized_route('work.index') }}">{{ __('site.hero_actions_secondary') }}</a>

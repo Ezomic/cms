@@ -1,4 +1,5 @@
 @php
+$areaServed = \App\Support\ServiceArea::places();
 $personSchema = [
     '@context' => 'https://schema.org',
     '@type'    => 'Person',
@@ -8,13 +9,14 @@ $personSchema = [
     'url'      => route('home'),
     'email'    => $profile->email,
     'address'  => ['@type' => 'PostalAddress', 'addressLocality' => $profile->city, 'addressCountry' => 'NL'],
+    'knowsAbout' => ['Laravel', 'PHP', 'Vue.js', 'REST APIs', 'System integrations'],
     'hasOfferCatalog' => [
         '@type' => 'OfferCatalog',
         'name'  => 'Freelance web development services',
         'itemListElement' => [
-            ['@type' => 'Offer', 'itemOffered' => ['@type' => 'Service', 'name' => 'Full-stack web application development']],
-            ['@type' => 'Offer', 'itemOffered' => ['@type' => 'Service', 'name' => 'API design and integration']],
-            ['@type' => 'Offer', 'itemOffered' => ['@type' => 'Service', 'name' => 'Technical advisory and code review']],
+            ['@type' => 'Offer', 'areaServed' => $areaServed, 'itemOffered' => ['@type' => 'Service', 'name' => 'Full-stack web application development', 'areaServed' => $areaServed]],
+            ['@type' => 'Offer', 'areaServed' => $areaServed, 'itemOffered' => ['@type' => 'Service', 'name' => 'API design and integration', 'areaServed' => $areaServed]],
+            ['@type' => 'Offer', 'areaServed' => $areaServed, 'itemOffered' => ['@type' => 'Service', 'name' => 'Technical advisory and code review', 'areaServed' => $areaServed]],
         ],
     ],
 ];

@@ -79,6 +79,7 @@ never fires on merge to `main`.
 | `GET /work/{project:slug}` | `project.show` | `HomeController@project` | 404 if not published |
 | `GET /work/{project:slug}/preview` | `project.preview` | `HomeController@projectPreview` | Signed URL only; renders unpublished drafts (CMS-106) |
 | `GET /docs` | `docs` | `HomeController@docs` | Client-facing "Working with me" page |
+| `GET /laravel-developer-enschede` | `landing.enschede` | `LandingController@enschede` | SEO landing page (CMS-135). Dutch twin is `GET /nl/laravel-ontwikkelaar-enschede` (`nl.landing.enschede`): different slug per language, so registered by hand outside `$publicRoutes` |
 | `GET /cv.pdf` | `cv` | `HomeController@cv` | Streams PDF via dompdf |
 | `GET /og/home.png` | `og.home` | `OgImageController@home` | PHP GD 1200×630 OG image |
 | `GET /og/work/{project:slug}.png` | `og.project` | `OgImageController@project` | Per-project OG image |
@@ -160,6 +161,7 @@ The admin group also carries `HandleInertiaRequests`; it is **not** in the globa
 |------------|---------|
 | `HomeController` | `index`, `docs`, `work`, `workTag`, `project`, `projectPreview`, `cv` |
 | `OgImageController` | `home`, `project` (plus private `generate()`, `wrapText()`, `textWidth()` helpers) |
+| `LandingController` | `enschede` (the Laravel-developer-in-Enschede landing page, both languages) |
 | `SitemapController` | `__invoke` (XML sitemap) |
 | `ContactController` | `store`: validates, runs the bot checks, saves `ContactSubmission`, sends `ContactFormSubmitted` synchronously and queues `ContactAcknowledgement` to the sender |
 
@@ -174,11 +176,17 @@ The admin group also carries `HandleInertiaRequests`; it is **not** in the globa
 - **`ContentCompleteness`** (+ the `ContentGap` value object): finds gaps that the fallbacks hide,
   missing Dutch translations, SEO fields, alt text, cover images and gallery captions. Published
   records only, read-only, no writes (CMS-120).
+- **`ContentLastModified`**: the sitemap's `<lastmod>`, derived from the latest `updated_at` of
+  whatever each page renders (profile, skills, shown projects, featured testimonials) instead of a
+  fixed value (CMS-135). The landing page's copy lives in lang files, so
+  `LandingController::COPY_UPDATED_AT` must be bumped whenever that copy or its view changes.
 - **`Portal\IdPortalClient`**: the admin app switcher, with short connect and request timeouts.
 
 ### Support (`app/Support/`)
 
 - **`helpers.php`**: `localized_route()` and `alternate_locale_url()`.
+- **`ServiceArea`**: the places (Enschede, Hengelo, Almelo, Twente, Netherlands) used as
+  schema.org `areaServed` on the home Person offers and the landing page's ProfessionalService.
 - **`ContactFormToken`**: signs a timestamp into the contact form and validates it on submit. The
   token must be at least a few seconds old and at most two hours old, so a script that fetches the
   page and posts straight back is rejected (CMS-125). **Any test that posts the contact form has to
@@ -222,6 +230,7 @@ resources/js/
 | `home.blade.php` | `/` | `$profile` (stdClass), `$skills`, `$projects`, `$testimonials`, all from the cached array |
 | `work.blade.php` | `/work`, `/work/tag/{tag}` | `$profile`, `$projects` (stdClass with `tag_list`, `image_url`), `$tags`, `$activeTag` |
 | `project.blade.php` | `/work/{slug}`, `.../preview` | `$profile`, `$project` (live Eloquent model), optional `$preview` |
+| `landing/enschede.blade.php` | `/laravel-developer-enschede`, `/nl/laravel-ontwikkelaar-enschede` | `$profile`, `$proof` (live Eloquent projects bluevi, data-exchange-portal, bioscape; unpublished ones are skipped) |
 | `docs.blade.php` | `/docs` | `$profile`, `$skills` (grouped), `$projects` (live Eloquent) |
 | `cv.blade.php` | `/cv.pdf` | `$profile`, `$skills`, `$projects` |
 
@@ -252,6 +261,7 @@ production; use `og:prune-cache`.
 |------|---------|
 | `lang/en/site.php` + `lang/nl/site.php` | `home`, `work`, `project` views |
 | `lang/en/docs.php` + `lang/nl/docs.php` | `docs` view |
+| `lang/en/landing.php` + `lang/nl/landing.php` | `landing.enschede` view, footer and home links |
 
 Views use `__('*.key')` and carry `<html lang="{{ app()->getLocale() }}">`. The `localized_route()`
 and `alternate_locale_url()` helpers (`app/Support/helpers.php`) build locale-aware URLs and the
@@ -417,6 +427,16 @@ php artisan test --filter ProjectTest
 12. **Fallbacks hide gaps**: `HasLocalizedContent` falls back to English, `meta_description` falls
     back to the description, and `image_alt` falls back to the project name, so half-translated
     content looks fine on the site. `/admin/content-gaps` is what surfaces it (CMS-120).
+
+13. **The home title, meta description, eyebrow and lead are database content**: `profile.meta_title`,
+    `meta_description`, `tagline` and `hero_subtext` (plus `_nl`), edited at `/admin/profile`. Code
+    cannot change them except through a data migration (CMS-135 ships a compare-and-set one that
+    only overwrites a value still equal to what was live on 2026-10-13). The landing page's own
+    title and description are in `lang/*/landing.php`, not the database.
+
+14. **`Application::setLocale()` writes `app.locale`**, which `SetLocale` falls back to for unprefixed
+    URLs. Within one test, an English request after a Dutch one renders Dutch. Request English
+    first, Dutch last.
 
 ## Tracker
 
