@@ -8,6 +8,7 @@ $organizationSchema = [
     'logo'     => ['@type' => 'ImageObject', 'url' => url('/icon-512.png'), 'width' => 512, 'height' => 512],
     'founder'  => ['@id' => route('home').'#person'],
     'address'  => ['@type' => 'PostalAddress', 'addressLocality' => $profile->city, 'addressCountry' => 'NL'],
+    'areaServed' => \App\Support\ServiceArea::places(),
 ];
 @endphp
 <script type="application/ld+json">{!! json_encode($organizationSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}</script>

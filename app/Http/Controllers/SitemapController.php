@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Profile;
 use App\Models\Project;
+use App\Services\ContentLastModified;
 use Illuminate\Http\Response;
 
 class SitemapController extends Controller
 {
-    public function __invoke(): Response
+    public function __invoke(ContentLastModified $lastModified): Response
     {
         $projects = Project::published()->ordered()->get();
         $tags = $projects->flatMap(fn (Project $project) => $project->tagList())->unique()->sort()->values();
-        $profileUpdatedAt = Profile::current()->updated_at;
 
         $entries = collect([
-            ['route' => 'home', 'params' => [], 'lastmod' => $profileUpdatedAt],
-            ['route' => 'work.index', 'params' => [], 'lastmod' => $projects->max('updated_at')],
-            ['route' => 'docs', 'params' => [], 'lastmod' => $profileUpdatedAt],
+            ['route' => 'home', 'params' => [], 'lastmod' => $lastModified->home()],
+            ['route' => 'landing.enschede', 'params' => [], 'lastmod' => $lastModified->landing()],
+            ['route' => 'work.index', 'params' => [], 'lastmod' => $lastModified->work()],
+            ['route' => 'docs', 'params' => [], 'lastmod' => $lastModified->docs()],
         ])
-            ->concat($tags->map(fn (string $tag) => ['route' => 'work.tag', 'params' => ['tag' => $tag], 'lastmod' => null]))
+            ->concat($tags->map(fn (string $tag) => ['route' => 'work.tag', 'params' => ['tag' => $tag], 'lastmod' => $lastModified->tag($projects, $tag)]))
             ->concat($projects->map(fn (Project $project) => ['route' => 'project.show', 'params' => ['project' => $project->slug], 'lastmod' => $project->updated_at]));
 
         return response()
