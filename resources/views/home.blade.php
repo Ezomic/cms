@@ -9,6 +9,7 @@
     'canonicalRoute' => 'home',
 ])
 @include('partials.schema.person')
+@include('partials.schema.organization')
 @include('partials.schema.website')
 @endsection
 
