@@ -6,6 +6,7 @@ $personSchema = [
     'jobTitle' => $profile->tagline,
     'url'      => route('home'),
     'email'    => $profile->email,
+    'logo'     => ['@type' => 'ImageObject', 'url' => url('/icon-512.png'), 'width' => 512, 'height' => 512],
     'address'  => ['@type' => 'PostalAddress', 'addressLocality' => $profile->city, 'addressCountry' => 'NL'],
     'hasOfferCatalog' => [
         '@type' => 'OfferCatalog',

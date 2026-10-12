@@ -145,6 +145,19 @@ class OgImageController extends Controller
         imagefilledrectangle($img, 0, 0, $w, 6, $accent);
         imagefilledellipse($img, 52, 52, 10, 10, $accent);
         imageline($img, 72, $h - 72, $w - 72, $h - 72, $line);
+        $this->drawBadge($img, $w - 72 - 72, 28, 72);
+    }
+
+    private function drawBadge(\GdImage $img, int $x, int $y, int $size): void
+    {
+        $badge = @imagecreatefrompng(public_path('icon-512.png'));
+
+        if ($badge === false) {
+            return;
+        }
+
+        imagealphablending($img, true);
+        imagecopyresampled($img, $badge, $x, $y, 0, 0, $size, $size, imagesx($badge), imagesy($badge));
     }
 
     /**

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@include('partials.icons')
 @yield('head')
 @include('partials.fonts')
 <style>
@@ -42,8 +43,8 @@
   /* nav */
   nav.site{position:sticky;top:0;z-index:50;background:rgba(251,247,239,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
   nav.site .wrap{display:flex;align-items:center;justify-content:space-between;height:66px;}
-  .logo{font-family:var(--geo);font-weight:700;font-size:17px;display:flex;align-items:center;gap:9px;}
-  .logo .b{width:16px;height:16px;border-radius:5px;background:var(--primary);}
+  .logo{display:flex;align-items:center;}
+  .logo img{display:block;height:28px;width:auto;}
   .nav-links{display:flex;align-items:center;gap:26px;}
   .nav-links a.link{font-family:var(--geo);font-weight:500;font-size:14.5px;color:var(--muted);transition:color .15s;}
   .nav-links a.link:hover,.nav-links a.link.on{color:var(--ink);}

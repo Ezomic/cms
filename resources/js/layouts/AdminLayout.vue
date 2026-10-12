@@ -48,7 +48,7 @@ const isActive = (match: string) => (match === '/admin' ? url.value === '/admin'
     <div class="bg-background grid min-h-screen grid-cols-1 md:grid-cols-[224px_1fr]">
         <aside class="border-border bg-card hidden flex-col gap-1 border-r p-3 md:flex">
             <div class="font-display flex items-center gap-2 px-2.5 py-2 pb-3.5 text-[15px] font-bold">
-                <span class="bg-primary h-4 w-4 rounded-[5px]"></span>CMS
+                <img src="/favicon.svg" alt="" width="22" height="22" class="size-[22px]" />CMS
             </div>
 
             <a href="/admin" class="nav" :class="isActive('/admin') ? 'nav-on' : ''"> <LayoutDashboard class="size-[17px]" /> Dashboard </a>
