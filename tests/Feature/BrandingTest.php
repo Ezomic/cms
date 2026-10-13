@@ -52,6 +52,7 @@ class BrandingTest extends TestCase
         $this->assertSame(url('/icon-512.png'), $organization['logo']['url']);
         $this->assertGreaterThanOrEqual(112, $organization['logo']['width']);
         $this->assertSame($person['@id'], $organization['founder']['@id']);
+        $this->assertContains('https://share.google/6E01iFFbycsAm9a8s', $organization['sameAs']);
         $this->assertArrayNotHasKey('hasOfferCatalog', $organization);
     }
 
