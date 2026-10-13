@@ -9,6 +9,11 @@ $organizationSchema = [
     'founder'  => ['@id' => route('home').'#person'],
     'address'  => ['@type' => 'PostalAddress', 'addressLocality' => $profile->city, 'addressCountry' => 'NL'],
     'areaServed' => \App\Support\ServiceArea::places(),
+    'sameAs'   => array_values(array_filter([
+        'https://share.google/6E01iFFbycsAm9a8s',
+        $profile->linkedin_url,
+        $profile->github_url,
+    ])),
 ];
 @endphp
 <script type="application/ld+json">{!! json_encode($organizationSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}</script>
