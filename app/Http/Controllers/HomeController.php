@@ -7,6 +7,7 @@ use App\Models\Profile;
 use App\Models\Project;
 use App\Models\Skill;
 use App\Models\Testimonial;
+use App\Support\TagSlugs;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
@@ -123,21 +124,25 @@ class HomeController extends Controller
         $this->recordPageView();
 
         $projects = $this->publishedProjects();
+        $tags = $this->tagsFrom($projects);
 
         return view('work', [
             'profile' => Profile::current(),
             'projects' => $projects,
-            'tags' => $this->tagsFrom($projects),
+            'tags' => $tags,
+            'tagSlugs' => TagSlugs::from($tags),
             'activeTag' => null,
         ]);
     }
 
-    public function workTag(string $tag): View
+    public function workTag(string $slug): View
     {
         $allProjects = $this->publishedProjects();
         $tags = $this->tagsFrom($allProjects);
+        $tagSlugs = TagSlugs::from($tags);
+        $tag = $tagSlugs->tag($slug);
 
-        abort_unless($tags->contains($tag), 404);
+        abort_if($tag === null, 404);
 
         $this->recordPageView();
 
@@ -149,6 +154,7 @@ class HomeController extends Controller
             'profile' => Profile::current(),
             'projects' => $projects,
             'tags' => $tags,
+            'tagSlugs' => $tagSlugs,
             'activeTag' => $tag,
         ]);
     }

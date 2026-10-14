@@ -7,13 +7,13 @@
         ? __('site.work_meta_description_tag', ['tag' => $activeTag, 'name' => $profile->name])
         : __('site.work_meta_description', ['name' => $profile->name]),
     'canonicalRoute' => $activeTag ? 'work.tag' : 'work.index',
-    'canonicalParams' => $activeTag ? ['tag' => $activeTag] : [],
+    'canonicalParams' => $activeTag ? ['slug' => $tagSlugs->slug($activeTag)] : [],
 ])
 @if($activeTag)
 @include('partials.schema.breadcrumbs', ['items' => [
     ['name' => __('site.breadcrumb_home'), 'url' => localized_route('home')],
     ['name' => __('site.breadcrumb_work'), 'url' => localized_route('work.index')],
-    ['name' => $activeTag, 'url' => localized_route('work.tag', $activeTag)],
+    ['name' => $activeTag, 'url' => localized_route('work.tag', $tagSlugs->slug($activeTag))],
 ]])
 @endif
 @endsection
@@ -44,7 +44,7 @@
     <span class="filter-label">{{ __('site.work_filter_label') }}</span>
     <a class="filter-btn {{ !$activeTag ? 'active' : '' }}" href="{{ localized_route('work.index') }}" data-tag="all">{{ __('site.work_filter_all') }}</a>
     @foreach ($tags as $tag)
-      <a class="filter-btn {{ $activeTag === $tag ? 'active' : '' }}" href="{{ localized_route('work.tag', $tag) }}" data-tag="{{ $tag }}">{{ $tag }}</a>
+      <a class="filter-btn {{ $activeTag === $tag ? 'active' : '' }}" href="{{ localized_route('work.tag', $tagSlugs->slug($tag)) }}" data-tag="{{ $tag }}">{{ $tag }}</a>
     @endforeach
   </div>
   @endif
