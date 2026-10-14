@@ -24,7 +24,7 @@ $publicRoutes = function (): void {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/docs', [HomeController::class, 'docs'])->name('docs');
     Route::get('/work', [HomeController::class, 'work'])->name('work.index');
-    Route::get('/work/tag/{tag}', [HomeController::class, 'workTag'])->name('work.tag');
+    Route::get('/work/tag/{slug}', [HomeController::class, 'workTag'])->name('work.tag');
     Route::get('/work/{project:slug}', [HomeController::class, 'project'])->name('project.show');
     Route::get('/work/{project:slug}/preview', [HomeController::class, 'projectPreview'])
         ->name('project.preview')
