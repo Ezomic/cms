@@ -63,6 +63,15 @@ class ContentLastModified
         );
     }
 
+    public function remoteLanding(): ?CarbonInterface
+    {
+        return $this->latest(
+            $this->profile(),
+            $this->newest(Project::published()->whereIn('slug', LandingController::PROOF_SLUGS)),
+            CarbonImmutable::parse(LandingController::REMOTE_COPY_UPDATED_AT),
+        );
+    }
+
     private function profile(): mixed
     {
         return Profile::current()->updated_at;

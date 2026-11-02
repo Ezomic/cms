@@ -44,6 +44,8 @@ Route::prefix('nl')->name('nl.')->group($publicRoutes);
 // keeps localized_route() and alternate_locale_url() working unchanged.
 Route::get('/laravel-developer-enschede', [LandingController::class, 'enschede'])->name('landing.enschede');
 Route::get('/nl/laravel-ontwikkelaar-enschede', [LandingController::class, 'enschede'])->name('nl.landing.enschede');
+Route::get('/laravel-developer-remote', [LandingController::class, 'remote'])->name('landing.remote');
+Route::get('/nl/laravel-ontwikkelaar-remote', [LandingController::class, 'remote'])->name('nl.landing.remote');
 
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 Route::get('/robots.txt', fn () => response("User-agent: *\nDisallow: /admin\n\nSitemap: ".route('sitemap')."\n", 200, ['Content-Type' => 'text/plain']))->name('robots');

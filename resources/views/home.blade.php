@@ -116,6 +116,7 @@
         <h1>{{ $profile->hero_headline }}</h1>
         <p class="sub">{{ $profile->hero_subtext }}</p>
         <a class="sub-link" href="{{ localized_route('landing.enschede') }}">{{ __('landing.home_link') }}</a>
+        <a class="sub-link" href="{{ localized_route('landing.remote') }}">{{ __('remote.home_link') }}</a>
         <div class="acts">
           <a class="btn pri" href="#contact">{{ __('site.hero_actions_primary') }}</a>
           <a class="btn sec" href="{{ localized_route('work.index') }}">{{ __('site.hero_actions_secondary') }}</a>
