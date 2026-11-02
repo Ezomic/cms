@@ -19,6 +19,7 @@ class SitemapController extends Controller
         $entries = collect([
             ['route' => 'home', 'params' => [], 'lastmod' => $lastModified->home()],
             ['route' => 'landing.enschede', 'params' => [], 'lastmod' => $lastModified->landing()],
+            ['route' => 'landing.remote', 'params' => [], 'lastmod' => $lastModified->remoteLanding()],
             ['route' => 'work.index', 'params' => [], 'lastmod' => $lastModified->work()],
             ['route' => 'docs', 'params' => [], 'lastmod' => $lastModified->docs()],
         ])

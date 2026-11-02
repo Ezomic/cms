@@ -1,6 +1,8 @@
 @php
+$route = $landingRoute ?? 'landing.enschede';
+$lang = $landingLang ?? 'landing';
 $areaServed = \App\Support\ServiceArea::places();
-$landingUrl = localized_route('landing.enschede');
+$landingUrl = localized_route($route);
 $serviceId = $landingUrl.'#service';
 $landingSchema = [
     '@context' => 'https://schema.org',
@@ -8,10 +10,10 @@ $landingSchema = [
         [
             '@type'       => 'Service',
             '@id'         => $serviceId,
-            'name'        => __('landing.breadcrumb'),
+            'name'        => __($lang.'.breadcrumb'),
             'serviceType' => 'Laravel development',
             'url'         => $landingUrl,
-            'description' => __('landing.meta_description'),
+            'description' => __($lang.'.meta_description'),
             'provider'    => ['@id' => route('home').'#organization'],
             'areaServed'  => $areaServed,
             'availableChannel' => [
@@ -24,8 +26,8 @@ $landingSchema = [
             ],
             'hasOfferCatalog' => [
                 '@type' => 'OfferCatalog',
-                'name'  => __('landing.build_headline'),
-                'itemListElement' => collect(__('landing.build_items'))->map(fn ($item) => [
+                'name'  => __($lang.'.build_headline'),
+                'itemListElement' => collect(__($lang.'.build_items'))->map(fn ($item) => [
                     '@type' => 'Offer',
                     'itemOffered' => ['@type' => 'Service', 'name' => $item['title'], 'description' => $item['body']],
                 ])->all(),
@@ -35,8 +37,8 @@ $landingSchema = [
             '@type'      => 'WebPage',
             '@id'        => $landingUrl,
             'url'        => $landingUrl,
-            'name'       => __('landing.meta_title'),
-            'description' => __('landing.meta_description'),
+            'name'       => __($lang.'.meta_title'),
+            'description' => __($lang.'.meta_description'),
             'inLanguage' => app()->getLocale(),
             'isPartOf'   => ['@type' => 'WebSite', 'name' => $profile->name, 'url' => route('home')],
             'about'      => ['@id' => $serviceId],

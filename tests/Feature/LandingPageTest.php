@@ -235,7 +235,7 @@ class LandingPageTest extends TestCase
         $this->assertSame($graph[0]['@id'], $graph[1]['about']['@id']);
         $this->assertSame($organization['@id'], $graph[0]['provider']['@id']);
         $this->assertSame(
-            ['Enschede', 'Hengelo', 'Almelo', 'Twente', 'Netherlands'],
+            ['Enschede', 'Hengelo', 'Almelo', 'Twente', 'Netherlands', 'Belgium'],
             array_column($graph[0]['areaServed'], 'name'),
         );
         $this->assertCount(5, $graph[0]['hasOfferCatalog']['itemListElement']);

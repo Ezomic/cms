@@ -17,15 +17,30 @@ class LandingController extends Controller
      */
     public const COPY_UPDATED_AT = '2026-11-02';
 
+    public const REMOTE_COPY_UPDATED_AT = '2026-11-02';
+
     public const PROOF_SLUGS = ['bluevi', 'data-exchange-portal', 'bioscape'];
 
     public function enschede(): View
+    {
+        return $this->landing('landing.enschede');
+    }
+
+    public function remote(): View
+    {
+        return $this->landing('landing.remote');
+    }
+
+    /**
+     * @param  view-string  $view
+     */
+    private function landing(string $view): View
     {
         $this->recordPageView();
 
         $bySlug = Project::published()->whereIn('slug', self::PROOF_SLUGS)->get()->keyBy('slug');
 
-        return view('landing.enschede', [
+        return view($view, [
             'profile' => Profile::current(),
             'proof' => collect(self::PROOF_SLUGS)->map(fn (string $slug): ?Project => $bySlug->get($slug))->filter()->values(),
         ]);

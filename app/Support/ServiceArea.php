@@ -15,6 +15,7 @@ final class ServiceArea
             ['@type' => 'City', 'name' => 'Almelo'],
             ['@type' => 'AdministrativeArea', 'name' => 'Twente'],
             ['@type' => 'Country', 'name' => 'Netherlands'],
+            ['@type' => 'Country', 'name' => 'Belgium'],
         ];
     }
 }
