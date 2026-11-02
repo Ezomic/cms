@@ -79,26 +79,26 @@ return [
     'services_label' => 'Services',
     'services_headline' => 'What I build.',
 
-    'service_1_title' => 'Web application',
-    'service_1_body' => 'Full-stack product builds from design to deployment: Laravel backend, Vue or Blade frontend, tested and ready for production.',
-    'service_1_items' => ['New SaaS product or internal tool', 'Feature additions to existing app', 'Laravel upgrade or refactor'],
+    'service_1_title' => 'Custom software',
+    'service_1_body' => 'A new product or an internal tool that does exactly what your business needs, from design to going live. Tested and ready to use.',
+    'service_1_items' => ['A new product or internal tool', 'Extending an existing application', 'Renewing an ageing application'],
 
-    'service_2_title' => 'API & integrations',
-    'service_2_body' => 'REST or GraphQL APIs, third-party integrations, and backend services that connect the tools you already use.',
-    'service_2_items' => ['Payment & subscription (Stripe, Mollie)', 'CRM / ERP sync', 'Webhooks and event-driven flows'],
+    'service_2_title' => 'Integrations',
+    'service_2_body' => 'A link between your accounting and your web shop, so nobody retypes figures any more. I connect the systems you already use.',
+    'service_2_items' => ['Payments and subscriptions (Stripe, Mollie)', 'Exchanging data automatically between systems', 'Actions that start by themselves'],
 
-    'service_3_title' => 'Advisory & review',
-    'service_3_body' => 'Code review, architecture advice, or a technical audit. Handy before a big migration, or when you just want a second opinion.',
-    'service_3_items' => ['Architecture review', 'Code quality audit', 'Hiring tech screen'],
+    'service_3_title' => 'Advice & review',
+    'service_3_body' => 'A second opinion on your software or your plans, before you make a big decision or a big switch.',
+    'service_3_items' => ['Is my software built well?', 'A check on quality and security', 'A technical assessment when hiring a developer'],
 
     'service_4_title' => 'Proof of concept',
-    'service_4_body' => 'A working prototype of one core flow, within days, to test an idea before you invest in a full product. It is a starting point, not a finished product: production still needs tests, security and review.',
+    'service_4_body' => 'A working prototype of the most important part within days, to test an idea before you invest in a full product. It is a starting point, not a finished product: real use still needs testing, security and review.',
     'service_4_items' => ['Proof of concept build', 'MVP build', 'Web application prototype'],
     'service_4_cta' => 'Talk through your idea →',
 
     'ai_headline' => 'AI as a working method.',
-    'ai_p1' => 'AI assistants are part of how I work, not a service I sell. They draft code and take over repetitive work, so a proof of concept of one core flow can be running within days. I decide the architecture and read and test every line myself. A proof of concept is not a finished product: production still needs tests, security and review.',
-    'ai_p2' => ':tracker, my own issue tracker, had an API, emailed-code login and CSV import and export on day one, and was live in production. I built a registration app for a school the same way.',
+    'ai_p1' => 'I work with AI assistants, but I do not sell them as a service. They take over the routine work, so a working prototype of the most important part can be running within days. I decide how it is put together and read and test every line myself. A proof of concept is not a finished product: real use still needs testing, security and review.',
+    'ai_p2' => ':tracker, my own tool for tracking work and bugs, had login by emailed code and data import and export on day one, and was live. I built a registration app for a school the same way.',
     'footer_built' => 'Built in the Netherlands.',
 
     'lang_toggle' => 'NL',

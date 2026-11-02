@@ -79,26 +79,26 @@ return [
     'services_label' => 'Diensten',
     'services_headline' => 'Wat ik bouw.',
 
-    'service_1_title' => 'Webapplicatie',
-    'service_1_body' => 'Full-stack productbuilds van ontwerp tot deployment: Laravel backend, Vue of Blade frontend, getest en klaar voor productie.',
-    'service_1_items' => ['Nieuw SaaS-product of intern tool', 'Functies toevoegen aan bestaande app', 'Laravel upgrade of refactor'],
+    'service_1_title' => 'Software op maat',
+    'service_1_body' => 'Een nieuw product of een interne tool die precies doet wat jouw bedrijf nodig heeft, van ontwerp tot livegang. Getest en klaar voor gebruik.',
+    'service_1_items' => ['Een nieuw product of interne tool', 'Een bestaande applicatie uitbreiden', 'Een verouderde applicatie vernieuwen'],
 
-    'service_2_title' => 'API & integraties',
-    'service_2_body' => 'REST- of GraphQL-APIs, koppelingen met externe partijen en backend-services die de tools verbinden die je al gebruikt.',
-    'service_2_items' => ['Betaling & abonnement (Stripe, Mollie)', 'CRM / ERP-synchronisatie', 'Webhooks en event-driven flows'],
+    'service_2_title' => 'Koppelingen',
+    'service_2_body' => 'Een koppeling tussen je boekhouding en je webshop, zodat niemand cijfers meer overtypt. Ik verbind de systemen die je al gebruikt.',
+    'service_2_items' => ['Betalingen en abonnementen (Stripe, Mollie)', 'Gegevens automatisch uitwisselen tussen systemen', 'Acties die vanzelf in gang gaan'],
 
     'service_3_title' => 'Advies & review',
-    'service_3_body' => 'Code review, architectuuradvies of een technische audit. Handig vóór een grote migratie, of als je gewoon een tweede mening wilt.',
-    'service_3_items' => ['Architectuurreview', 'Code-kwaliteitsaudit', 'Technische sollicitatiescreen'],
+    'service_3_body' => 'Een tweede mening over je software of je plannen, vóór je een grote beslissing neemt of een grote overstap maakt.',
+    'service_3_items' => ['Is mijn software goed opgebouwd?', 'Een controle op kwaliteit en veiligheid', 'Een technische beoordeling bij het aannemen van een ontwikkelaar'],
 
     'service_4_title' => 'Proof of concept',
-    'service_4_body' => 'Een werkend prototype van één kernflow, binnen enkele dagen, om een idee te toetsen voordat je in een volledig product investeert. Het is een startpunt, geen af product: voor productie volgen nog tests, beveiliging en review.',
+    'service_4_body' => 'Binnen enkele dagen een werkend prototype van het belangrijkste onderdeel, om een idee te toetsen voordat je in een volledig product investeert. Het is een startpunt, geen af product: voor echt gebruik volgen nog testen, beveiliging en controle.',
     'service_4_items' => ['Proof of concept laten bouwen', 'MVP laten bouwen', 'Prototype webapplicatie'],
     'service_4_cta' => 'Bespreek je idee →',
 
     'ai_headline' => 'AI als werkwijze.',
-    'ai_p1' => 'AI-assistenten zijn onderdeel van hoe ik werk, geen dienst die ik verkoop. Ze schrijven concepten en nemen repetitief werk uit handen, zodat een proof of concept van één kernflow er binnen enkele dagen kan staan: AI-ondersteunde softwareontwikkeling met een mens die verantwoordelijk blijft. Ik bepaal de architectuur en lees en test elke regel zelf. Een proof of concept is geen af product: voor productie volgen nog tests, beveiliging en review.',
-    'ai_p2' => ':tracker, mijn eigen issuetracker, had op de eerste dag al een API, inloggen met een e-mailcode, CSV-import en -export en stond live in productie. Zo bouwde ik ook de registratie-app voor een school.',
+    'ai_p1' => 'Ik werk met AI-assistenten, maar ik verkoop ze niet als dienst. Ze nemen het routinewerk uit handen, zodat er binnen enkele dagen een werkend prototype van het belangrijkste onderdeel kan staan: AI-ondersteunde softwareontwikkeling waarbij ik verantwoordelijk blijf. Ik bepaal hoe het in elkaar zit en lees en test elke regel zelf. Een proof of concept is geen af product: voor echt gebruik volgen nog testen, beveiliging en controle.',
+    'ai_p2' => ':tracker, mijn eigen programma om werk en fouten bij te houden, had op de eerste dag al inloggen met een e-mailcode, import en export van gegevens en stond live. Zo bouwde ik ook een registratie-app voor een school.',
     'footer_built' => 'Gebouwd in Nederland.',
 
     'lang_toggle' => 'EN',

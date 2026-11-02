@@ -32,28 +32,28 @@ return [
     'build_intro' => 'Meestal kom je met een van deze zes opdrachten bij me terecht.',
     'build_items' => [
         [
-            'title' => 'Webapplicaties en SaaS-platforms',
-            'body' => 'Nieuwe producten en interne tools op basis van Laravel, met een Vue.js- of Blade-frontend. Getest, gedeployed en gedocumenteerd, zodat de volgende ontwikkelaar er zo mee verder kan.',
+            'title' => 'Webapplicaties en interne tools',
+            'body' => 'Een nieuw product of een tool voor je eigen team, van ontwerp tot livegang. Getest, gedocumenteerd en zo overgedragen dat de volgende ontwikkelaar er direct mee verder kan.',
         ],
         [
-            'title' => 'API\'s en integraties',
-            'body' => 'REST-API\'s en koppelingen met de tools die je al gebruikt: betaalproviders zoals Stripe en Mollie, CRM- en ERP-synchronisatie, webhooks en event-driven flows.',
+            'title' => 'Koppelingen met de systemen die je al gebruikt',
+            'body' => 'Een koppeling tussen je boekhouding en je webshop, zodat niemand cijfers meer overtypt. Ook voor betalingen via Stripe of Mollie en voor je klantenbestand.',
         ],
         [
-            'title' => 'Data-uitwisseling tussen systemen',
-            'body' => 'Als twee systemen hetzelfde op verschillende manieren beschrijven, moet er iets vertalen. Ik bouw mappinglagen die binnenkomende data omzetten naar het formaat dat jouw systeem verwacht en invoer weigeren die niet kan kloppen.',
+            'title' => 'Gegevens uitwisselen tussen systemen',
+            'body' => 'Als twee systemen hetzelfde op een andere manier opschrijven, moet er iets vertalen. Ik zorg dat gegevens automatisch in het juiste formaat aankomen en dat foute invoer wordt geweigerd.',
         ],
         [
-            'title' => 'Laravel-upgrades en onderhoud',
-            'body' => 'Een verouderde applicatie naar een actuele Laravel- en PHP-versie brengen, refactoren en een langlevende codebase gezond houden terwijl die gewoon blijft draaien.',
+            'title' => 'Laravel upgrades en onderhoud',
+            'body' => 'Een verouderde applicatie bijwerken naar een actuele versie en een oude codebase gezond houden, terwijl alles gewoon blijft draaien.',
         ],
         [
-            'title' => 'Self-hosted tooling',
-            'body' => 'Software die je op je eigen server draait in plaats van huurt. Zelf werk ik ook zo, met een issuetracker en een single sign-on-server die ik zelf heb gebouwd en host.',
+            'title' => 'Software op je eigen server',
+            'body' => 'Software die je zelf host in plaats van huurt, zodat jij de baas blijft over je gegevens. Zelf werk ik ook zo, met een eigen tracker en een eigen inlogserver die ik zelf heb gebouwd en host.',
         ],
         [
             'title' => 'Proof of concept en MVP',
-            'body' => 'Wil je een proof of concept laten bouwen om een idee te toetsen? Dan bouw ik een prototype webapplicatie van één kernflow, binnen enkele dagen. Het is een startpunt voor een MVP, geen af product.',
+            'body' => 'Wil je een proof of concept laten bouwen om een idee te toetsen? Dan bouw ik een prototype webapplicatie van het belangrijkste onderdeel, binnen enkele dagen. Een startpunt voor een MVP, geen af product.',
         ],
     ],
 

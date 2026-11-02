@@ -139,33 +139,84 @@ class PricingAndAiCopyTest extends TestCase
 
     private function runHeroMigration(string $method): void
     {
-        $migration = require database_path('migrations/2026_11_02_100200_add_ai_poc_line_to_home_hero.php');
+        $migration = require database_path('migrations/2026_11_02_100200_make_home_copy_stack_neutral.php');
         $this->assertInstanceOf(Migration::class, $migration);
         $migration->{$method}();
     }
 
     private const LIVE_SUBTEXT_NL = 'Freelance Laravel-ontwikkelaar uit Enschede met 9+ jaar ervaring, werkzaam in heel Twente en op afstand. Ik ben gespecialiseerd in Laravel en Vue.js en bouw betrouwbare, onderhoudbare webproducten voor klanten van mkb tot grote ondernemingen.';
 
-    public function test_the_hero_migration_appends_the_ai_line_only_to_the_live_value(): void
+    private const LIVE_TITLE_NL = 'Laravel-ontwikkelaar Enschede en remote | Robbin Thijssen';
+
+    public function test_the_home_migration_makes_the_live_copy_stack_neutral_and_spares_edited_values(): void
     {
-        Profile::current()->update(['hero_subtext_nl' => self::LIVE_SUBTEXT_NL, 'hero_subtext' => 'Edited by hand']);
+        Profile::current()->update([
+            'hero_subtext_nl' => self::LIVE_SUBTEXT_NL,
+            'meta_title_nl' => self::LIVE_TITLE_NL,
+            'tagline_nl' => 'Freelance Laravel-ontwikkelaar',
+            'hero_subtext' => 'Edited by hand',
+        ]);
 
         $this->runHeroMigration('up');
 
         $profile = Profile::current()->refresh();
-        $this->assertStringStartsWith(self::LIVE_SUBTEXT_NL, (string) $profile->hero_subtext_nl);
-        $this->assertStringContainsString('proof of concept', (string) $profile->hero_subtext_nl);
+        $this->assertSame('Software-ontwikkelaar in Enschede, van idee naar werkend prototype | Robbin Thijssen', $profile->meta_title_nl);
+        $this->assertSame('Freelance software-ontwikkelaar', $profile->tagline_nl);
+        $this->assertStringContainsString('werkend prototype', (string) $profile->hero_subtext_nl);
+        $this->assertStringNotContainsString('Laravel', (string) $profile->hero_subtext_nl);
         $this->assertSame('Edited by hand', $profile->hero_subtext);
     }
 
-    public function test_the_hero_migration_reverses_cleanly(): void
+    public function test_the_home_migration_reverses_cleanly(): void
     {
-        Profile::current()->update(['hero_subtext_nl' => self::LIVE_SUBTEXT_NL]);
+        Profile::current()->update(['hero_subtext_nl' => self::LIVE_SUBTEXT_NL, 'meta_title_nl' => self::LIVE_TITLE_NL]);
 
         $this->runHeroMigration('up');
         $this->runHeroMigration('down');
 
-        $this->assertSame(self::LIVE_SUBTEXT_NL, Profile::current()->refresh()->hero_subtext_nl);
+        $profile = Profile::current()->refresh();
+        $this->assertSame(self::LIVE_SUBTEXT_NL, $profile->hero_subtext_nl);
+        $this->assertSame(self::LIVE_TITLE_NL, $profile->meta_title_nl);
+    }
+
+    /**
+     * @return array<string, array{0: string}>
+     */
+    public static function clientFacingFiles(): array
+    {
+        return ['site' => ['site'], 'landing' => ['landing'], 'remote' => ['remote']];
+    }
+
+    #[DataProvider('clientFacingFiles')]
+    public function test_services_copy_is_plain_language_without_framework_names(string $file): void
+    {
+        $jargon = '/\b(Laravel|Vue|Blade|APIs?|API\'s|webhooks?|SaaS|CRM|ERP|refactor\w*|event-driven)\b/i';
+
+        foreach (['en', 'nl'] as $locale) {
+            $all = require lang_path("{$locale}/{$file}.php");
+            $lines = [];
+
+            if ($file === 'site') {
+                foreach ([1, 2, 3, 4] as $n) {
+                    $lines[] = $all["service_{$n}_title"];
+                    $lines[] = $all["service_{$n}_body"];
+                    array_push($lines, ...$all["service_{$n}_items"]);
+                }
+                $lines[] = $all['ai_p1'];
+                $lines[] = $all['ai_p2'];
+            } else {
+                foreach ($all['build_items'] as $item) {
+                    $lines[] = $item['body'];
+                    if (! str_starts_with($item['title'], 'Laravel')) {
+                        $lines[] = $item['title'];
+                    }
+                }
+            }
+
+            foreach ($lines as $line) {
+                $this->assertDoesNotMatchRegularExpression($jargon, $line, "{$locale}/{$file}: {$line}");
+            }
+        }
     }
 
     private function runSkillsMigration(string $method): void

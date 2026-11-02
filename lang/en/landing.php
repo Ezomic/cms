@@ -32,28 +32,28 @@ return [
     'build_intro' => 'Clients usually come to me with one of these six jobs.',
     'build_items' => [
         [
-            'title' => 'Web applications and SaaS platforms',
-            'body' => 'New products and internal tools built on Laravel, with a Vue.js or Blade front end. Tested, deployed and documented, so the next developer can pick them up.',
+            'title' => 'Web applications and internal tools',
+            'body' => 'A new product or a tool for your own team, from design to going live. Tested, documented and handed over so the next developer can pick it up straight away.',
         ],
         [
-            'title' => 'APIs and integrations',
-            'body' => 'REST APIs and the connections to the tools you already use: payment providers such as Stripe and Mollie, CRM and ERP synchronisation, webhooks and event-driven flows.',
+            'title' => 'Links with the systems you already use',
+            'body' => 'A link between your accounting and your web shop, so nobody retypes figures any more. Also for payments through Stripe or Mollie and for your customer records.',
         ],
         [
-            'title' => 'Data exchange between systems',
-            'body' => 'When two systems describe the same thing in different ways, something has to translate. I build mapping layers that convert incoming data to the format your system expects and refuse input that cannot be right.',
+            'title' => 'Exchanging data between systems',
+            'body' => 'When two systems write down the same thing in different ways, something has to translate. I make sure data arrives in the right format automatically and that wrong input is refused.',
         ],
         [
             'title' => 'Laravel upgrades and maintenance',
-            'body' => 'Moving an ageing application to a current Laravel and PHP version, refactoring it, and keeping a long-lived codebase healthy while it keeps running.',
+            'body' => 'Bringing an ageing application up to a current version and keeping an old codebase healthy while everything keeps running.',
         ],
         [
-            'title' => 'Self-hosted tooling',
-            'body' => 'Software you run on your own server instead of renting it. I work this way myself, with an issue tracker and a single sign-on server that I built and host.',
+            'title' => 'Software on your own server',
+            'body' => 'Software you host yourself instead of renting, so you stay in control of your data. I work this way myself, with my own tracker and my own login server that I built and host.',
         ],
         [
             'title' => 'Proof of concept and MVP',
-            'body' => 'A working prototype of one core flow, within days, to test an idea before you commit to a full build. A starting point for an MVP, not a finished product.',
+            'body' => 'A working prototype of the most important part within days, to test an idea before you commit to a full build. A starting point for an MVP, not a finished product.',
         ],
     ],
 

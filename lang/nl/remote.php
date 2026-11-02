@@ -54,24 +54,24 @@ return [
     'build_intro' => 'Meestal kom je met een van deze vijf opdrachten bij me terecht. Na een kort gesprek volgt een heldere offerte.',
     'build_items' => [
         [
-            'title' => 'Webapplicaties en SaaS-platforms',
-            'body' => 'Nieuwe producten en interne tools op basis van Laravel, met een Vue.js- of Blade-frontend.',
+            'title' => 'Webapplicaties en interne tools',
+            'body' => 'Een nieuw product of een tool voor je eigen team, van ontwerp tot livegang.',
         ],
         [
-            'title' => 'API\'s en integraties',
-            'body' => 'REST-API\'s en koppelingen met betaalproviders, CRM- en ERP-systemen, webhooks en event-driven flows.',
+            'title' => 'Koppelingen met de systemen die je al gebruikt',
+            'body' => 'Een koppeling tussen je boekhouding en je webshop, zodat niemand cijfers meer overtypt.',
         ],
         [
-            'title' => 'Data-uitwisseling tussen systemen',
-            'body' => 'Mappinglagen die binnenkomende data omzetten naar het formaat dat jouw systeem verwacht en invoer weigeren die niet kan kloppen.',
+            'title' => 'Gegevens uitwisselen tussen systemen',
+            'body' => 'Gegevens komen automatisch in het juiste formaat aan en foute invoer wordt geweigerd.',
         ],
         [
-            'title' => 'Laravel-upgrades en onderhoud',
-            'body' => 'Een verouderde applicatie naar een actuele Laravel- en PHP-versie brengen en een langlevende codebase gezond houden.',
+            'title' => 'Laravel upgrades en onderhoud',
+            'body' => 'Een verouderde applicatie bijwerken naar een actuele versie en een oude codebase gezond houden.',
         ],
         [
             'title' => 'Proof of concept en MVP',
-            'body' => 'Een prototype webapplicatie van één kernflow, binnen enkele dagen, om een idee te toetsen. Een startpunt voor een MVP, geen af product.',
+            'body' => 'Een prototype webapplicatie van het belangrijkste onderdeel, binnen enkele dagen, om een idee te toetsen. Een startpunt voor een MVP, geen af product.',
         ],
     ],
 
