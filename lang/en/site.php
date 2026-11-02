@@ -32,7 +32,7 @@ return [
     'process_label' => 'How I work',
     'process_headline' => 'Four steps, no surprises.',
     'process_1_title' => 'Scope',
-    'process_1_body' => 'A short call to understand the problem, then a clear proposal with fixed price or day rate.',
+    'process_1_body' => 'A short call to understand the problem, then a clear quote. If you want to see it work first, a working prototype of the core flow can be ready within days.',
     'process_2_title' => 'Plan',
     'process_2_body' => 'We agree on the technical approach, milestones, and a realistic timeline before any code gets written.',
     'process_3_title' => 'Build',
@@ -49,7 +49,7 @@ return [
     'contact_company' => 'Company (optional)',
     'contact_budget' => 'Estimated budget',
     'contact_budget_options' => [
-        '' => 'Not sure yet',
+        '' => 'I do not know yet',
         '< €5k' => '< €5k',
         '€5k–€20k' => '€5k–€20k',
         '€20k–€50k' => '€20k–€50k',
@@ -72,8 +72,6 @@ return [
     'meta_languages' => 'NL / EN',
     'meta_remote' => 'Both, EU-wide',
     'meta_based_in' => 'Based in',
-    'meta_rate' => 'Rate',
-    'meta_rate_value' => 'On request',
     'meta_availability' => 'Availability',
     'meta_languages_label' => 'Languages',
     'meta_remote_label' => 'Remote / on-site',
@@ -84,18 +82,23 @@ return [
     'service_1_title' => 'Web application',
     'service_1_body' => 'Full-stack product builds from design to deployment: Laravel backend, Vue or Blade frontend, tested and ready for production.',
     'service_1_items' => ['New SaaS product or internal tool', 'Feature additions to existing app', 'Laravel upgrade or refactor'],
-    'service_1_price' => 'On request',
 
     'service_2_title' => 'API & integrations',
     'service_2_body' => 'REST or GraphQL APIs, third-party integrations, and backend services that connect the tools you already use.',
     'service_2_items' => ['Payment & subscription (Stripe, Mollie)', 'CRM / ERP sync', 'Webhooks and event-driven flows'],
-    'service_2_price' => 'On request',
 
     'service_3_title' => 'Advisory & review',
     'service_3_body' => 'Code review, architecture advice, or a technical audit. Handy before a big migration, or when you just want a second opinion.',
     'service_3_items' => ['Architecture review', 'Code quality audit', 'Hiring tech screen'],
-    'service_3_price' => 'On request',
 
+    'service_4_title' => 'Proof of concept',
+    'service_4_body' => 'A working prototype of one core flow, within days, to test an idea before you invest in a full product. It is a starting point, not a finished product: production still needs tests, security and review.',
+    'service_4_items' => ['Proof of concept build', 'MVP build', 'Web application prototype'],
+    'service_4_cta' => 'Talk through your idea →',
+
+    'ai_headline' => 'AI as a working method.',
+    'ai_p1' => 'AI assistants are part of how I work, not a service I sell. They draft code and take over repetitive work, so a proof of concept of one core flow can be running within days. I decide the architecture and read and test every line myself. A proof of concept is not a finished product: production still needs tests, security and review.',
+    'ai_p2' => ':tracker, my own issue tracker, had an API, emailed-code login and CSV import and export on day one, and was live in production. I built a registration app for a school the same way.',
     'footer_built' => 'Built in the Netherlands.',
 
     'lang_toggle' => 'NL',

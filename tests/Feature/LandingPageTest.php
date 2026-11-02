@@ -76,8 +76,7 @@ class LandingPageTest extends TestCase
 
         $this->get('/laravel-developer-enschede')
             ->assertSee('<address', false)
-            ->assertSee('KVK 87417863')
-            ->assertSee('on request');
+            ->assertSee('KVK 87417863');
 
         $this->get('/nl/laravel-ontwikkelaar-enschede')
             ->assertSee('<address', false)
@@ -100,12 +99,10 @@ class LandingPageTest extends TestCase
             ->assertDontSee('mailto:', false);
     }
 
-    public function test_the_page_says_on_site_work_is_possible_on_request_in_both_languages(): void
+    public function test_the_page_says_on_site_work_is_possible_in_both_languages(): void
     {
-        $this->get('/laravel-developer-enschede')->assertSee('on site on request', false);
-        $this->get('/nl/laravel-ontwikkelaar-enschede')
-            ->assertSee('op locatie', false)
-            ->assertSee('op aanvraag', false);
+        $this->get('/laravel-developer-enschede')->assertSee('On site when it helps', false);
+        $this->get('/nl/laravel-ontwikkelaar-enschede')->assertSee('Op locatie waar dat helpt', false);
     }
 
     public function test_the_service_schema_names_the_service_location(): void
@@ -238,7 +235,7 @@ class LandingPageTest extends TestCase
             ['Enschede', 'Hengelo', 'Almelo', 'Twente', 'Netherlands', 'Belgium'],
             array_column($graph[0]['areaServed'], 'name'),
         );
-        $this->assertCount(5, $graph[0]['hasOfferCatalog']['itemListElement']);
+        $this->assertCount(6, $graph[0]['hasOfferCatalog']['itemListElement']);
         $this->assertSame('BreadcrumbList', $blocks[2]['@type']);
     }
 

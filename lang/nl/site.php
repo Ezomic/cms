@@ -32,7 +32,7 @@ return [
     'process_label' => 'Hoe ik werk',
     'process_headline' => 'Vier stappen, geen verrassingen.',
     'process_1_title' => 'Scopen',
-    'process_1_body' => 'Een kort gesprek om het probleem te begrijpen, gevolgd door een heldere offerte: vaste prijs of dagtarief.',
+    'process_1_body' => 'Een kort gesprek om het probleem te begrijpen, gevolgd door een heldere offerte. Wil je eerst zien of het werkt, dan staat er binnen enkele dagen een werkend prototype van de kern.',
     'process_2_title' => 'Plannen',
     'process_2_body' => 'We leggen de technische aanpak, mijlpalen en een realistische planning vast vóórdat er een regel code wordt geschreven.',
     'process_3_title' => 'Bouwen',
@@ -49,7 +49,7 @@ return [
     'contact_company' => 'Bedrijf (optioneel)',
     'contact_budget' => 'Geschat budget',
     'contact_budget_options' => [
-        '' => 'Nog niet zeker',
+        '' => 'Ik weet het nog niet',
         '< €5k' => '< €5k',
         '€5k–€20k' => '€5k–€20k',
         '€20k–€50k' => '€20k–€50k',
@@ -72,8 +72,6 @@ return [
     'meta_languages' => 'NL / EN',
     'meta_remote' => 'Beide, EU-breed',
     'meta_based_in' => 'Gevestigd in',
-    'meta_rate' => 'Tarief',
-    'meta_rate_value' => 'Op aanvraag',
     'meta_availability' => 'Beschikbaarheid',
     'meta_languages_label' => 'Talen',
     'meta_remote_label' => 'Remote / op locatie',
@@ -84,18 +82,23 @@ return [
     'service_1_title' => 'Webapplicatie',
     'service_1_body' => 'Full-stack productbuilds van ontwerp tot deployment: Laravel backend, Vue of Blade frontend, getest en klaar voor productie.',
     'service_1_items' => ['Nieuw SaaS-product of intern tool', 'Functies toevoegen aan bestaande app', 'Laravel upgrade of refactor'],
-    'service_1_price' => 'Op aanvraag',
 
     'service_2_title' => 'API & integraties',
     'service_2_body' => 'REST- of GraphQL-APIs, koppelingen met externe partijen en backend-services die de tools verbinden die je al gebruikt.',
     'service_2_items' => ['Betaling & abonnement (Stripe, Mollie)', 'CRM / ERP-synchronisatie', 'Webhooks en event-driven flows'],
-    'service_2_price' => 'Op aanvraag',
 
     'service_3_title' => 'Advies & review',
     'service_3_body' => 'Code review, architectuuradvies of een technische audit. Handig vóór een grote migratie, of als je gewoon een tweede mening wilt.',
     'service_3_items' => ['Architectuurreview', 'Code-kwaliteitsaudit', 'Technische sollicitatiescreen'],
-    'service_3_price' => 'Op aanvraag',
 
+    'service_4_title' => 'Proof of concept',
+    'service_4_body' => 'Een werkend prototype van één kernflow, binnen enkele dagen, om een idee te toetsen voordat je in een volledig product investeert. Het is een startpunt, geen af product: voor productie volgen nog tests, beveiliging en review.',
+    'service_4_items' => ['Proof of concept laten bouwen', 'MVP laten bouwen', 'Prototype webapplicatie'],
+    'service_4_cta' => 'Bespreek je idee →',
+
+    'ai_headline' => 'AI als werkwijze.',
+    'ai_p1' => 'AI-assistenten zijn onderdeel van hoe ik werk, geen dienst die ik verkoop. Ze schrijven concepten en nemen repetitief werk uit handen, zodat een proof of concept van één kernflow er binnen enkele dagen kan staan: AI-ondersteunde softwareontwikkeling met een mens die verantwoordelijk blijft. Ik bepaal de architectuur en lees en test elke regel zelf. Een proof of concept is geen af product: voor productie volgen nog tests, beveiliging en review.',
+    'ai_p2' => ':tracker, mijn eigen issuetracker, had op de eerste dag al een API, inloggen met een e-mailcode, CSV-import en -export en stond live in productie. Zo bouwde ik ook de registratie-app voor een school.',
     'footer_built' => 'Gebouwd in Nederland.',
 
     'lang_toggle' => 'EN',

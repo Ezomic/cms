@@ -138,6 +138,7 @@
       @endfor
     </div>
     <p class="after">{{ __('landing.how_outro') }}</p>
+    @include('partials.ai-note')
   </div>
 </section>
 

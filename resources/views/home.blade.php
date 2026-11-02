@@ -50,7 +50,7 @@
   @media(max-width:820px){.proc{grid-template-columns:1fr 1fr;gap:24px;}}
   @media(max-width:460px){.proc{grid-template-columns:1fr;}}
 
-  .svc{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .svc{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
   .sc{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:24px;display:flex;flex-direction:column;}
   .sc .n{width:32px;height:32px;border-radius:9px;background:var(--soft);color:var(--deep);font-family:var(--geo);font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;}
   .sc h3{font-size:17px;margin-bottom:9px;}
@@ -58,7 +58,7 @@
   .sc ul{list-style:none;}
   .sc li{font-size:13px;color:var(--muted);padding:8px 0;border-top:1px solid var(--line);}
   .sc li:first-of-type{border-top:none;}
-  .sc .price{margin-top:auto;padding-top:14px;border-top:1px solid var(--line-strong);font-family:var(--geo);font-weight:600;font-size:14px;color:var(--primary);}
+  .sc .cta-link{margin-top:auto;padding-top:14px;border-top:1px solid var(--line-strong);font-family:var(--geo);font-weight:600;font-size:14px;color:var(--primary);}
   @media(max-width:820px){.svc{grid-template-columns:1fr;}}
 
   .testi{position:relative;}
@@ -128,8 +128,6 @@
         <dd>{{ $profile->available ? __('site.meta_availability_now') : __('site.meta_availability_from', ['date' => $profile->availability_from]) }}</dd>
         <dt>{{ __('site.meta_based_in') }}</dt>
         <dd>{{ $profile->city }}, NL</dd>
-        <dt>{{ __('site.meta_rate') }}</dt>
-        <dd>{{ __('site.meta_rate_value') }}</dd>
         <dt>{{ __('site.meta_remote_label') }}</dt>
         <dd>{{ __('site.meta_remote') }}</dd>
       </dl>
@@ -188,6 +186,7 @@
         <div class="step"><div class="num">0{{ $i }}</div><h3>{{ __('site.process_'.$i.'_title') }}</h3><p>{{ __('site.process_'.$i.'_body') }}</p></div>
       @endfor
     </div>
+    @include('partials.ai-note')
   </div>
 </section>
 
@@ -195,13 +194,13 @@
   <div class="wrap">
     <div class="section-head"><span class="eyebrow">{{ __('site.services_label') }}</span><h2>{{ __('site.services_headline') }}</h2></div>
     <div class="svc">
-      @for ($i = 1; $i <= 3; $i++)
+      @for ($i = 1; $i <= 4; $i++)
         <div class="sc">
           <div class="n">{{ $i }}</div>
           <h3>{{ __('site.service_'.$i.'_title') }}</h3>
           <p>{{ __('site.service_'.$i.'_body') }}</p>
           <ul>@foreach (__('site.service_'.$i.'_items') as $item)<li>{{ $item }}</li>@endforeach</ul>
-          <div class="price">{{ __('site.service_'.$i.'_price') }}</div>
+          @if ($i === 4)<a class="cta-link" href="#contact">{{ __('site.service_4_cta') }}</a>@endif
         </div>
       @endfor
     </div>
@@ -301,7 +300,6 @@
 
     <div class="meta-box">
       <div><span>{{ __('site.meta_based_in') }}</span><strong>{{ $profile->city }}, NL</strong></div>
-      <div><span>{{ __('site.meta_rate') }}</span><strong>{{ __('site.meta_rate_value') }}</strong></div>
       <div><span>{{ __('site.meta_availability') }}</span><strong>{{ $profile->available ? __('site.meta_availability_now') : __('site.meta_availability_from', ['date' => $profile->availability_from]) }}</strong></div>
       <div><span>{{ __('site.meta_languages_label') }}</span><strong>{{ __('site.meta_languages') }}</strong></div>
       <div><span>{{ __('site.meta_remote_label') }}</span><strong>{{ __('site.meta_remote') }}</strong></div>

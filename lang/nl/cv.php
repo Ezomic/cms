@@ -2,7 +2,6 @@
 
 return [
     'country' => 'Nederland',
-    'rate_on_request' => 'Tarief op aanvraag',
 
     'section_about' => 'Over mij',
     'section_skills' => 'Vaardigheden & stack',
@@ -21,10 +20,10 @@ return [
     ],
 
     'available_heading' => 'Nu beschikbaar',
-    'available_body' => 'voor nieuwe opdrachten. Tarief op aanvraag. Gevestigd in :city, NL. Werkt remote in de EU en op locatie.',
+    'available_body' => 'voor nieuwe opdrachten. Gevestigd in :city, NL. Werkt remote in de EU en op locatie.',
     'get_in_touch' => 'Neem contact op',
-    'booked' => 'Momenteel volgeboekt. Tarief op aanvraag. Gevestigd in :city, NL.',
-    'booked_from' => 'Momenteel volgeboekt, beschikbaar vanaf :date. Tarief op aanvraag. Gevestigd in :city, NL.',
+    'booked' => 'Momenteel volgeboekt. Gevestigd in :city, NL.',
+    'booked_from' => 'Momenteel volgeboekt, beschikbaar vanaf :date. Gevestigd in :city, NL.',
 
     'generated' => 'Opgesteld :date',
     'filename_suffix' => 'cv',

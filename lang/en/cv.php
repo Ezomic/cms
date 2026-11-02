@@ -2,7 +2,6 @@
 
 return [
     'country' => 'Netherlands',
-    'rate_on_request' => 'Rate on request',
 
     'section_about' => 'About',
     'section_skills' => 'Skills & stack',
@@ -21,10 +20,10 @@ return [
     ],
 
     'available_heading' => 'Currently available',
-    'available_body' => 'for new projects. Rate on request. Based in :city, NL. Works remote EU-wide and on-site.',
+    'available_body' => 'for new projects. Based in :city, NL. Works remote EU-wide and on-site.',
     'get_in_touch' => 'Get in touch',
-    'booked' => 'Currently booked. Rate on request. Based in :city, NL.',
-    'booked_from' => 'Currently booked, available from :date. Rate on request. Based in :city, NL.',
+    'booked' => 'Currently booked. Based in :city, NL.',
+    'booked_from' => 'Currently booked, available from :date. Based in :city, NL.',
 
     'generated' => 'Generated :date',
     'filename_suffix' => 'cv',

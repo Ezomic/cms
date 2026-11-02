@@ -9,7 +9,7 @@ return [
 
     'hero_eyebrow' => 'Laravel developer · Remote',
     'hero_headline' => 'A remote Laravel developer for the Netherlands and Belgium.',
-    'hero_lead' => 'I design, build and maintain Laravel and Vue.js web applications for companies across the Netherlands and Belgium. I work fully remotely, as a freelancer and as your single point of contact.',
+    'hero_lead' => 'I design, build and maintain Laravel and Vue.js web applications for companies across the Netherlands and Belgium. I work fully remotely, as a freelancer and as your single point of contact. I work with AI assistants: from idea to a working proof of concept within days, reviewed and tested by me.',
     'hero_primary' => 'Start a project →',
     'hero_secondary' => 'See case studies',
 
@@ -51,7 +51,7 @@ return [
 
     'build_label' => 'What I build',
     'build_headline' => 'Laravel work, from new products to old codebases.',
-    'build_intro' => 'Clients usually come to me with one of these four jobs. I quote a fixed price or a day rate, whichever suits the project better.',
+    'build_intro' => 'Clients usually come to me with one of these five jobs. After a short call you get a clear quote.',
     'build_items' => [
         [
             'title' => 'Web applications and SaaS platforms',
@@ -68,6 +68,10 @@ return [
         [
             'title' => 'Laravel upgrades and maintenance',
             'body' => 'Moving an ageing application to a current Laravel and PHP version and keeping a long-lived codebase healthy.',
+        ],
+        [
+            'title' => 'Proof of concept and MVP',
+            'body' => 'A working prototype of one core flow, within days, to test an idea. A starting point for an MVP, not a finished product.',
         ],
     ],
 
