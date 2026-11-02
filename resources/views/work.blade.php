@@ -8,6 +8,7 @@
         : __('site.work_meta_description', ['name' => $profile->name]),
     'canonicalRoute' => $activeTag ? 'work.tag' : 'work.index',
     'canonicalParams' => $activeTag ? ['slug' => $tagSlugs->slug($activeTag)] : [],
+    'noindexFollow' => $thinTag ?? false,
 ])
 @if($activeTag)
 @include('partials.schema.breadcrumbs', ['items' => [
