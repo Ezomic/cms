@@ -499,7 +499,6 @@ class CvTest extends TestCase
 
         $this->assertStringContainsString('Over mij', $html);
         $this->assertStringContainsString('Opleiding', $html);
-        $this->assertStringContainsString('Tarief op aanvraag', $html);
         $this->assertStringContainsString('Nederland', $html);
         $this->assertStringNotContainsString('>About<', $html);
         $this->assertStringNotContainsString('>Education<', $html);
@@ -515,7 +514,6 @@ class CvTest extends TestCase
 
         $this->assertStringContainsString('About', $html);
         $this->assertStringContainsString('Education', $html);
-        $this->assertStringContainsString('Rate on request', $html);
         $this->assertStringNotContainsString('Opleiding', $html);
     }
 

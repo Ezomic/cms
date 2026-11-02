@@ -9,7 +9,7 @@ return [
 
     'hero_eyebrow' => 'Laravel developer · Remote',
     'hero_headline' => 'A remote Laravel developer for the Netherlands and Belgium.',
-    'hero_lead' => 'I design, build and maintain Laravel and Vue.js web applications for companies across the Netherlands and Belgium. I work fully remotely, as a freelancer and as your single point of contact.',
+    'hero_lead' => 'I design, build and maintain Laravel and Vue.js web applications for companies across the Netherlands and Belgium. I work fully remotely, as a freelancer and as your single point of contact. I work with AI assistants: from idea to a working proof of concept within days, reviewed and tested by me.',
     'hero_primary' => 'Start a project →',
     'hero_secondary' => 'See case studies',
 
@@ -51,23 +51,27 @@ return [
 
     'build_label' => 'What I build',
     'build_headline' => 'Laravel work, from new products to old codebases.',
-    'build_intro' => 'Clients usually come to me with one of these four jobs. I quote a fixed price or a day rate, whichever suits the project better.',
+    'build_intro' => 'Clients usually come to me with one of these five jobs. After a short call you get a clear quote.',
     'build_items' => [
         [
-            'title' => 'Web applications and SaaS platforms',
-            'body' => 'New products and internal tools built on Laravel, with a Vue.js or Blade front end.',
+            'title' => 'Web applications and internal tools',
+            'body' => 'A new product or a tool for your own team, from design to going live.',
         ],
         [
-            'title' => 'APIs and integrations',
-            'body' => 'REST APIs and connections to payment providers, CRM and ERP systems, webhooks and event-driven flows.',
+            'title' => 'Links with the systems you already use',
+            'body' => 'A link between your accounting and your web shop, so nobody retypes figures any more.',
         ],
         [
-            'title' => 'Data exchange between systems',
-            'body' => 'Mapping layers that convert incoming data to the format your system expects and refuse input that cannot be right.',
+            'title' => 'Exchanging data between systems',
+            'body' => 'Data arrives in the right format automatically and wrong input is refused.',
         ],
         [
             'title' => 'Laravel upgrades and maintenance',
-            'body' => 'Moving an ageing application to a current Laravel and PHP version and keeping a long-lived codebase healthy.',
+            'body' => 'Bringing an ageing application up to a current version and keeping an old codebase healthy.',
+        ],
+        [
+            'title' => 'Proof of concept and MVP',
+            'body' => 'A working prototype of the most important part within days, to test an idea. A starting point for an MVP, not a finished product.',
         ],
     ],
 

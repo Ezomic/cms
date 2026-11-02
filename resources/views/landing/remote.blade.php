@@ -132,6 +132,7 @@
         </div>
       @endforeach
     </div>
+    @include('partials.ai-note')
   </div>
 </section>
 

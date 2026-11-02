@@ -2,14 +2,14 @@
 
 return [
     'meta_title' => 'Freelance Laravel-ontwikkelaar Enschede | Robbin Thijssen',
-    'meta_description' => 'Laravel-ontwikkelaar nodig in Enschede of Twente? Ik bouw, upgrade en onderhoud Laravel- en Vue.js-applicaties, op locatie of remote. Vaste prijs of dagtarief.',
+    'meta_description' => 'Laravel-ontwikkelaar nodig in Enschede of Twente? Ik bouw, upgrade en onderhoud Laravel- en Vue.js-applicaties, op locatie of remote. Offerte na een gesprek.',
     'breadcrumb' => 'Laravel-ontwikkelaar in Enschede',
     'footer_link' => 'Laravel-ontwikkelaar in Enschede',
     'home_link' => 'Freelance Laravel-ontwikkelaar in Enschede →',
 
     'hero_eyebrow' => 'Laravel-ontwikkelaar · Enschede',
     'hero_headline' => 'Freelance Laravel-ontwikkelaar in Enschede en Twente.',
-    'hero_lead' => 'Ik ontwerp, bouw en onderhoud webapplicaties in Laravel en Vue.js voor bedrijven in Enschede, Hengelo, Almelo en de rest van Twente. Op locatie op aanvraag, anders remote, ook voor opdrachtgevers elders in Nederland.',
+    'hero_lead' => 'Ik ontwerp, bouw en onderhoud webapplicaties in Laravel en Vue.js voor bedrijven in Enschede, Hengelo, Almelo en de rest van Twente. Op locatie waar dat helpt, anders remote, ook voor opdrachtgevers elders in Nederland. Met AI-assistenten staat er van idee tot werkende proof of concept binnen enkele dagen iets om te beoordelen, door mij gereviewd en getest. Wil je een proof of concept laten bouwen? Dan beginnen we daar.',
     'hero_primary' => 'Start een project →',
     'hero_secondary' => 'Bekijk case studies',
 
@@ -29,34 +29,38 @@ return [
 
     'build_label' => 'Wat ik bouw',
     'build_headline' => 'Laravel-werk, van nieuwe producten tot oude codebases.',
-    'build_intro' => 'Meestal kom je met een van deze vijf opdrachten bij me terecht.',
+    'build_intro' => 'Meestal kom je met een van deze zes opdrachten bij me terecht.',
     'build_items' => [
         [
-            'title' => 'Webapplicaties en SaaS-platforms',
-            'body' => 'Nieuwe producten en interne tools op basis van Laravel, met een Vue.js- of Blade-frontend. Getest, gedeployed en gedocumenteerd, zodat de volgende ontwikkelaar er zo mee verder kan.',
+            'title' => 'Webapplicaties en interne tools',
+            'body' => 'Een nieuw product of een tool voor je eigen team, van ontwerp tot livegang. Getest, gedocumenteerd en zo overgedragen dat de volgende ontwikkelaar er direct mee verder kan.',
         ],
         [
-            'title' => 'API\'s en integraties',
-            'body' => 'REST-API\'s en koppelingen met de tools die je al gebruikt: betaalproviders zoals Stripe en Mollie, CRM- en ERP-synchronisatie, webhooks en event-driven flows.',
+            'title' => 'Koppelingen met de systemen die je al gebruikt',
+            'body' => 'Een koppeling tussen je boekhouding en je webshop, zodat niemand cijfers meer overtypt. Ook voor betalingen via Stripe of Mollie en voor je klantenbestand.',
         ],
         [
-            'title' => 'Data-uitwisseling tussen systemen',
-            'body' => 'Als twee systemen hetzelfde op verschillende manieren beschrijven, moet er iets vertalen. Ik bouw mappinglagen die binnenkomende data omzetten naar het formaat dat jouw systeem verwacht en invoer weigeren die niet kan kloppen.',
+            'title' => 'Gegevens uitwisselen tussen systemen',
+            'body' => 'Als twee systemen hetzelfde op een andere manier opschrijven, moet er iets vertalen. Ik zorg dat gegevens automatisch in het juiste formaat aankomen en dat foute invoer wordt geweigerd.',
         ],
         [
-            'title' => 'Laravel-upgrades en onderhoud',
-            'body' => 'Een verouderde applicatie naar een actuele Laravel- en PHP-versie brengen, refactoren en een langlevende codebase gezond houden terwijl die gewoon blijft draaien.',
+            'title' => 'Laravel upgrades en onderhoud',
+            'body' => 'Een verouderde applicatie bijwerken naar een actuele versie en een oude codebase gezond houden, terwijl alles gewoon blijft draaien.',
         ],
         [
-            'title' => 'Self-hosted tooling',
-            'body' => 'Software die je op je eigen server draait in plaats van huurt. Zelf werk ik ook zo, met een issuetracker en een single sign-on-server die ik zelf heb gebouwd en host.',
+            'title' => 'Software op je eigen server',
+            'body' => 'Software die je zelf host in plaats van huurt, zodat jij de baas blijft over je gegevens. Zelf werk ik ook zo, met een eigen tracker en een eigen inlogserver die ik zelf heb gebouwd en host.',
+        ],
+        [
+            'title' => 'Proof of concept en MVP',
+            'body' => 'Wil je een proof of concept laten bouwen om een idee te toetsen? Dan bouw ik een prototype webapplicatie van het belangrijkste onderdeel, binnen enkele dagen. Een startpunt voor een MVP, geen af product.',
         ],
     ],
 
     'how_label' => 'Hoe ik werk',
     'how_headline' => 'Vier stappen, geen verrassingen.',
     'how_intro' => 'Elk project volgt hetzelfde stramien, of het nu drie weken duurt of drie maanden.',
-    'how_outro' => 'Ik offreer een vaste prijs of een dagtarief, wat het best bij het project past.',
+    'how_outro' => 'Na een kort gesprek volgt een heldere offerte, passend bij wat je nodig hebt.',
 
     'proof_label' => 'Bewijs',
     'proof_headline' => 'Werk dat je kunt bekijken.',
@@ -65,7 +69,7 @@ return [
 
     'where_label' => 'Waar ik werk',
     'where_headline' => 'Enschede, Twente en de rest van Nederland.',
-    'where_p1' => 'Ik werk vanuit Enschede, dus een afspraak in Hengelo, Almelo of elders in Twente is een korte rit. Wil je een Laravel-ontwikkelaar die af en toe aan tafel zit, dan kom ik op locatie op aanvraag langs. Voor projecten verder weg werk ik remote, overal in Nederland en de EU.',
+    'where_p1' => 'Ik werk vanuit Enschede, dus een afspraak in Hengelo, Almelo of elders in Twente is een korte rit. Wil je een Laravel-ontwikkelaar die af en toe aan tafel zit, dan kom ik op locatie langs als dat helpt. Voor projecten verder weg werk ik remote, overal in Nederland en de EU.',
     'where_p2' => 'Planning, wekelijkse updates en een staging-link werken op afstand net zo goed als aan één tafel. Een kick-off, workshop of een paar dagen naast je team op jouw kantoor regel ik graag als dat helpt.',
     'where_places' => ['Enschede', 'Hengelo', 'Almelo', 'Twente', 'Nederland', 'Remote'],
 

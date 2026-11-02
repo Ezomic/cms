@@ -2,14 +2,14 @@
 
 return [
     'meta_title' => 'Freelance Laravel developer in Enschede | Robbin Thijssen',
-    'meta_description' => 'Need a Laravel developer in Enschede or Twente? I build, upgrade and maintain Laravel and Vue.js applications, on site or remote. Fixed price or day rate.',
+    'meta_description' => 'Need a Laravel developer in Enschede or Twente? I build, upgrade and maintain Laravel and Vue.js applications, on site or remote. Quote after a short call.',
     'breadcrumb' => 'Laravel developer in Enschede',
     'footer_link' => 'Laravel developer in Enschede',
     'home_link' => 'Freelance Laravel developer in Enschede →',
 
     'hero_eyebrow' => 'Laravel developer · Enschede',
     'hero_headline' => 'Freelance Laravel developer in Enschede and Twente.',
-    'hero_lead' => 'I design, build and maintain Laravel and Vue.js web applications for companies in Enschede, Hengelo, Almelo and across Twente. On site on request, otherwise remote.',
+    'hero_lead' => 'I design, build and maintain Laravel and Vue.js web applications for companies in Enschede, Hengelo, Almelo and across Twente. On site when it helps, otherwise remote. I work with AI assistants: from idea to a working proof of concept within days, reviewed and tested by me.',
     'hero_primary' => 'Start a project →',
     'hero_secondary' => 'See case studies',
 
@@ -29,34 +29,38 @@ return [
 
     'build_label' => 'What I build',
     'build_headline' => 'Laravel work, from new products to old codebases.',
-    'build_intro' => 'Clients usually come to me with one of these five jobs.',
+    'build_intro' => 'Clients usually come to me with one of these six jobs.',
     'build_items' => [
         [
-            'title' => 'Web applications and SaaS platforms',
-            'body' => 'New products and internal tools built on Laravel, with a Vue.js or Blade front end. Tested, deployed and documented, so the next developer can pick them up.',
+            'title' => 'Web applications and internal tools',
+            'body' => 'A new product or a tool for your own team, from design to going live. Tested, documented and handed over so the next developer can pick it up straight away.',
         ],
         [
-            'title' => 'APIs and integrations',
-            'body' => 'REST APIs and the connections to the tools you already use: payment providers such as Stripe and Mollie, CRM and ERP synchronisation, webhooks and event-driven flows.',
+            'title' => 'Links with the systems you already use',
+            'body' => 'A link between your accounting and your web shop, so nobody retypes figures any more. Also for payments through Stripe or Mollie and for your customer records.',
         ],
         [
-            'title' => 'Data exchange between systems',
-            'body' => 'When two systems describe the same thing in different ways, something has to translate. I build mapping layers that convert incoming data to the format your system expects and refuse input that cannot be right.',
+            'title' => 'Exchanging data between systems',
+            'body' => 'When two systems write down the same thing in different ways, something has to translate. I make sure data arrives in the right format automatically and that wrong input is refused.',
         ],
         [
             'title' => 'Laravel upgrades and maintenance',
-            'body' => 'Moving an ageing application to a current Laravel and PHP version, refactoring it, and keeping a long-lived codebase healthy while it keeps running.',
+            'body' => 'Bringing an ageing application up to a current version and keeping an old codebase healthy while everything keeps running.',
         ],
         [
-            'title' => 'Self-hosted tooling',
-            'body' => 'Software you run on your own server instead of renting it. I work this way myself, with an issue tracker and a single sign-on server that I built and host.',
+            'title' => 'Software on your own server',
+            'body' => 'Software you host yourself instead of renting, so you stay in control of your data. I work this way myself, with my own tracker and my own login server that I built and host.',
+        ],
+        [
+            'title' => 'Proof of concept and MVP',
+            'body' => 'A working prototype of the most important part within days, to test an idea before you commit to a full build. A starting point for an MVP, not a finished product.',
         ],
     ],
 
     'how_label' => 'How I work',
     'how_headline' => 'Four steps, no surprises.',
     'how_intro' => 'Every project follows the same outline, whether it takes three weeks or three months.',
-    'how_outro' => 'I quote a fixed price or a day rate, whichever suits the project better.',
+    'how_outro' => 'After a short call you get a clear quote that fits what you need.',
 
     'proof_label' => 'Proof',
     'proof_headline' => 'Work you can look at.',
@@ -65,7 +69,7 @@ return [
 
     'where_label' => 'Where I work',
     'where_headline' => 'Enschede, Twente and the rest of the Netherlands.',
-    'where_p1' => 'I work from Enschede, so a meeting in Hengelo, Almelo or anywhere else in Twente is a short drive, and I can work on site on request. For projects further away I work remotely, anywhere in the Netherlands and the EU.',
+    'where_p1' => 'I work from Enschede, so a meeting in Hengelo, Almelo or anywhere else in Twente is a short drive, and I can work on site when that helps. For projects further away I work remotely, anywhere in the Netherlands and the EU.',
     'where_p2' => 'Planning, weekly check-ins and a staging link you can follow work the same from a distance as they do across one table. A kick-off, a workshop or a few days alongside your team at your office is easy to arrange when it helps.',
     'where_places' => ['Enschede', 'Hengelo', 'Almelo', 'Twente', 'The Netherlands', 'Remote'],
 

@@ -63,7 +63,6 @@
       @if($profile->email)<span><a href="mailto:{{ $profile->email }}">{{ $profile->email }}</a></span>@endif
       @if($profile->linkedin_url)<span><a href="{{ $profile->linkedin_url }}">{{ $profile->linkedin_url }}</a></span>@endif
       @if($profile->github_url)<span><a href="{{ $profile->github_url }}">{{ $profile->github_url }}</a></span>@endif
-      <span>{{ __('cv.rate_on_request') }}</span>
     </div>
   </div>
 
