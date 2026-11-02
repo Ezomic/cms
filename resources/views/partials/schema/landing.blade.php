@@ -14,6 +14,14 @@ $landingSchema = [
             'description' => __('landing.meta_description'),
             'provider'    => ['@id' => route('home').'#organization'],
             'areaServed'  => $areaServed,
+            'availableChannel' => [
+                '@type' => 'ServiceChannel',
+                'serviceLocation' => [
+                    '@type'   => 'Place',
+                    'name'    => $profile->city,
+                    'address' => ['@type' => 'PostalAddress', 'addressLocality' => $profile->city, 'addressCountry' => 'NL'],
+                ],
+            ],
             'hasOfferCatalog' => [
                 '@type' => 'OfferCatalog',
                 'name'  => __('landing.build_headline'),

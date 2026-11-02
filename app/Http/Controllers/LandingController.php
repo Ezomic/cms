@@ -15,7 +15,7 @@ class LandingController extends Controller
      * The landing copy lives in lang files, so no updated_at tracks it.
      * Bump this date whenever the copy or layout changes (sitemap lastmod).
      */
-    public const COPY_UPDATED_AT = '2026-10-13';
+    public const COPY_UPDATED_AT = '2026-11-02';
 
     public const PROOF_SLUGS = ['bluevi', 'data-exchange-portal', 'bioscape'];
 
