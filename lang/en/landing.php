@@ -8,8 +8,8 @@ return [
     'home_link' => 'Freelance Laravel developer in Enschede →',
 
     'hero_eyebrow' => 'Laravel developer · Enschede',
-    'hero_headline' => 'A freelance Laravel developer in Enschede.',
-    'hero_lead' => 'I design, build and maintain Laravel and Vue.js web applications for companies in Enschede, across Twente and further afield, on site or remotely.',
+    'hero_headline' => 'Freelance Laravel developer in Enschede and Twente.',
+    'hero_lead' => 'I design, build and maintain Laravel and Vue.js web applications for companies in Enschede, Hengelo, Almelo and across Twente. On site on request, otherwise remote.',
     'hero_primary' => 'Start a project →',
     'hero_secondary' => 'See case studies',
 
@@ -65,9 +65,20 @@ return [
 
     'where_label' => 'Where I work',
     'where_headline' => 'Enschede, Twente and the rest of the Netherlands.',
-    'where_p1' => 'I am based in Enschede, so a meeting in Hengelo, Almelo or anywhere else in Twente is a short drive. For projects further away, remote works just as well: I work on site or remotely, anywhere in the EU.',
-    'where_p2' => 'Planning, weekly check-ins and a staging link you can follow work the same from a distance as they do across one table. A kick-off or workshop at your office is easy to arrange when it helps.',
+    'where_p1' => 'I work from Enschede, so a meeting in Hengelo, Almelo or anywhere else in Twente is a short drive, and I can work on site on request. For projects further away I work remotely, anywhere in the Netherlands and the EU.',
+    'where_p2' => 'Planning, weekly check-ins and a staging link you can follow work the same from a distance as they do across one table. A kick-off, a workshop or a few days alongside your team at your office is easy to arrange when it helps.',
     'where_places' => ['Enschede', 'Hengelo', 'Almelo', 'Twente', 'The Netherlands', 'Remote'],
+
+    'details_label' => 'Business details',
+    'details_headline' => 'Who you would hire.',
+    'details_name' => 'Name',
+    'details_name_value' => 'Thijssen Software, Robbin Thijssen',
+    'details_based' => 'Based in',
+    'details_area' => 'Service area',
+    'details_area_value' => 'Enschede, Hengelo, Almelo, Twente and remote',
+    'details_country' => 'the Netherlands',
+    'details_kvk' => 'Chamber of Commerce',
+    'details_email' => 'Email',
 
     'cta_label' => 'Get in touch',
     'cta_headline' => 'Have a Laravel project in Twente?',

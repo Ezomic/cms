@@ -64,6 +64,12 @@
 
   .places{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;}
 
+  .details{font-style:normal;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:22px 24px;}
+  .details dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:16px;}
+  .details dt:first-child{margin-top:0;}
+  .details dd{font-family:var(--geo);font-weight:600;font-size:15px;margin-top:3px;}
+  .details a{color:var(--primary);}
+
   section.cta{border-bottom:none;}
   .cta-inner{display:flex;justify-content:space-between;align-items:center;gap:34px;flex-wrap:wrap;}
   .cta h2{font-size:clamp(1.8rem,3.6vw,2.6rem);max-width:18ch;margin:12px 0 16px;}
@@ -169,6 +175,21 @@
       </div>
       <div class="places">@foreach (__('landing.where_places') as $place)<span class="tag">{{ $place }}</span>@endforeach</div>
     </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap split">
+    <div class="section-head"><span class="eyebrow">{{ __('landing.details_label') }}</span><h2>{{ __('landing.details_headline') }}</h2></div>
+    <address class="details">
+      <dl>
+        <dt>{{ __('landing.details_name') }}</dt><dd>{{ __('landing.details_name_value') }}</dd>
+        @if ($profile->city)<dt>{{ __('landing.details_based') }}</dt><dd>{{ $profile->city }}, {{ __('landing.details_country') }}</dd>@endif
+        <dt>{{ __('landing.details_area') }}</dt><dd>{{ __('landing.details_area_value') }}</dd>
+        @if ($profile->kvk_number)<dt>{{ __('landing.details_kvk') }}</dt><dd>KVK {{ $profile->kvk_number }}</dd>@endif
+        @if ($profile->email)<dt>{{ __('landing.details_email') }}</dt><dd><a href="mailto:{{ $profile->email }}">{{ $profile->email }}</a></dd>@endif
+      </dl>
+    </address>
   </div>
 </section>
 

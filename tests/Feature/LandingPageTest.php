@@ -52,7 +52,7 @@ class LandingPageTest extends TestCase
         $response->assertSee('<title>Freelance Laravel developer in Enschede | Robbin Thijssen</title>', false);
         $response->assertSee('<link rel="canonical" href="'.route('landing.enschede').'">', false);
         $response->assertSee('<meta property="og:image" content="'.route('og.home').'">', false);
-        $response->assertSee('<h1>A freelance Laravel developer in Enschede.</h1>', false);
+        $response->assertSee('<h1>Freelance Laravel developer in Enschede and Twente.</h1>', false);
         $response->assertSee('Hengelo');
         $response->assertSee('Almelo');
         $response->assertSee('Twente');
@@ -67,7 +67,55 @@ class LandingPageTest extends TestCase
         $response->assertSee('<title>Freelance Laravel-ontwikkelaar Enschede | Robbin Thijssen</title>', false);
         $response->assertSee('<link rel="canonical" href="'.route('nl.landing.enschede').'">', false);
         $response->assertSee('<meta property="og:locale" content="nl_NL">', false);
-        $response->assertSee('Freelance Laravel-ontwikkelaar in Enschede.');
+        $response->assertSee('<h1>Freelance Laravel-ontwikkelaar in Enschede en Twente.</h1>', false);
+    }
+
+    public function test_the_address_block_shows_only_facts_from_the_profile(): void
+    {
+        Profile::current()->update(['city' => 'Enschede', 'kvk_number' => '87417863', 'email' => 'info@thijssensoftware.nl']);
+
+        $this->get('/laravel-developer-enschede')
+            ->assertSee('<address', false)
+            ->assertSee('KVK 87417863')
+            ->assertSee('on request');
+
+        $this->get('/nl/laravel-ontwikkelaar-enschede')
+            ->assertSee('<address', false)
+            ->assertSee('Thijssen Software')
+            ->assertSee('Robbin Thijssen')
+            ->assertSee('KVK 87417863')
+            ->assertSee('info@thijssensoftware.nl')
+            ->assertSee('Enschede, Hengelo, Almelo, Twente')
+            ->assertDontSee('Straat')
+            ->assertDontSee('tel:', false);
+    }
+
+    public function test_the_address_block_leaves_out_what_the_profile_does_not_have(): void
+    {
+        Profile::current()->update(['kvk_number' => null, 'email' => null]);
+
+        $this->get('/laravel-developer-enschede')
+            ->assertOk()
+            ->assertDontSee('KVK')
+            ->assertDontSee('mailto:', false);
+    }
+
+    public function test_the_page_says_on_site_work_is_possible_on_request_in_both_languages(): void
+    {
+        $this->get('/laravel-developer-enschede')->assertSee('on site on request', false);
+        $this->get('/nl/laravel-ontwikkelaar-enschede')
+            ->assertSee('op locatie', false)
+            ->assertSee('op aanvraag', false);
+    }
+
+    public function test_the_service_schema_names_the_service_location(): void
+    {
+        Profile::current()->update(['city' => 'Enschede']);
+
+        $service = $this->jsonLd($this->get('/laravel-developer-enschede')->getContent())[1]['@graph'][0];
+
+        $this->assertSame('Enschede', $service['availableChannel']['serviceLocation']['address']['addressLocality']);
+        $this->assertSame('NL', $service['availableChannel']['serviceLocation']['address']['addressCountry']);
     }
 
     public function test_each_locale_does_not_answer_on_the_other_locales_slug(): void

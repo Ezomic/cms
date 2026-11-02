@@ -137,7 +137,7 @@ class SitemapTest extends TestCase
     public function test_landing_lastmod_is_the_newer_of_the_copy_date_and_its_proof_projects(): void
     {
         $this->stamp('profile', Profile::current()->id, '2026-01-01 10:00:00');
-        $this->assertSame('2026-10-13', $this->lastmod(route('landing.enschede')));
+        $this->assertSame('2026-11-02', $this->lastmod(route('landing.enschede')));
 
         $project = Project::create(['name' => 'BlueVi', 'slug' => 'bluevi', 'published' => true, 'sort_order' => 0]);
         $this->stamp('projects', $project->id, '2027-02-01 10:00:00');
