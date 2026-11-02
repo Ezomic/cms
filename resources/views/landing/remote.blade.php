@@ -21,7 +21,8 @@
   .hero .eyebrow{display:block;margin:0 0 14px;}
   .hero h1{font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.05;max-width:18ch;}
   .hero .sub{margin-top:22px;font-size:18px;color:var(--muted);max-width:50ch;}
-  .hero .acts{margin-top:30px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+  .hero .hero-book{margin-top:30px;}
+  .hero .acts{margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
   .facts{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:22px 24px;}
   .facts dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:16px;}
   .facts dt:first-child{margin-top:0;}
@@ -82,6 +83,7 @@
         <span class="eyebrow">{{ __('remote.hero_eyebrow') }}</span>
         <h1>{{ __('remote.hero_headline') }}</h1>
         <p class="sub">{{ __('remote.hero_lead') }}</p>
+        <div class="hero-book">@include('partials.book-call', ['contactHref' => localized_route('home').'#contact'])</div>
         <div class="acts">
           <a class="btn pri" href="{{ localized_route('home') }}#contact">{{ __('remote.hero_primary') }}</a>
           <a class="btn sec" href="{{ localized_route('work.index') }}">{{ __('remote.hero_secondary') }}</a>

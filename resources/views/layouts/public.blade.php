@@ -39,6 +39,8 @@
   .btn.sec{background:var(--surface);color:var(--ink);border-color:var(--line-strong);}
   .btn.sec:hover{border-color:var(--ink);}
   .btn.sm{padding:9px 15px;font-size:13px;}
+  .book-call-wrap{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;}
+  .book-call-note{font-family:var(--mono);font-size:12px;color:var(--muted);}
 
   /* nav */
   nav.site{position:sticky;top:0;z-index:50;background:rgba(251,247,239,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}

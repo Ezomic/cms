@@ -27,7 +27,8 @@
   .hero .sub{margin-top:22px;font-size:18px;color:var(--muted);max-width:48ch;}
   .hero .sub-link{display:inline-block;margin-top:14px;font-family:var(--mono);font-size:13px;color:var(--primary);}
   .hero .sub-link:hover{color:var(--deep);}
-  .hero .acts{margin-top:30px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+  .hero .hero-book{margin-top:30px;}
+  .hero .acts{margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
   .facts{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:22px 24px;}
   .facts dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:16px;}
   .facts dt:first-child{margin-top:0;}
@@ -75,6 +76,7 @@
   .contact-inner{display:grid;grid-template-columns:1.3fr .9fr;gap:44px;align-items:start;}
   .contact h2{font-size:clamp(1.8rem,3.6vw,2.6rem);max-width:16ch;margin:12px 0 16px;}
   .contact .lead{color:var(--muted);font-size:17px;max-width:44ch;margin-bottom:26px;}
+  .contact-book{margin-bottom:26px;}
   .contact-row{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-top:1px solid var(--line);font-family:var(--mono);font-size:13.5px;transition:padding-left .15s;}
   .contact-row:hover{padding-left:6px;color:var(--primary);}
   .contact-row span{color:var(--faint);font-size:12px;}
@@ -117,6 +119,7 @@
         <p class="sub">{{ $profile->hero_subtext }}</p>
         <a class="sub-link" href="{{ localized_route('landing.enschede') }}">{{ __('landing.home_link') }}</a>
         <a class="sub-link" href="{{ localized_route('landing.remote') }}">{{ __('remote.home_link') }}</a>
+        <div class="hero-book">@include('partials.book-call')</div>
         <div class="acts">
           <a class="btn pri" href="#contact">{{ __('site.hero_actions_primary') }}</a>
           <a class="btn sec" href="{{ localized_route('work.index') }}">{{ __('site.hero_actions_secondary') }}</a>
@@ -207,6 +210,22 @@
   </div>
 </section>
 
+<section id="start" class="block">
+  <div class="wrap">
+    <div class="section-head"><span class="eyebrow">{{ __('site.start_label') }}</span><h2>{{ __('site.start_headline') }}</h2></div>
+    <div class="svc">
+      @for ($i = 1; $i <= 2; $i++)
+        <div class="sc start">
+          <h3>{{ __('site.start_'.$i.'_title') }}</h3>
+          <p>{{ __('site.start_'.$i.'_body') }}</p>
+          <ul>@foreach (__('site.start_'.$i.'_items') as $item)<li>{{ $item }}</li>@endforeach</ul>
+          <a class="cta-link" href="#contact">{{ __('site.start_'.$i.'_cta') }}</a>
+        </div>
+      @endfor
+    </div>
+  </div>
+</section>
+
 @if ($testimonials->isNotEmpty())
 <section class="block">
   <div class="wrap">
@@ -238,6 +257,8 @@
       <span class="eyebrow">{{ __('site.contact_label') }}</span>
       <h2>{{ __('site.contact_headline') }}</h2>
       <p class="lead">{{ __('site.contact_lead') }}</p>
+
+      <div class="contact-book">@include('partials.book-call')</div>
 
       <div class="contact-links">
         @if ($profile->email)

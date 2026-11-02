@@ -43,11 +43,13 @@ return [
     'contact_label' => 'Get in touch',
     'contact_headline' => 'Have a project in mind?',
     'contact_lead' => 'Tell me what you\'re building and what\'s not working yet. I usually reply within one business day.',
+    'book_call' => 'Book a 20 minute intro call',
+    'book_call_promise' => 'I reply within one working day.',
     'contact_form_title' => 'Or send a message directly',
     'contact_name' => 'Name',
     'contact_email' => 'Email',
     'contact_company' => 'Company (optional)',
-    'contact_budget' => 'Estimated budget',
+    'contact_budget' => 'Estimated budget (optional)',
     'contact_budget_options' => [
         '' => 'I do not know yet',
         '< €5k' => '< €5k',
@@ -95,6 +97,19 @@ return [
     'service_4_body' => 'A working prototype of the most important part within days, to test an idea before you invest in a full product. It is a starting point, not a finished product: real use still needs testing, security and review.',
     'service_4_items' => ['Proof of concept build', 'MVP build', 'Web application prototype'],
     'service_4_cta' => 'Talk through your idea →',
+
+    'start_label' => 'Where to start',
+    'start_headline' => 'Two safe first steps.',
+
+    'start_1_title' => 'Idea session',
+    'start_1_body' => 'Spend half a day together, in person or online, sharpening your idea. By the end you have a clear plan and a rough prototype you can click through. You see what it will do before you invest in a full product.',
+    'start_1_items' => ['Your idea worked out in plain words', 'A plan for what gets built first', 'A rough prototype to look at and show others'],
+    'start_1_cta' => 'Book an idea session →',
+
+    'start_2_title' => 'Stuck project?',
+    'start_2_body' => 'Is your app not working, or did the party that built it disappear? I quickly read my way through code I have never seen and give you an honest assessment: what works, what does not and what the best next step is.',
+    'start_2_items' => ['An app that does not work, or no longer works', 'A supplier who stopped or disappeared', 'An honest assessment first, a proposal after'],
+    'start_2_cta' => 'Tell me what is going on →',
 
     'ai_headline' => 'AI as a working method.',
     'ai_p1' => 'I work with AI assistants, but I do not sell them as a service. They take over the routine work, so a working prototype of the most important part can be running within days. I decide how it is put together and read and test every line myself. A proof of concept is not a finished product: real use still needs testing, security and review.',

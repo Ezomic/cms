@@ -17,6 +17,8 @@ $personSchema = [
             ['@type' => 'Offer', 'areaServed' => $areaServed, 'itemOffered' => ['@type' => 'Service', 'name' => 'Full-stack web application development', 'areaServed' => $areaServed]],
             ['@type' => 'Offer', 'areaServed' => $areaServed, 'itemOffered' => ['@type' => 'Service', 'name' => 'API design and integration', 'areaServed' => $areaServed]],
             ['@type' => 'Offer', 'areaServed' => $areaServed, 'itemOffered' => ['@type' => 'Service', 'name' => 'Technical advisory and code review', 'areaServed' => $areaServed]],
+            ['@type' => 'Offer', 'areaServed' => $areaServed, 'itemOffered' => ['@type' => 'Service', 'name' => 'Idea session: scoping workshop with plan and prototype', 'areaServed' => $areaServed]],
+            ['@type' => 'Offer', 'areaServed' => $areaServed, 'itemOffered' => ['@type' => 'Service', 'name' => 'Rescue and assessment of a stuck software project', 'areaServed' => $areaServed]],
         ],
     ],
 ];
