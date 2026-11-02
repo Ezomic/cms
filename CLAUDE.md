@@ -438,6 +438,13 @@ php artisan test --filter ProjectTest
     URLs. Within one test, an English request after a Dutch one renders Dutch. Request English
     first, Dutch last.
 
+15. **The "book an intro call" button reads one config value**: `config('site.booking_url')`
+    (env `BOOKING_URL`, default null), rendered by `partials/book-call.blade.php` in the home hero,
+    beside the contact form and in both landing heroes. Set, it links out (new tab); null, it
+    scrolls to `#contact`. It stays unset until Chronos has a public booking page (CHRON-75). Below
+    the services grid, `#start` ("Zo begin je") holds the two first-step cards (idea session and
+    stuck-project rescue), kept out of the four-card grid on purpose (CMS-148).
+
 ## Tracker
 
 File tickets under the **CMS** ("Portfolio CMS") project via the `create-linear-ticket` skill

@@ -43,11 +43,13 @@ return [
     'contact_label' => 'Neem contact op',
     'contact_headline' => 'Een project in gedachten?',
     'contact_lead' => 'Vertel me wat je bouwt en wat er niet werkt. Ik reageer doorgaans binnen één werkdag.',
+    'book_call' => 'Plan een kennismaking van 20 minuten',
+    'book_call_promise' => 'Ik reageer binnen één werkdag.',
     'contact_form_title' => 'Of stuur direct een bericht',
     'contact_name' => 'Naam',
     'contact_email' => 'E-mail',
     'contact_company' => 'Bedrijf (optioneel)',
-    'contact_budget' => 'Geschat budget',
+    'contact_budget' => 'Geschat budget (optioneel)',
     'contact_budget_options' => [
         '' => 'Ik weet het nog niet',
         '< €5k' => '< €5k',
@@ -95,6 +97,19 @@ return [
     'service_4_body' => 'Binnen enkele dagen een werkend prototype van het belangrijkste onderdeel, om een idee te toetsen voordat je in een volledig product investeert. Het is een startpunt, geen af product: voor echt gebruik volgen nog testen, beveiliging en controle.',
     'service_4_items' => ['Proof of concept laten bouwen', 'MVP laten bouwen', 'Prototype webapplicatie'],
     'service_4_cta' => 'Bespreek je idee →',
+
+    'start_label' => 'Zo begin je',
+    'start_headline' => 'Twee veilige eerste stappen.',
+
+    'start_1_title' => 'Idee-sessie',
+    'start_1_body' => 'Een dagdeel samen aan tafel of online om je idee scherp te krijgen. Na afloop heb je een duidelijk plan en een ruw prototype dat je kunt aanklikken. Zo zie je wat het gaat doen voordat je in een volledig product investeert.',
+    'start_1_items' => ['Je idee in gewone woorden uitgewerkt', 'Een plan met wat er eerst gebouwd wordt', 'Een ruw prototype om te bekijken en te laten zien'],
+    'start_1_cta' => 'Plan een idee-sessie →',
+
+    'start_2_title' => 'Vastgelopen project?',
+    'start_2_body' => 'Werkt je app niet, of is de partij die hem bouwde verdwenen? Ik lees code die ik nog niet ken snel door en geef je een eerlijk oordeel: wat werkt, wat niet en wat de beste vervolgstap is.',
+    'start_2_items' => ['Een app die niet of niet meer werkt', 'Een leverancier die is gestopt of verdwenen', 'Eerst een eerlijk oordeel, dan pas een voorstel'],
+    'start_2_cta' => 'Vertel wat er speelt →',
 
     'ai_headline' => 'AI als werkwijze.',
     'ai_p1' => 'Ik werk met AI-assistenten, maar ik verkoop ze niet als dienst. Ze nemen het routinewerk uit handen, zodat er binnen enkele dagen een werkend prototype van het belangrijkste onderdeel kan staan: AI-ondersteunde softwareontwikkeling waarbij ik verantwoordelijk blijf. Ik bepaal hoe het in elkaar zit en lees en test elke regel zelf. Een proof of concept is geen af product: voor echt gebruik volgen nog testen, beveiliging en controle.',
