@@ -17,7 +17,7 @@ class TagUrlTest extends TestCase
 
     public function test_every_tag_url_in_the_sitemap_is_requestable_and_has_no_dot_segment(): void
     {
-        $this->seedProjectPerTag();
+        $this->seedProjectPerTag(copies: Project::MIN_PROJECTS_FOR_INDEXED_TAG);
 
         $urls = $this->sitemapTagUrls();
 
@@ -52,6 +52,7 @@ class TagUrlTest extends TestCase
     public function test_dotted_tag_url_has_the_dot_stripped(): void
     {
         Project::create(['name' => 'Overdub', 'tags' => '.NET 9', 'published' => true, 'sort_order' => 0]);
+        $this->seedFillers('.NET 9');
 
         $this->assertContains(route('work.tag', 'NET 9'), $this->sitemapTagUrls());
         $this->assertContains(route('nl.work.tag', 'NET 9'), $this->sitemapTagUrls());
@@ -61,6 +62,7 @@ class TagUrlTest extends TestCase
     public function test_existing_non_dot_tag_urls_do_not_change(): void
     {
         Project::create(['name' => 'One', 'tags' => 'Laravel, Tailwind CSS, a.b, Übung', 'published' => true, 'sort_order' => 0]);
+        $this->seedFillers('Laravel, Tailwind CSS, a.b, Übung');
 
         $urls = $this->sitemapTagUrls();
 
@@ -107,15 +109,24 @@ class TagUrlTest extends TestCase
         $this->get(route('work.index'))->assertSee('href="'.route('work.tag', 'NET 9').'"', false);
     }
 
-    private function seedProjectPerTag(): void
+    private function seedProjectPerTag(int $copies = 1): void
     {
         foreach (self::TAGS as $i => $tag) {
-            Project::create([
-                'name' => $this->projectName($i),
-                'tags' => $tag,
-                'published' => true,
-                'sort_order' => $i,
-            ]);
+            foreach (range(1, $copies) as $copy) {
+                Project::create([
+                    'name' => $this->projectName($i).($copy > 1 ? "c{$copy}" : ''),
+                    'tags' => $tag,
+                    'published' => true,
+                    'sort_order' => $i,
+                ]);
+            }
+        }
+    }
+
+    private function seedFillers(string $tags): void
+    {
+        foreach (range(2, Project::MIN_PROJECTS_FOR_INDEXED_TAG) as $n) {
+            Project::create(['name' => "Filler {$n}", 'tags' => $tags, 'published' => true, 'sort_order' => 10 + $n]);
         }
     }
 

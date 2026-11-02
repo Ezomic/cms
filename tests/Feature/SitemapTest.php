@@ -22,6 +22,7 @@ class SitemapTest extends TestCase
             'published' => true,
             'sort_order' => 0,
         ]);
+        $this->fillTag('Laravel');
 
         $response = $this->get('/sitemap.xml');
 
@@ -117,12 +118,23 @@ class SitemapTest extends TestCase
     {
         $laravel = Project::create(['name' => 'Laravel one', 'tags' => 'Laravel', 'published' => true, 'sort_order' => 0]);
         $vue = Project::create(['name' => 'Vue one', 'tags' => 'Vue', 'published' => true, 'sort_order' => 1]);
+        $this->fillTag('Laravel', 2);
+        $this->fillTag('Vue', 2);
         $this->stamp('projects', $laravel->id, '2026-02-01 10:00:00');
         $this->stamp('projects', $vue->id, '2026-07-01 10:00:00');
+        DB::table('projects')->where('id', '!=', $laravel->id)->where('tags', 'Laravel')->update(['updated_at' => '2026-01-01 10:00:00']);
+        DB::table('projects')->where('id', '!=', $vue->id)->where('tags', 'Vue')->update(['updated_at' => '2026-01-01 10:00:00']);
 
         $this->assertSame('2026-02-01', $this->lastmod(route('work.tag', 'Laravel')));
         $this->assertSame('2026-07-01', $this->lastmod(route('work.tag', 'Vue')));
         $this->assertSame('2026-02-01', $this->lastmod(route('project.show', $laravel->slug)));
+    }
+
+    private function fillTag(string $tag, int $extra = 2): void
+    {
+        foreach (range(1, $extra) as $n) {
+            Project::create(['name' => "{$tag} filler {$n}", 'tags' => $tag, 'published' => true, 'sort_order' => 50 + $n]);
+        }
     }
 
     public function test_docs_lastmod_includes_skills_and_projects(): void

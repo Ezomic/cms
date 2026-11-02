@@ -9,6 +9,8 @@
 <meta name="description" content="{{ $description }}">
 @if ($noindex ?? false)
 <meta name="robots" content="noindex, nofollow">
+@elseif ($noindexFollow ?? false)
+<meta name="robots" content="noindex, follow">
 @endif
 <meta property="og:title" content="{{ $title }}">
 <meta property="og:description" content="{{ $description }}">

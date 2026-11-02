@@ -16,6 +16,9 @@ class SitemapController extends Controller
 
         $tagSlugs = TagSlugs::from($tags);
 
+        $projectsPerTag = $projects->flatMap(fn (Project $project) => array_unique($project->tagList()))->countBy();
+        $indexedTags = $tags->filter(fn (string $tag): bool => $projectsPerTag[$tag] >= Project::MIN_PROJECTS_FOR_INDEXED_TAG);
+
         $entries = collect([
             ['route' => 'home', 'params' => [], 'lastmod' => $lastModified->home()],
             ['route' => 'landing.enschede', 'params' => [], 'lastmod' => $lastModified->landing()],
@@ -23,7 +26,7 @@ class SitemapController extends Controller
             ['route' => 'work.index', 'params' => [], 'lastmod' => $lastModified->work()],
             ['route' => 'docs', 'params' => [], 'lastmod' => $lastModified->docs()],
         ])
-            ->concat($tags->map(fn (string $tag) => ['route' => 'work.tag', 'params' => ['slug' => $tagSlugs->slug($tag)], 'lastmod' => $lastModified->tag($projects, $tag)]))
+            ->concat($indexedTags->map(fn (string $tag) => ['route' => 'work.tag', 'params' => ['slug' => $tagSlugs->slug($tag)], 'lastmod' => $lastModified->tag($projects, $tag)]))
             ->concat($projects->map(fn (Project $project) => ['route' => 'project.show', 'params' => ['project' => $project->slug], 'lastmod' => $project->updated_at]));
 
         return response()

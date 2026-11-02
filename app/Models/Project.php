@@ -16,6 +16,8 @@ class Project extends Model
 {
     use BustsHomeCache, HasLocalizedContent, LogsActivity, SoftDeletes;
 
+    public const MIN_PROJECTS_FOR_INDEXED_TAG = 3;
+
     protected $fillable = [
         'name', 'image', 'image_alt', 'slug', 'github_url', 'client_name', 'year', 'description', 'outcome', 'body', 'published', 'featured', 'tags', 'sort_order', 'meta_title', 'meta_description',
         'description_nl', 'outcome_nl', 'body_nl', 'image_alt_nl', 'meta_title_nl', 'meta_description_nl',

@@ -156,6 +156,7 @@ class HomeController extends Controller
             'tags' => $tags,
             'tagSlugs' => $tagSlugs,
             'activeTag' => $tag,
+            'thinTag' => $projects->count() < Project::MIN_PROJECTS_FOR_INDEXED_TAG,
         ]);
     }
 
