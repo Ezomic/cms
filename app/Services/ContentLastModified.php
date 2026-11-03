@@ -7,6 +7,7 @@ use App\Models\Profile;
 use App\Models\Project;
 use App\Models\Skill;
 use App\Models\Testimonial;
+use App\Support\LandingPages;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
@@ -69,6 +70,16 @@ class ContentLastModified
             $this->profile(),
             $this->newest(Project::published()->whereIn('slug', LandingController::PROOF_SLUGS)),
             CarbonImmutable::parse(LandingController::REMOTE_COPY_UPDATED_AT),
+        );
+    }
+
+    public function page(string $key): ?CarbonInterface
+    {
+        $slugs = LandingPages::projectSlugs($key);
+
+        return $this->latest(
+            $slugs === [] ? null : $this->newest(Project::published()->whereIn('slug', $slugs)),
+            LandingPages::copyUpdatedAt(),
         );
     }
 

@@ -30,6 +30,12 @@ class PricingAndAiCopyTest extends TestCase
             'enschede nl' => ['/nl/laravel-ontwikkelaar-enschede'],
             'remote en' => ['/laravel-developer-remote'],
             'remote nl' => ['/nl/laravel-ontwikkelaar-remote'],
+            'go en' => ['/freelance-golang-developer'],
+            'go nl' => ['/nl/freelance-go-ontwikkelaar'],
+            'python en' => ['/freelance-python-developer'],
+            'python nl' => ['/nl/freelance-python-ontwikkelaar'],
+            'dotnet en' => ['/freelance-csharp-dotnet-developer'],
+            'dotnet nl' => ['/nl/freelance-csharp-dotnet-ontwikkelaar'],
         ];
     }
 
@@ -114,6 +120,12 @@ class PricingAndAiCopyTest extends TestCase
             'home en' => ['/', 'AI assistants'],
             'enschede en' => ['/laravel-developer-enschede', 'AI assistants'],
             'remote en' => ['/laravel-developer-remote', 'AI assistants'],
+            'go nl' => ['/nl/freelance-go-ontwikkelaar', 'AI-assistenten'],
+            'python nl' => ['/nl/freelance-python-ontwikkelaar', 'AI-assistenten'],
+            'dotnet nl' => ['/nl/freelance-csharp-dotnet-ontwikkelaar', 'AI-assistenten'],
+            'go en' => ['/freelance-golang-developer', 'AI assistants'],
+            'python en' => ['/freelance-python-developer', 'AI assistants'],
+            'dotnet en' => ['/freelance-csharp-dotnet-developer', 'AI assistants'],
         ];
     }
 

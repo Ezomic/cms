@@ -17,6 +17,7 @@ use App\Http\Controllers\LandingController;
 use App\Http\Controllers\OgImageController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Support\LandingPages;
 use Illuminate\Support\Facades\Route;
 
 // Public site — registered twice: unprefixed English (default) and Dutch under /nl
@@ -46,6 +47,11 @@ Route::get('/laravel-developer-enschede', [LandingController::class, 'enschede']
 Route::get('/nl/laravel-ontwikkelaar-enschede', [LandingController::class, 'enschede'])->name('nl.landing.enschede');
 Route::get('/laravel-developer-remote', [LandingController::class, 'remote'])->name('landing.remote');
 Route::get('/nl/laravel-ontwikkelaar-remote', [LandingController::class, 'remote'])->name('nl.landing.remote');
+
+foreach (LandingPages::all() as $key => $page) {
+    Route::get('/'.$page['slug']['en'], [LandingController::class, 'page'])->name("landing.{$key}");
+    Route::get('/nl/'.$page['slug']['nl'], [LandingController::class, 'page'])->name("nl.landing.{$key}");
+}
 
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 Route::get('/robots.txt', fn () => response("User-agent: *\nDisallow: /admin\n\nSitemap: ".route('sitemap')."\n", 200, ['Content-Type' => 'text/plain']))->name('robots');

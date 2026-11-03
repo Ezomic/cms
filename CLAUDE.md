@@ -80,6 +80,7 @@ never fires on merge to `main`.
 | `GET /work/{project:slug}/preview` | `project.preview` | `HomeController@projectPreview` | Signed URL only; renders unpublished drafts (CMS-106) |
 | `GET /docs` | `docs` | `HomeController@docs` | Client-facing "Working with me" page |
 | `GET /laravel-developer-enschede` | `landing.enschede` | `LandingController@enschede` | SEO landing page (CMS-135). Dutch twin is `GET /nl/laravel-ontwikkelaar-enschede` (`nl.landing.enschede`): different slug per language, so registered by hand outside `$publicRoutes` |
+| `GET /freelance-golang-developer` (and `-python-`, `-csharp-dotnet-`) | `landing.go`, `landing.python`, `landing.dotnet` | `LandingController@page` | Keyword landing pages (CMS-146), one data-driven action. Slugs, proof links and copy date live in `App\Support\LandingPages`, one route pair per entry, looped in `routes/web.php`. Dutch twins have their own slugs (`/nl/freelance-go-ontwikkelaar`, ...) |
 | `GET /cv.pdf` | `cv` | `HomeController@cv` | Streams PDF via dompdf |
 | `GET /og/home.png` | `og.home` | `OgImageController@home` | PHP GD 1200×630 OG image |
 | `GET /og/work/{project:slug}.png` | `og.project` | `OgImageController@project` | Per-project OG image |
@@ -161,7 +162,7 @@ The admin group also carries `HandleInertiaRequests`; it is **not** in the globa
 |------------|---------|
 | `HomeController` | `index`, `docs`, `work`, `workTag`, `project`, `projectPreview`, `cv` |
 | `OgImageController` | `home`, `project` (plus private `generate()`, `wrapText()`, `textWidth()` helpers) |
-| `LandingController` | `enschede` (the Laravel-developer-in-Enschede landing page, both languages) |
+| `LandingController` | `enschede`, `remote`, and `page` (every page registered in `LandingPages`, view `landing/page.blade.php`, copy in `lang/{en,nl}/pages/{key}.php`) |
 | `SitemapController` | `__invoke` (XML sitemap) |
 | `ContactController` | `store`: validates, runs the bot checks, saves `ContactSubmission`, sends `ContactFormSubmitted` synchronously and queues `ContactAcknowledgement` to the sender |
 
@@ -262,6 +263,7 @@ production; use `og:prune-cache`.
 | `lang/en/site.php` + `lang/nl/site.php` | `home`, `work`, `project` views |
 | `lang/en/docs.php` + `lang/nl/docs.php` | `docs` view |
 | `lang/en/landing.php` + `lang/nl/landing.php` | `landing.enschede` view, footer and home links |
+| `lang/en/pages/{key}.php` + `lang/nl/pages/{key}.php` | One file per `LandingPages` entry. Proof items are keyed (`proof_items.{key}`) and matched to the registry; an item with no url or project is private work and renders without a link |
 
 Views use `__('*.key')` and carry `<html lang="{{ app()->getLocale() }}">`. The `localized_route()`
 and `alternate_locale_url()` helpers (`app/Support/helpers.php`) build locale-aware URLs and the

@@ -151,4 +151,11 @@ return [
     'project_cta_headline' => 'Let\'s talk about your project.',
     'project_cta_button' => 'Start a similar project →',
 
+    'areas_headline' => 'Areas and specialisations',
+    'landing_repo_link' => 'View the code on GitHub →',
+    'landing_case_link' => 'Read the case study →',
+    'landing_private_note' => 'Private project, so no names or link.',
+    'landing_all_cases' => 'All case studies →',
+    'landing_cv' => 'Download CV ↓',
+
 ];

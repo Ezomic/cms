@@ -100,6 +100,9 @@
   .meta-box strong{font-family:var(--geo);color:var(--ink);font-weight:600;}
   @media(max-width:820px){.contact-inner{grid-template-columns:1fr;gap:28px;}}
   @media(max-width:560px){.cf-grid{grid-template-columns:1fr;}}
+  .areas{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:10px;}
+  .areas li a{display:block;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:10px 16px;font-family:var(--geo);font-weight:600;font-size:14px;}
+  .areas li a:hover{color:var(--primary);}
 </style>
 @endpush
 
@@ -250,6 +253,19 @@
   </div>
 </section>
 @endif
+
+<section class="block areas-block">
+  <div class="wrap">
+    <div class="section-head"><h2>{{ __('site.areas_headline') }}</h2></div>
+    <ul class="areas">
+      <li><a href="{{ localized_route('landing.enschede') }}">{{ __('landing.footer_link') }}</a></li>
+      <li><a href="{{ localized_route('landing.remote') }}">{{ __('remote.footer_link') }}</a></li>
+      @foreach (\App\Support\LandingPages::keys() as $landingKey)
+        <li><a href="{{ localized_route('landing.'.$landingKey) }}">{{ __('pages/'.$landingKey.'.footer_link') }}</a></li>
+      @endforeach
+    </ul>
+  </div>
+</section>
 
 <section id="contact" class="block contact">
   <div class="wrap contact-inner">

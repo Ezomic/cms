@@ -151,4 +151,11 @@ return [
     'project_cta_headline' => 'Laten we praten over jouw project.',
     'project_cta_button' => 'Start een vergelijkbaar project →',
 
+    'areas_headline' => 'Werkgebieden en specialisaties',
+    'landing_repo_link' => 'Bekijk de code op GitHub →',
+    'landing_case_link' => 'Lees de case study →',
+    'landing_private_note' => 'Privéproject, daarom zonder namen of link.',
+    'landing_all_cases' => 'Alle case studies →',
+    'landing_cv' => 'Download cv ↓',
+
 ];
