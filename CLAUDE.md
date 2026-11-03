@@ -180,7 +180,7 @@ The admin group also carries `HandleInertiaRequests`; it is **not** in the globa
 - **`ContentLastModified`**: the sitemap's `<lastmod>`, derived from the latest `updated_at` of
   whatever each page renders (profile, skills, shown projects, featured testimonials) instead of a
   fixed value (CMS-135). The landing page's copy lives in lang files, so
-  `LandingController::COPY_UPDATED_AT` must be bumped whenever that copy or its view changes.
+  `LandingController::COPY_UPDATED_AT` must be bumped whenever that copy or its view changes. The data-driven pages use `LandingPages::COPY_UPDATED_AT` instead, bumped the same way.
 - **`Portal\IdPortalClient`**: the admin app switcher, with short connect and request timeouts.
 
 ### Support (`app/Support/`)
