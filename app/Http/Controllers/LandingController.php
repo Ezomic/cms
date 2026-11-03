@@ -44,15 +44,20 @@ class LandingController extends Controller
         $slugs = LandingPages::projectSlugs($key);
         $published = $slugs === [] ? [] : Project::published()->whereIn('slug', $slugs)->pluck('slug')->all();
 
-        $proof = collect(LandingPages::all()[$key]['proof'])->map(function (array $entry) use ($published): array {
-            $project = $entry['project'] ?? null;
+        $proof = collect(LandingPages::all()[$key]['proof'])
+            ->reject(fn (array $entry): bool => isset($entry['project'])
+                && ! isset($entry['url'])
+                && ! in_array($entry['project'], $published, true))
+            ->map(function (array $entry) use ($published): array {
+                $project = $entry['project'] ?? null;
 
-            return [
-                'key' => $entry['key'],
-                'url' => $entry['url'] ?? null,
-                'project' => in_array($project, $published, true) ? $project : null,
-            ];
-        });
+                return [
+                    'key' => $entry['key'],
+                    'url' => $entry['url'] ?? null,
+                    'project' => in_array($project, $published, true) ? $project : null,
+                ];
+            })
+            ->values();
 
         return view('landing.page', [
             'profile' => Profile::current(),

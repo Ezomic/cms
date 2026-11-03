@@ -132,6 +132,7 @@
   </div>
 </section>
 
+@if ($proof->isNotEmpty())
 <section class="block">
   <div class="wrap">
     <div class="section-head"><span class="eyebrow">{{ __($lang.'.proof_label') }}</span><h2>{{ __($lang.'.proof_headline') }}</h2></div>
@@ -152,6 +153,7 @@
     <a class="more" href="{{ localized_route('work.index') }}">{{ __('site.landing_all_cases') }}</a>
   </div>
 </section>
+@endif
 
 <section class="block cta">
   <div class="wrap cta-inner">

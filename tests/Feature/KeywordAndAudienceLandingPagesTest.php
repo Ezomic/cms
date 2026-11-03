@@ -15,6 +15,9 @@ class KeywordAndAudienceLandingPagesTest extends TestCase
         'go' => ['/freelance-golang-developer', '/nl/freelance-go-ontwikkelaar'],
         'python' => ['/freelance-python-developer', '/nl/freelance-python-ontwikkelaar'],
         'dotnet' => ['/freelance-csharp-dotnet-developer', '/nl/freelance-csharp-dotnet-ontwikkelaar'],
+        'agencies' => ['/software-developer-for-agencies', '/nl/software-ontwikkelaar-voor-bureaus'],
+        'founders' => ['/mvp-developer-for-startups', '/nl/mvp-ontwikkelaar-voor-startups'],
+        'smallbusiness' => ['/custom-software-for-small-business', '/nl/maatwerksoftware-voor-mkb'],
     ];
 
     private const PRIVATE_NAMES = [

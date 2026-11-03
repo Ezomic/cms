@@ -51,6 +51,28 @@ final class LandingPages
                     ['key' => 'core', 'url' => 'https://github.com/Ezomic/valheim-core'],
                 ],
             ],
+            'agencies' => [
+                'slug' => ['en' => 'software-developer-for-agencies', 'nl' => 'software-ontwikkelaar-voor-bureaus'],
+                'proof' => [
+                    ['key' => 'bluevi', 'project' => 'bluevi'],
+                    ['key' => 'portal', 'project' => 'data-exchange-portal'],
+                    ['key' => 'bioscape', 'project' => 'bioscape'],
+                ],
+            ],
+            'founders' => [
+                'slug' => ['en' => 'mvp-developer-for-startups', 'nl' => 'mvp-ontwikkelaar-voor-startups'],
+                'proof' => [
+                    ['key' => 'tracker', 'url' => 'https://github.com/Ezomic/tracker', 'project' => 'tracker'],
+                    ['key' => 'school'],
+                ],
+            ],
+            'smallbusiness' => [
+                'slug' => ['en' => 'custom-software-for-small-business', 'nl' => 'maatwerksoftware-voor-mkb'],
+                'proof' => [
+                    ['key' => 'school'],
+                    ['key' => 'tracker', 'url' => 'https://github.com/Ezomic/tracker', 'project' => 'tracker'],
+                ],
+            ],
         ];
     }
 
