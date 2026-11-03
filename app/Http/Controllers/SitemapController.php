@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Services\ContentLastModified;
+use App\Support\LandingPages;
 use App\Support\TagSlugs;
 use Illuminate\Http\Response;
 
@@ -23,6 +24,10 @@ class SitemapController extends Controller
             ['route' => 'home', 'params' => [], 'lastmod' => $lastModified->home()],
             ['route' => 'landing.enschede', 'params' => [], 'lastmod' => $lastModified->landing()],
             ['route' => 'landing.remote', 'params' => [], 'lastmod' => $lastModified->remoteLanding()],
+            ...array_map(
+                fn (string $key): array => ['route' => "landing.{$key}", 'params' => [], 'lastmod' => $lastModified->page($key)],
+                LandingPages::keys(),
+            ),
             ['route' => 'work.index', 'params' => [], 'lastmod' => $lastModified->work()],
             ['route' => 'docs', 'params' => [], 'lastmod' => $lastModified->docs()],
         ])

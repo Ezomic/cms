@@ -80,6 +80,7 @@ never fires on merge to `main`.
 | `GET /work/{project:slug}/preview` | `project.preview` | `HomeController@projectPreview` | Signed URL only; renders unpublished drafts (CMS-106) |
 | `GET /docs` | `docs` | `HomeController@docs` | Client-facing "Working with me" page |
 | `GET /laravel-developer-enschede` | `landing.enschede` | `LandingController@enschede` | SEO landing page (CMS-135). Dutch twin is `GET /nl/laravel-ontwikkelaar-enschede` (`nl.landing.enschede`): different slug per language, so registered by hand outside `$publicRoutes` |
+| `GET /freelance-golang-developer` (and `-python-`, `-csharp-dotnet-`, `/software-developer-for-agencies`, `/mvp-developer-for-startups`, `/custom-software-for-small-business`) | `landing.go`, `.python`, `.dotnet`, `.agencies`, `.founders`, `.smallbusiness` | `LandingController@page` | Keyword and audience landing pages (CMS-146, CMS-149), one data-driven action. Slugs, proof links and copy date live in `App\Support\LandingPages`, one route pair per entry, looped in `routes/web.php`. Dutch twins have their own slugs (`/nl/freelance-go-ontwikkelaar`, ...) |
 | `GET /cv.pdf` | `cv` | `HomeController@cv` | Streams PDF via dompdf |
 | `GET /og/home.png` | `og.home` | `OgImageController@home` | PHP GD 1200×630 OG image |
 | `GET /og/work/{project:slug}.png` | `og.project` | `OgImageController@project` | Per-project OG image |
@@ -161,7 +162,7 @@ The admin group also carries `HandleInertiaRequests`; it is **not** in the globa
 |------------|---------|
 | `HomeController` | `index`, `docs`, `work`, `workTag`, `project`, `projectPreview`, `cv` |
 | `OgImageController` | `home`, `project` (plus private `generate()`, `wrapText()`, `textWidth()` helpers) |
-| `LandingController` | `enschede` (the Laravel-developer-in-Enschede landing page, both languages) |
+| `LandingController` | `enschede`, `remote`, and `page` (every page registered in `LandingPages`, view `landing/page.blade.php`, copy in `lang/{en,nl}/pages/{key}.php`) |
 | `SitemapController` | `__invoke` (XML sitemap) |
 | `ContactController` | `store`: validates, runs the bot checks, saves `ContactSubmission`, sends `ContactFormSubmitted` synchronously and queues `ContactAcknowledgement` to the sender |
 
@@ -179,7 +180,7 @@ The admin group also carries `HandleInertiaRequests`; it is **not** in the globa
 - **`ContentLastModified`**: the sitemap's `<lastmod>`, derived from the latest `updated_at` of
   whatever each page renders (profile, skills, shown projects, featured testimonials) instead of a
   fixed value (CMS-135). The landing page's copy lives in lang files, so
-  `LandingController::COPY_UPDATED_AT` must be bumped whenever that copy or its view changes.
+  `LandingController::COPY_UPDATED_AT` must be bumped whenever that copy or its view changes. The data-driven pages use `LandingPages::COPY_UPDATED_AT` instead, bumped the same way.
 - **`Portal\IdPortalClient`**: the admin app switcher, with short connect and request timeouts.
 
 ### Support (`app/Support/`)
@@ -262,6 +263,7 @@ production; use `og:prune-cache`.
 | `lang/en/site.php` + `lang/nl/site.php` | `home`, `work`, `project` views |
 | `lang/en/docs.php` + `lang/nl/docs.php` | `docs` view |
 | `lang/en/landing.php` + `lang/nl/landing.php` | `landing.enschede` view, footer and home links |
+| `lang/en/pages/{key}.php` + `lang/nl/pages/{key}.php` | One file per `LandingPages` entry. Proof items are keyed (`proof_items.{key}`) and matched to the registry; an item with a `url` links to a public repo, one with a `project` links to the case study (and is dropped while that project is unpublished), one with neither is private work and renders with a "no names or link" note |
 
 Views use `__('*.key')` and carry `<html lang="{{ app()->getLocale() }}">`. The `localized_route()`
 and `alternate_locale_url()` helpers (`app/Support/helpers.php`) build locale-aware URLs and the

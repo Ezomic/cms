@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Concerns\RecordsPageViews;
 use App\Models\Profile;
 use App\Models\Project;
+use App\Support\LandingPages;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class LandingController extends Controller
@@ -29,6 +32,39 @@ class LandingController extends Controller
     public function remote(): View
     {
         return $this->landing('landing.remote');
+    }
+
+    public function page(Request $request): View
+    {
+        $key = Str::after((string) $request->route()?->getName(), 'landing.');
+        abort_unless(in_array($key, LandingPages::keys(), true), 404);
+
+        $this->recordPageView();
+
+        $slugs = LandingPages::projectSlugs($key);
+        $published = $slugs === [] ? [] : Project::published()->whereIn('slug', $slugs)->pluck('slug')->all();
+
+        $proof = collect(LandingPages::all()[$key]['proof'])
+            ->reject(fn (array $entry): bool => isset($entry['project'])
+                && ! isset($entry['url'])
+                && ! in_array($entry['project'], $published, true))
+            ->map(function (array $entry) use ($published): array {
+                $project = $entry['project'] ?? null;
+
+                return [
+                    'key' => $entry['key'],
+                    'url' => $entry['url'] ?? null,
+                    'project' => in_array($project, $published, true) ? $project : null,
+                ];
+            })
+            ->values();
+
+        return view('landing.page', [
+            'profile' => Profile::current(),
+            'page' => $key,
+            'lang' => 'pages/'.$key,
+            'proof' => $proof,
+        ]);
     }
 
     /**

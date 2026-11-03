@@ -11,7 +11,7 @@ $landingSchema = [
             '@type'       => 'Service',
             '@id'         => $serviceId,
             'name'        => __($lang.'.breadcrumb'),
-            'serviceType' => 'Laravel development',
+            'serviceType' => $landingServiceType ?? 'Laravel development',
             'url'         => $landingUrl,
             'description' => __($lang.'.meta_description'),
             'provider'    => ['@id' => route('home').'#organization'],

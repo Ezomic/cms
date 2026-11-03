@@ -91,6 +91,7 @@
   footer.site{padding:34px 0;}
   footer.site .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:var(--mono);font-size:12px;color:var(--muted);}
   footer.site a:hover{color:var(--ink);}
+  footer.site .landing-links{flex-basis:100%;line-height:1.9;}
 </style>
 @stack('styles')
 </head>

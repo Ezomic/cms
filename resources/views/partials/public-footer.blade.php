@@ -9,5 +9,10 @@
       <a href="{{ localized_route('cv') }}">CV</a>
       @if ($profile->kvk_number) &middot; KVK {{ $profile->kvk_number }}@endif
     </span>
+    <span class="landing-links">
+      @foreach (\App\Support\LandingPages::keys() as $landingKey)
+        <a href="{{ localized_route('landing.'.$landingKey) }}">{{ __('pages/'.$landingKey.'.footer_link') }}</a>@if (! $loop->last) &middot; @endif
+      @endforeach
+    </span>
   </div>
 </footer>

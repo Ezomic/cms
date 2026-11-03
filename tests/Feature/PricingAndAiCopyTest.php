@@ -30,6 +30,18 @@ class PricingAndAiCopyTest extends TestCase
             'enschede nl' => ['/nl/laravel-ontwikkelaar-enschede'],
             'remote en' => ['/laravel-developer-remote'],
             'remote nl' => ['/nl/laravel-ontwikkelaar-remote'],
+            'go en' => ['/freelance-golang-developer'],
+            'go nl' => ['/nl/freelance-go-ontwikkelaar'],
+            'python en' => ['/freelance-python-developer'],
+            'python nl' => ['/nl/freelance-python-ontwikkelaar'],
+            'dotnet en' => ['/freelance-csharp-dotnet-developer'],
+            'dotnet nl' => ['/nl/freelance-csharp-dotnet-ontwikkelaar'],
+            'agencies en' => ['/software-developer-for-agencies'],
+            'agencies nl' => ['/nl/software-ontwikkelaar-voor-bureaus'],
+            'founders en' => ['/mvp-developer-for-startups'],
+            'founders nl' => ['/nl/mvp-ontwikkelaar-voor-startups'],
+            'small business en' => ['/custom-software-for-small-business'],
+            'small business nl' => ['/nl/maatwerksoftware-voor-mkb'],
         ];
     }
 
@@ -114,6 +126,18 @@ class PricingAndAiCopyTest extends TestCase
             'home en' => ['/', 'AI assistants'],
             'enschede en' => ['/laravel-developer-enschede', 'AI assistants'],
             'remote en' => ['/laravel-developer-remote', 'AI assistants'],
+            'go nl' => ['/nl/freelance-go-ontwikkelaar', 'AI-assistenten'],
+            'python nl' => ['/nl/freelance-python-ontwikkelaar', 'AI-assistenten'],
+            'dotnet nl' => ['/nl/freelance-csharp-dotnet-ontwikkelaar', 'AI-assistenten'],
+            'agencies nl' => ['/nl/software-ontwikkelaar-voor-bureaus', 'AI-assistenten'],
+            'founders nl' => ['/nl/mvp-ontwikkelaar-voor-startups', 'AI-assistenten'],
+            'small business nl' => ['/nl/maatwerksoftware-voor-mkb', 'AI-assistenten'],
+            'go en' => ['/freelance-golang-developer', 'AI assistants'],
+            'python en' => ['/freelance-python-developer', 'AI assistants'],
+            'dotnet en' => ['/freelance-csharp-dotnet-developer', 'AI assistants'],
+            'agencies en' => ['/software-developer-for-agencies', 'AI assistants'],
+            'founders en' => ['/mvp-developer-for-startups', 'AI assistants'],
+            'small business en' => ['/custom-software-for-small-business', 'AI assistants'],
         ];
     }
 
