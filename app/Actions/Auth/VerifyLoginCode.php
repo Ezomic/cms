@@ -34,9 +34,11 @@ class VerifyLoginCode
 
     private function recordFailure(User $user): void
     {
-        $user->increment('login_code_attempts');
+        // Increment and read back in the database: parallel guesses each load
+        // the same stale count, so counting in memory would never reach the cap.
+        User::whereKey($user->getKey())->increment('login_code_attempts');
 
-        if ($user->login_code_attempts >= self::MAX_FAILURES) {
+        if (User::whereKey($user->getKey())->value('login_code_attempts') >= self::MAX_FAILURES) {
             $this->clear($user);
         }
     }

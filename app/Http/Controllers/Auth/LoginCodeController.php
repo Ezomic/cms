@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class LoginCodeController extends Controller
@@ -22,6 +23,10 @@ class LoginCodeController extends Controller
 
         if ($user) {
             $sendLoginCode->handle($user);
+        } else {
+            // Same hashing cost as issuing a code, so response time does not
+            // reveal which addresses are admins.
+            Hash::make('unknown-address');
         }
 
         return redirect()->route('admin.login.code.challenge')

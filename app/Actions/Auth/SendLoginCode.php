@@ -7,18 +7,24 @@ namespace App\Actions\Auth;
 use App\Mail\LoginCodeMail;
 use App\Models\User;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 class SendLoginCode
 {
-    public const VALID_MINUTES = 10;
-
     private const RESEND_AFTER_SECONDS = 60;
 
+    /**
+     * Issuing a code at most once a minute per user. The marker lives in the
+     * cache rather than being derived from the stored code, so clearing a code
+     * after too many failures does not let a guesser trade it for a fresh one
+     * immediately, and a request flood cannot invalidate the code the admin is
+     * about to type.
+     */
     public function handle(User $user): void
     {
-        if ($this->issuedRecently($user)) {
+        if (! Cache::add('login-code-issued:'.$user->id, true, self::RESEND_AFTER_SECONDS)) {
             return;
         }
 
@@ -26,26 +32,10 @@ class SendLoginCode
 
         $user->forceFill([
             'login_code_hash' => Hash::make($code),
-            'login_code_expires_at' => CarbonImmutable::now()->addMinutes(self::VALID_MINUTES),
+            'login_code_expires_at' => CarbonImmutable::now()->addMinutes(10),
             'login_code_attempts' => 0,
         ])->save();
 
         Mail::to($user->email)->queue(new LoginCodeMail($code));
-    }
-
-    /**
-     * Replacing a code that is still fresh would let a request flood invalidate
-     * the one the admin is about to type. The issue time is derived from the
-     * expiry, so no extra column is needed.
-     */
-    private function issuedRecently(User $user): bool
-    {
-        if (! $user->login_code_hash || ! $user->login_code_expires_at) {
-            return false;
-        }
-
-        $issuedAt = $user->login_code_expires_at->toImmutable()->subMinutes(self::VALID_MINUTES);
-
-        return $issuedAt->addSeconds(self::RESEND_AFTER_SECONDS)->isFuture();
     }
 }

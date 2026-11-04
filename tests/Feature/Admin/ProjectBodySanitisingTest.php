@@ -185,6 +185,18 @@ class ProjectBodySanitisingTest extends TestCase
         $this->assertDatabaseCount('projects', 0);
     }
 
+    public function test_a_dutch_body_that_grows_past_the_text_column_when_sanitised_is_rejected(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->post('/admin/projects', [
+            'name' => 'Grows',
+            'body_nl' => str_repeat('&', 15000).str_repeat('<p>x</p>', 4000),
+        ])->assertSessionHasErrors('body_nl');
+
+        $this->assertDatabaseCount('projects', 0);
+    }
+
     public function test_a_large_body_inside_the_limit_is_sanitised(): void
     {
         $user = User::factory()->create();

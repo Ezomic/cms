@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Mail\LoginCodeMail;
 use App\Models\User;
+use Illuminate\Contracts\Queue\ShouldBeEncrypted;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Testing\TestResponse;
@@ -268,6 +269,32 @@ class LoginCodeHardeningTest extends TestCase
         }
 
         $this->verify($user->email, $secondCode)->assertRedirect(route('admin.dashboard'));
+    }
+
+    public function test_clearing_a_code_after_failures_does_not_allow_an_immediate_fresh_one(): void
+    {
+        $user = User::factory()->create();
+        $this->send($user->email);
+
+        for ($i = 0; $i < 5; $i++) {
+            $this->verify($user->email, '000000');
+        }
+
+        $this->travel(2)->seconds();
+        $this->send($user->email);
+
+        Mail::assertQueuedCount(1);
+        $this->assertNull($user->fresh()->login_code_hash);
+
+        $this->travel(61)->seconds();
+        $this->send($user->email);
+
+        Mail::assertQueuedCount(2);
+    }
+
+    public function test_the_queued_login_code_payload_is_encrypted(): void
+    {
+        $this->assertInstanceOf(ShouldBeEncrypted::class, new LoginCodeMail('123456'));
     }
 
     public function test_the_login_code_mail_is_queued_not_sent_inline(): void
