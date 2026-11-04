@@ -2,12 +2,15 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Actions\Auth\SendLoginCode;
 use App\Mail\LoginCodeMail;
 use App\Models\User;
-use Illuminate\Contracts\Queue\ShouldBeEncrypted;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Defer\DeferredCallbackCollection;
+use Illuminate\Support\Facades\Exceptions;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Testing\TestResponse;
+use RuntimeException;
 use Tests\TestCase;
 
 class LoginCodeHardeningTest extends TestCase
@@ -44,7 +47,7 @@ class LoginCodeHardeningTest extends TestCase
     {
         $codes = [];
 
-        Mail::assertQueued(LoginCodeMail::class, function (LoginCodeMail $mail) use (&$codes) {
+        Mail::assertSent(LoginCodeMail::class, function (LoginCodeMail $mail) use (&$codes) {
             $codes[] = $mail->code;
 
             return true;
@@ -245,7 +248,7 @@ class LoginCodeHardeningTest extends TestCase
         $this->travel(30)->seconds();
         $second = $this->send($user->email);
 
-        Mail::assertQueuedCount(1);
+        Mail::assertSentCount(1);
         $this->assertSame($first->getTargetUrl(), $second->getTargetUrl());
         $this->assertSame($first->getSession()->get('status'), $second->getSession()->get('status'));
 
@@ -261,7 +264,7 @@ class LoginCodeHardeningTest extends TestCase
         $this->travel(61)->seconds();
         $this->send($user->email);
 
-        Mail::assertQueuedCount(2);
+        Mail::assertSentCount(2);
         $secondCode = $this->issuedCode();
 
         if ($firstCode !== $secondCode) {
@@ -283,28 +286,39 @@ class LoginCodeHardeningTest extends TestCase
         $this->travel(2)->seconds();
         $this->send($user->email);
 
-        Mail::assertQueuedCount(1);
+        Mail::assertSentCount(1);
         $this->assertNull($user->fresh()->login_code_hash);
 
         $this->travel(61)->seconds();
         $this->send($user->email);
 
-        Mail::assertQueuedCount(2);
+        Mail::assertSentCount(2);
     }
 
-    public function test_the_queued_login_code_payload_is_encrypted(): void
-    {
-        $this->assertInstanceOf(ShouldBeEncrypted::class, new LoginCodeMail('123456'));
-    }
-
-    public function test_the_login_code_mail_is_queued_not_sent_inline(): void
+    public function test_the_login_code_mail_is_deferred_until_after_the_response(): void
     {
         $user = User::factory()->create();
 
-        $this->send($user->email);
+        app(SendLoginCode::class)->handle($user);
 
-        Mail::assertQueued(LoginCodeMail::class, fn ($mail) => $mail->hasTo($user->email));
-        Mail::assertNotSent(LoginCodeMail::class);
+        Mail::assertNothingSent();
+        Mail::assertNothingQueued();
+
+        app(DeferredCallbackCollection::class)->invoke();
+
+        Mail::assertSent(LoginCodeMail::class, fn ($mail) => $mail->hasTo($user->email));
+        Mail::assertNothingQueued();
+    }
+
+    public function test_a_mailer_failure_is_reported_and_never_reaches_the_visitor(): void
+    {
+        Exceptions::fake();
+        Mail::shouldReceive('to')->andThrow(new RuntimeException('smtp down'));
+        $user = User::factory()->create();
+
+        $this->send($user->email)->assertRedirect(route('admin.login.code.challenge'));
+
+        Exceptions::assertReported(fn (RuntimeException $e) => $e->getMessage() === 'smtp down');
     }
 
     public function test_known_and_unknown_emails_get_identical_responses(): void

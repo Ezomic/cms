@@ -10,6 +10,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 class SendLoginCode
 {
@@ -36,6 +37,14 @@ class SendLoginCode
             'login_code_attempts' => 0,
         ])->save();
 
-        Mail::to($user->email)->queue(new LoginCodeMail($code));
+        $email = $user->email;
+
+        defer(function () use ($email, $code): void {
+            try {
+                Mail::to($email)->send(new LoginCodeMail($code));
+            } catch (Throwable $e) {
+                report($e);
+            }
+        });
     }
 }
