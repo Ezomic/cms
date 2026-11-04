@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Support;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 
 final class ContactFormToken
@@ -20,38 +21,60 @@ final class ContactFormToken
      */
     private const MAX_AGE_SECONDS = 7200;
 
+    /**
+     * The nonce keeps two visitors who load the form in the same second from
+     * holding the same token, which single use would otherwise turn into the
+     * second one being dropped.
+     */
     public static function issue(): string
     {
-        $issuedAt = (string) now()->getTimestamp();
+        $payload = now()->getTimestamp().'.'.bin2hex(random_bytes(8));
 
-        return $issuedAt.'.'.self::sign($issuedAt);
+        return $payload.'.'.self::sign($payload);
     }
 
-    public static function isValid(?string $token): bool
+    /**
+     * Valid and not seen before. The signature is remembered until the token
+     * would have expired anyway, so a captured token cannot be posted twice.
+     */
+    public static function consume(?string $token): bool
+    {
+        $age = self::ageOf($token);
+
+        if ($age === null || $token === null) {
+            return false;
+        }
+
+        $signature = substr($token, (int) strrpos($token, '.') + 1);
+
+        return Cache::add('contact-form-token:'.$signature, true, self::MAX_AGE_SECONDS - $age + 1);
+    }
+
+    private static function ageOf(?string $token): ?int
     {
         if ($token === null) {
-            return false;
+            return null;
         }
 
-        $parts = explode('.', $token, 2);
+        $parts = explode('.', $token);
 
-        if (count($parts) !== 2 || ! ctype_digit($parts[0])) {
-            return false;
+        if (count($parts) !== 3 || ! ctype_digit($parts[0]) || ! ctype_xdigit($parts[1])) {
+            return null;
         }
 
-        [$issuedAt, $signature] = $parts;
+        [$issuedAt, $nonce, $signature] = $parts;
 
-        if (! hash_equals(self::sign($issuedAt), $signature)) {
-            return false;
+        if (! hash_equals(self::sign($issuedAt.'.'.$nonce), $signature)) {
+            return null;
         }
 
         $age = now()->getTimestamp() - (int) $issuedAt;
 
-        return $age >= self::MIN_DWELL_SECONDS && $age <= self::MAX_AGE_SECONDS;
+        return $age >= self::MIN_DWELL_SECONDS && $age <= self::MAX_AGE_SECONDS ? $age : null;
     }
 
-    private static function sign(string $issuedAt): string
+    private static function sign(string $payload): string
     {
-        return hash_hmac('sha256', $issuedAt, Config::string('app.key'));
+        return hash_hmac('sha256', $payload, Config::string('app.key'));
     }
 }

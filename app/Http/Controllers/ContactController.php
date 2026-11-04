@@ -10,9 +10,12 @@ use App\Support\ContactFormToken;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\RateLimiter;
 
 class ContactController extends Controller
 {
+    private const ACK_PER_HOUR = 3;
+
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
@@ -30,7 +33,9 @@ class ContactController extends Controller
         // was dropped.
         $budget = $request->string('budget')->toString() ?: null;
 
-        if (! ContactFormToken::isValid($request->string('form_token')->toString())
+        $token = $request->input('form_token');
+
+        if (! ContactFormToken::consume(is_string($token) ? $token : null)
             || $request->filled('website')
             || ! $this->budgetIsFromForm($budget)) {
             return back()->with('status', __('site.contact_success'));
@@ -73,9 +78,22 @@ class ContactController extends Controller
      * Queued, so a slow mail host cannot hold the visitor's request open, and
      * wrapped like the owner notification so a failure is logged rather than
      * surfaced: the message is already saved to the inbox either way.
+     *
+     * Capped per recipient address so one stranger's inbox cannot be filled by
+     * repeated submissions that each carry their address. Over the cap it is
+     * skipped without a word: the owner notification and the stored
+     * submission are unaffected.
      */
     private function acknowledge(ContactSubmission $submission, string $ownerEmail): void
     {
+        $key = 'contact-ack:'.hash('sha256', mb_strtolower(trim($submission->email)));
+
+        if (RateLimiter::tooManyAttempts($key, self::ACK_PER_HOUR)) {
+            return;
+        }
+
+        RateLimiter::hit($key, 3600);
+
         try {
             Mail::to($submission->email)
                 ->locale(app()->getLocale())

@@ -9,19 +9,24 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class LoginCodeController extends Controller
 {
     public function send(Request $request, SendLoginCode $sendLoginCode): RedirectResponse
     {
-        $request->validate(['email' => ['required', 'email']]);
+        $request->validate(['email' => ['required', 'email', 'max:255']]);
 
         $email = $request->string('email')->toString();
         $user = User::where('email', $email)->first();
 
         if ($user) {
             $sendLoginCode->handle($user);
+        } else {
+            // Same hashing cost as issuing a code, so response time does not
+            // reveal which addresses are admins.
+            Hash::make('unknown-address');
         }
 
         return redirect()->route('admin.login.code.challenge')
@@ -37,7 +42,7 @@ class LoginCodeController extends Controller
     public function verify(Request $request, VerifyLoginCode $verifyLoginCode): RedirectResponse
     {
         $request->validate([
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email', 'max:255'],
             'code' => ['required', 'string'],
         ]);
 

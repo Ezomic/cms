@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PageView;
 use App\Models\PageViewTotal;
 use App\Models\Project;
+use App\Services\HtmlSanitizer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,6 +16,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 use Intervention\Image\ImageManager;
@@ -255,7 +257,7 @@ class ProjectController extends Controller
             'year' => ['nullable', 'string', 'max:4'],
             'description' => ['nullable', 'string'],
             'outcome' => ['nullable', 'string', 'max:255'],
-            'body' => ['nullable', 'string'],
+            'body' => ['nullable', 'string', 'max:200000'],
             'featured' => ['nullable', 'boolean'],
             'tags' => ['nullable', 'string', 'max:255'],
             'sort_order' => ['nullable', 'integer'],
@@ -263,7 +265,7 @@ class ProjectController extends Controller
             'meta_description' => ['nullable', 'string', 'max:255'],
             'description_nl' => ['nullable', 'string'],
             'outcome_nl' => ['nullable', 'string', 'max:255'],
-            'body_nl' => ['nullable', 'string'],
+            'body_nl' => ['nullable', 'string', 'max:200000'],
             'image_alt_nl' => ['nullable', 'string', 'max:255'],
             'meta_title_nl' => ['nullable', 'string', 'max:255'],
             'meta_description_nl' => ['nullable', 'string', 'max:255'],
@@ -273,6 +275,24 @@ class ProjectController extends Controller
 
         foreach (is_array($validated) ? $validated : [] as $key => $value) {
             $attributes[(string) $key] = $value;
+        }
+
+        $sanitizer = app(HtmlSanitizer::class);
+
+        foreach (['body', 'body_nl'] as $field) {
+            if (array_key_exists($field, $attributes)) {
+                $value = $attributes[$field];
+                $attributes[$field] = $sanitizer->handle(is_string($value) ? $value : null);
+            }
+        }
+
+        // body_nl is a TEXT column (65,535 bytes) and sanitising can grow the
+        // markup (entities, added rel attributes), so the limit is checked on
+        // the stored form rather than the submitted one.
+        $bodyNl = $attributes['body_nl'] ?? null;
+
+        if (is_string($bodyNl) && strlen($bodyNl) > 65535) {
+            throw ValidationException::withMessages(['body_nl' => 'The Dutch body is too long.']);
         }
 
         return $attributes;

@@ -24,5 +24,5 @@ return [
      | created automatically. The IdP already enforces per-app access, so a
      | successful userinfo response means the user is allowed here.
      */
-    'provision' => env('THIJSSENSOFTWARE_ID_PROVISION', true),
+    'provision' => env('THIJSSENSOFTWARE_ID_PROVISION', false),
 ];

@@ -95,6 +95,38 @@ class ReferrerCaptureTest extends TestCase
         $this->assertSame(['github.com'], PageView::pluck('referrer_host')->unique()->values()->all());
     }
 
+    /**
+     * @return array<string, array{0: string, 1: string}>
+     */
+    public static function hostsStartingWithWOrDot(): array
+    {
+        return [
+            'www prefix' => ['https://www.example.com/x', 'example.com'],
+            'wikipedia' => ['https://wikipedia.org/wiki/Laravel', 'wikipedia.org'],
+            'weebly' => ['https://weebly.com/', 'weebly.com'],
+            'www on wikipedia' => ['https://www.wikipedia.org/', 'wikipedia.org'],
+            'www2 is not www' => ['https://www2.example.com/', 'www2.example.com'],
+            'double www keeps one' => ['https://www.www.example.com/', 'www.example.com'],
+        ];
+    }
+
+    #[DataProvider('hostsStartingWithWOrDot')]
+    public function test_only_a_literal_www_prefix_is_stripped(string $referrer, string $expected): void
+    {
+        $this->visit('/', ['referer' => $referrer]);
+
+        $this->assertSame($expected, PageView::sole()->referrer_host);
+    }
+
+    public function test_an_own_domain_starting_with_w_is_still_matched_as_direct(): void
+    {
+        config(['app.url' => 'https://www.wikipedia.test']);
+
+        $this->visit('/', ['referer' => 'https://wikipedia.test/x']);
+
+        $this->assertSame(PageView::DIRECT, PageView::sole()->referrer_host);
+    }
+
     public function test_the_host_is_lowercased(): void
     {
         $this->visit('/', ['referer' => 'https://LinkedIn.COM/feed']);

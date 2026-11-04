@@ -20,6 +20,10 @@ class SecurityHeaders
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
         $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), browsing-topics=()');
 
+        // Deliberately no script-src or style-src: the Blade views carry inline
+        // scripts and styles, and a policy that blocks them would break the site.
+        $response->headers->set('Content-Security-Policy', "object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'");
+
         if ($request->secure()) {
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000');
         }
