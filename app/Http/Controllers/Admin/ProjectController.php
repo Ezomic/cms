@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PageView;
 use App\Models\PageViewTotal;
 use App\Models\Project;
+use App\Services\HtmlSanitizer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -255,7 +256,7 @@ class ProjectController extends Controller
             'year' => ['nullable', 'string', 'max:4'],
             'description' => ['nullable', 'string'],
             'outcome' => ['nullable', 'string', 'max:255'],
-            'body' => ['nullable', 'string'],
+            'body' => ['nullable', 'string', 'max:200000'],
             'featured' => ['nullable', 'boolean'],
             'tags' => ['nullable', 'string', 'max:255'],
             'sort_order' => ['nullable', 'integer'],
@@ -263,7 +264,7 @@ class ProjectController extends Controller
             'meta_description' => ['nullable', 'string', 'max:255'],
             'description_nl' => ['nullable', 'string'],
             'outcome_nl' => ['nullable', 'string', 'max:255'],
-            'body_nl' => ['nullable', 'string'],
+            'body_nl' => ['nullable', 'string', 'max:16000'],
             'image_alt_nl' => ['nullable', 'string', 'max:255'],
             'meta_title_nl' => ['nullable', 'string', 'max:255'],
             'meta_description_nl' => ['nullable', 'string', 'max:255'],
@@ -273,6 +274,15 @@ class ProjectController extends Controller
 
         foreach (is_array($validated) ? $validated : [] as $key => $value) {
             $attributes[(string) $key] = $value;
+        }
+
+        $sanitizer = app(HtmlSanitizer::class);
+
+        foreach (['body', 'body_nl'] as $field) {
+            if (array_key_exists($field, $attributes)) {
+                $value = $attributes[$field];
+                $attributes[$field] = $sanitizer->handle(is_string($value) ? $value : null);
+            }
         }
 
         return $attributes;

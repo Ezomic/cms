@@ -47,9 +47,9 @@ trait RecordsPageViews
             return PageView::DIRECT;
         }
 
-        $host = Str::of($host)->lower()->ltrim('www.')->toString();
+        $host = Str::of($host)->lower()->chopStart('www.')->toString();
 
-        return $host === Str::of((string) parse_url(config()->string('app.url'), PHP_URL_HOST))->lower()->ltrim('www.')->toString()
+        return $host === Str::of((string) parse_url(config()->string('app.url'), PHP_URL_HOST))->lower()->chopStart('www.')->toString()
             ? PageView::DIRECT
             : Str::limit($host, 255, '');
     }

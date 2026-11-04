@@ -37,7 +37,7 @@ class AuthTest extends TestCase
         $response = $this->post('/admin/login/code', ['email' => $user->email]);
 
         $response->assertRedirect(route('admin.login.code.challenge'));
-        Mail::assertSent(LoginCodeMail::class);
+        Mail::assertQueued(LoginCodeMail::class);
     }
 
     public function test_sending_a_login_code_for_an_unknown_email_does_not_reveal_that(): void
@@ -57,7 +57,7 @@ class AuthTest extends TestCase
         $this->post('/admin/login/code', ['email' => $user->email]);
 
         $sentCode = null;
-        Mail::assertSent(LoginCodeMail::class, function (LoginCodeMail $mail) use (&$sentCode) {
+        Mail::assertQueued(LoginCodeMail::class, function (LoginCodeMail $mail) use (&$sentCode) {
             $sentCode = $mail->code;
 
             return true;
@@ -79,7 +79,7 @@ class AuthTest extends TestCase
         $this->post('/admin/login/code', ['email' => $user->email]);
 
         $sentCode = null;
-        Mail::assertSent(LoginCodeMail::class, function (LoginCodeMail $mail) use (&$sentCode) {
+        Mail::assertQueued(LoginCodeMail::class, function (LoginCodeMail $mail) use (&$sentCode) {
             $sentCode = $mail->code;
 
             return true;
@@ -103,7 +103,7 @@ class AuthTest extends TestCase
         $this->post('/admin/login/code', ['email' => $user->email]);
 
         $sentCode = null;
-        Mail::assertSent(LoginCodeMail::class, function (LoginCodeMail $mail) use (&$sentCode) {
+        Mail::assertQueued(LoginCodeMail::class, function (LoginCodeMail $mail) use (&$sentCode) {
             $sentCode = $mail->code;
 
             return true;

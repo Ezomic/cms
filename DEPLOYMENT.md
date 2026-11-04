@@ -69,6 +69,9 @@ MAIL_HOST=           # SMTP host (Postmark, Resend, Mailgun, etc.)
 MAIL_USERNAME=       # SMTP username / API token
 MAIL_PASSWORD=       # SMTP password / API token
 MAIL_FROM_ADDRESS=   # hello@yourdomain.nl
+
+SESSION_SECURE_COOKIE=true             # send the session cookie over HTTPS only
+THIJSSENSOFTWARE_ID_PROVISION=false    # sign-in through the IdP must not auto-create admin accounts
 ```
 
 Generate the app key:

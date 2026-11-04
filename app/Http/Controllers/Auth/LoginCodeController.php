@@ -15,7 +15,7 @@ class LoginCodeController extends Controller
 {
     public function send(Request $request, SendLoginCode $sendLoginCode): RedirectResponse
     {
-        $request->validate(['email' => ['required', 'email']]);
+        $request->validate(['email' => ['required', 'email', 'max:255']]);
 
         $email = $request->string('email')->toString();
         $user = User::where('email', $email)->first();
@@ -37,7 +37,7 @@ class LoginCodeController extends Controller
     public function verify(Request $request, VerifyLoginCode $verifyLoginCode): RedirectResponse
     {
         $request->validate([
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email', 'max:255'],
             'code' => ['required', 'string'],
         ]);
 

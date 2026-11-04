@@ -47,8 +47,24 @@ class SsoLoginTest extends TestCase
         $this->get(route('sso.redirect'))->assertRedirect('https://id.test/oauth/authorize');
     }
 
+    public function test_provisioning_is_off_by_default(): void
+    {
+        $this->assertFalse(config('id-client.provision'));
+    }
+
+    public function test_it_does_not_create_an_account_for_an_unknown_user_by_default(): void
+    {
+        $this->mockSocialite(fn ($provider) => $provider->shouldReceive('user')->andReturn($this->fakeIdUser()));
+
+        $this->get(route('sso.callback'))->assertForbidden();
+
+        $this->assertGuest();
+        $this->assertSame(0, User::count());
+    }
+
     public function test_it_provisions_and_logs_in_a_new_user(): void
     {
+        config(['id-client.provision' => true]);
         $this->mockSocialite(fn ($provider) => $provider->shouldReceive('user')->andReturn($this->fakeIdUser()));
 
         $this->get(route('sso.callback'))->assertRedirect('/admin');
@@ -108,6 +124,7 @@ class SsoLoginTest extends TestCase
 
     private function rememberCookieFromSsoSignIn(): string
     {
+        config(['id-client.provision' => true]);
         $this->mockSocialite(fn ($provider) => $provider->shouldReceive('user')->andReturn($this->fakeIdUser()));
 
         $cookie = $this->get(route('sso.callback'))->getCookie(Auth::guard('web')->getRecallerName());
