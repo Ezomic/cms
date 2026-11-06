@@ -18,10 +18,11 @@ class KeywordAndAudienceLandingPagesTest extends TestCase
         'agencies' => ['/software-developer-for-agencies', '/nl/software-ontwikkelaar-voor-bureaus'],
         'founders' => ['/mvp-developer-for-startups', '/nl/mvp-ontwikkelaar-voor-startups'],
         'smallbusiness' => ['/custom-software-for-small-business', '/nl/maatwerksoftware-voor-mkb'],
+        'linux' => ['/linux-server-setup-and-self-hosting', '/nl/linux-servers-en-self-hosting'],
     ];
 
     private const PRIVATE_NAMES = [
-        'tempo-sidecar', 'yt-transcript', 'ob-weekregistratie', 'weekregistratie', 'claude-config',
+        'github.com/ezomic/infra', 'longhouse', 'tempo-sidecar', 'yt-transcript', 'ob-weekregistratie', 'weekregistratie', 'claude-config',
         'github.com/ezomic/tempo', 'valheim-devkit',
     ];
 
@@ -275,13 +276,86 @@ class KeywordAndAudienceLandingPagesTest extends TestCase
         }
     }
 
+    public function test_the_linux_page_links_filebox_and_streambox_and_names_no_nas_software_or_infra_repo(): void
+    {
+        foreach (self::PAGES['linux'] as $path) {
+            $html = (string) $this->get($path)
+                ->assertSee('href="https://github.com/Ezomic/filebox"', false)
+                ->assertSee('href="https://github.com/Ezomic/streambox"', false)
+                ->getContent();
+
+            $this->assertSame(2, substr_count($html, 'href="https://github.com/Ezomic/'), "{$path} links another repository");
+
+            foreach (['truenas', 'openmediavault', 'github.com/ezomic/infra', 'synology', 'unraid'] as $name) {
+                $this->assertStringNotContainsString($name, strtolower($html), "{$path} names '{$name}'");
+            }
+        }
+    }
+
+    public function test_the_linux_page_describes_the_three_examples_the_rescue_angle_and_the_care_after_a_first_job(): void
+    {
+        $this->get(self::PAGES['linux'][0])
+            ->assertSee('NAS')
+            ->assertSee('without downtime', false)
+            ->assertSee('a first job comes first', false)
+            ->assertSee('on site', false);
+
+        // Application::setLocale() writes app.locale, so Dutch requests go last.
+        $this->get(self::PAGES['linux'][1])
+            ->assertSee('Enschede')
+            ->assertSee('NAS')
+            ->assertSee('zonder downtime', false)
+            ->assertSee('eerst een eerste opdracht', false)
+            ->assertSee('vastgelopen', false);
+    }
+
+    public function test_the_linux_page_names_only_tools_the_owner_uses(): void
+    {
+        $copy = strtolower(json_encode(trans('pages/linux', [], 'en'), JSON_UNESCAPED_UNICODE).json_encode(trans('pages/linux', [], 'nl'), JSON_UNESCAPED_UNICODE));
+
+        foreach (['kubernetes', 'terraform', 'proxmox', 'aws', 'azure', 'postgres', 'apache', 'nextcloud', 'plesk', 'cpanel'] as $tool) {
+            $this->assertStringNotContainsString($tool, $copy, "linux copy names '{$tool}'");
+        }
+    }
+
+    public function test_no_two_landing_pages_share_a_slug_in_either_language(): void
+    {
+        $slugs = array_merge(...array_values(self::PAGES));
+        $slugs[] = '/laravel-developer-enschede';
+        $slugs[] = '/laravel-developer-remote';
+
+        $this->assertCount(count($slugs), array_unique($slugs));
+    }
+
+    public function test_the_linux_slug_is_case_sensitive_and_a_trailing_slash_still_resolves(): void
+    {
+        $this->get(strtoupper(self::PAGES['linux'][0]))->assertNotFound();
+        $this->get('/Nl/linux-servers-en-self-hosting')->assertNotFound();
+        $this->get('/nl/Linux-Servers-En-Self-Hosting')->assertNotFound();
+
+        $this->get(self::PAGES['linux'][0].'/')->assertOk();
+    }
+
+    public function test_the_linux_page_does_not_lean_on_a_missing_translation_key(): void
+    {
+        foreach (['en', 'nl'] as $locale) {
+            $copy = (string) json_encode(trans('pages/linux', [], $locale));
+
+            $this->assertStringNotContainsString('pages/linux.', $copy);
+        }
+
+        foreach (self::PAGES['linux'] as $path) {
+            $this->get($path)->assertDontSee('pages/linux.', false);
+        }
+    }
+
     public function test_lastmod_is_the_copy_date_of_the_page(): void
     {
         $xml = (string) $this->get('/sitemap.xml')->getContent();
 
         foreach (array_keys(self::PAGES) as $key) {
             $this->assertSame(1, preg_match('#<loc>'.preg_quote(route("landing.{$key}"), '#').'</loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})#', $xml, $match));
-            $this->assertSame('2026-11-03', $match[1]);
+            $this->assertSame('2026-11-06', $match[1]);
         }
     }
 }

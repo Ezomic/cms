@@ -92,7 +92,7 @@ class AudienceLandingPagesTest extends TestCase
 
         $xml = (string) $this->get('/sitemap.xml')->getContent();
 
-        foreach (['founders' => '2027-03-01', 'smallbusiness' => '2027-03-01', 'agencies' => '2026-11-03', 'go' => '2026-11-03'] as $key => $expected) {
+        foreach (['founders' => '2027-03-01', 'smallbusiness' => '2027-03-01', 'agencies' => '2026-11-06', 'go' => '2026-11-06'] as $key => $expected) {
             $this->assertSame(1, preg_match('#<loc>'.preg_quote(route("landing.{$key}"), '#').'</loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})#', $xml, $match));
             $this->assertSame($expected, $match[1], $key);
         }
