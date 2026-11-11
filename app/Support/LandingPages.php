@@ -17,7 +17,7 @@ final class LandingPages
      * The landing copy lives in lang files, so no updated_at tracks it.
      * Bump this date whenever a page's copy changes (sitemap lastmod).
      */
-    public const COPY_UPDATED_AT = '2026-11-03';
+    public const COPY_UPDATED_AT = '2026-11-06';
 
     /**
      * Proof entries are keyed into `proof_items` of the page's lang file. A
@@ -71,6 +71,14 @@ final class LandingPages
                 'proof' => [
                     ['key' => 'school'],
                     ['key' => 'tracker', 'url' => 'https://github.com/Ezomic/tracker', 'project' => 'tracker'],
+                ],
+            ],
+            'linux' => [
+                'slug' => ['en' => 'linux-server-setup-and-self-hosting', 'nl' => 'linux-servers-en-self-hosting'],
+                'proof' => [
+                    ['key' => 'filebox', 'url' => 'https://github.com/Ezomic/filebox'],
+                    ['key' => 'streambox', 'url' => 'https://github.com/Ezomic/streambox'],
+                    ['key' => 'ownserver'],
                 ],
             ],
         ];

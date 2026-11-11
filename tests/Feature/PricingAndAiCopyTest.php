@@ -42,6 +42,8 @@ class PricingAndAiCopyTest extends TestCase
             'founders nl' => ['/nl/mvp-ontwikkelaar-voor-startups'],
             'small business en' => ['/custom-software-for-small-business'],
             'small business nl' => ['/nl/maatwerksoftware-voor-mkb'],
+            'linux en' => ['/linux-server-setup-and-self-hosting'],
+            'linux nl' => ['/nl/linux-servers-en-self-hosting'],
         ];
     }
 
@@ -138,6 +140,8 @@ class PricingAndAiCopyTest extends TestCase
             'agencies en' => ['/software-developer-for-agencies', 'AI assistants'],
             'founders en' => ['/mvp-developer-for-startups', 'AI assistants'],
             'small business en' => ['/custom-software-for-small-business', 'AI assistants'],
+            'linux nl' => ['/nl/linux-servers-en-self-hosting', 'AI-assistenten'],
+            'linux en' => ['/linux-server-setup-and-self-hosting', 'AI assistants'],
         ];
     }
 
