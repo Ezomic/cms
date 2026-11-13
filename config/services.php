@@ -35,6 +35,12 @@ return [
         ],
     ],
 
+    // Shared with Chronos, which signs every booking webhook with it. Left
+    // empty, the endpoint rejects everything.
+    'chronos' => [
+        'webhook_secret' => env('CHRONOS_WEBHOOK_SECRET'),
+    ],
+
     'thijssensoftware' => [
         'base_url' => env('THIJSSENSOFTWARE_ID_URL', 'https://id.thijssensoftware.nl'),
         'client_id' => env('THIJSSENSOFTWARE_ID_CLIENT_ID'),

@@ -87,6 +87,7 @@ never fires on merge to `main`.
 | `GET /sitemap.xml` | `sitemap` | `SitemapController` | Projects and tags, both locales, with hreflang alternates |
 | `GET /robots.txt` | `robots` | closure | Disallows `/admin` |
 | `POST /contact` | `contact.store` | `ContactController@store` | Throttled via `throttle:contact`; **inside** the locale group, so `/nl/contact` exists too (CMS-116) |
+| `POST /webhooks/chronos/bookings` | `webhooks.chronos.bookings` | `ChronosBookingWebhookController` | Chronos pushes bookings and cancellations here (CMS-153). Registered once, with the `web` group removed (no session, cookies or CSRF), behind `throttle:chronos-webhook` and `VerifyChronosSignature` |
 
 Every route in the `$publicRoutes` closure is registered **twice**: unprefixed (English default) and
 under a `/nl` prefix (`nl.` name prefix). The OG images, sitemap and robots sit outside that closure
@@ -110,6 +111,8 @@ The admin group also carries `HandleInertiaRequests`; it is **not** in the globa
 - Users: full CRUD
 - Contact submissions: `index` (filterable by unread/read/replied), mark read/unread, mark
   replied/unreplied, save an internal note, destroy (CMS-123)
+- Bookings: `index` (filterable by upcoming/past/cancelled), mark read/unread. **Read only**: no
+  edit, cancel or delete, because Chronos owns the data (CMS-153)
 - `GET /admin/content-gaps`: content completeness report (`content-gaps.index`, CMS-120)
 - `GET /admin/security`: passkey management (`security.show`)
 
@@ -139,6 +142,7 @@ The admin group also carries `HandleInertiaRequests`; it is **not** in the globa
 | `PageView` | (none) | Append-only path + timestamp + `referrer_host`; written via the `RecordsPageViews` concern. Referrer is the **host only**, never a full URL, and own-domain referrals are stored as `direct` (CMS-115) |
 | `PageViewTotal` | (none) | Per-path lifetime totals rolled up from pruned `page_views` |
 | `ContactSubmission` | (none) | Saved on every valid contact form submit; `read_at`, `replied_at` and an admin-only `note` (CMS-123) |
+| `Booking` | (none) | A copy of a Chronos booking, upserted by `uuid` from the webhook. `booked_at` is Chronos's `created_at`; `created_at` is when the CMS received it. `read_at` is the only CMS-owned column (CMS-153) |
 
 ### Traits
 
@@ -165,10 +169,11 @@ The admin group also carries `HandleInertiaRequests`; it is **not** in the globa
 | `LandingController` | `enschede`, `remote`, and `page` (every page registered in `LandingPages`, view `landing/page.blade.php`, copy in `lang/{en,nl}/pages/{key}.php`) |
 | `SitemapController` | `__invoke` (XML sitemap) |
 | `ContactController` | `store`: validates, runs the bot checks, saves `ContactSubmission`, sends `ContactFormSubmitted` synchronously and queues `ContactAcknowledgement` to the sender |
+| `ChronosBookingWebhookController` | `__invoke`: validates with `StoreChronosBookingRequest` (422 as JSON, never a redirect), hands off to the `Bookings\RecordChronosBooking` action, returns 204 |
 
 **Admin** (`app/Http/Controllers/Admin/`): all return `Inertia::render`
 
-`ContactSubmissionController`, `ContentGapController`, `DashboardController`, `ProfileController`,
+`BookingController`, `ContactSubmissionController`, `ContentGapController`, `DashboardController`, `ProfileController`,
 `ProjectController`, `SecurityController`, `SkillController`, `TestimonialController`,
 `UserController`
 
@@ -207,7 +212,12 @@ use `HandlesReordering`.
 - **`SecurityHeaders`**: X-Frame-Options, nosniff, Referrer-Policy, Permissions-Policy, HSTS on
   secure requests. Appended to the `web` group.
 - **`HandleInertiaRequests`**: applied to the **admin route group only**, not the `web` group.
-  Shares `auth`, `counts.unread`, `flash.status` and the portal app switcher data.
+  Shares `auth`, `counts.unread` (contact inbox), `counts.unreadBookings`, `flash.status` and the
+  portal app switcher data.
+- **`VerifyChronosSignature`**: on the Chronos webhook route only. Requires `X-Chronos-Timestamp`
+  (unix seconds, within 300 seconds of now) and `X-Chronos-Signature`, the lowercase hex
+  HMAC-SHA256 of `{timestamp}.{raw body}` keyed with `config('services.chronos.webhook_secret')`
+  (env `CHRONOS_WEBHOOK_SECRET`). Anything else is a 401, including an unset secret.
 
 ### Frontend layout
 
@@ -446,6 +456,14 @@ php artisan test --filter ProjectTest
     scrolls to `#contact`. It stays unset until Chronos has a public booking page (CHRON-75). Below
     the services grid, `#start` ("Zo begin je") holds the two first-step cards (idea session and
     stuck-project rescue), kept out of the four-card grid on purpose (CMS-148).
+
+16. **Bookings are a copy, and Chronos is the sender** (CMS-153): the webhook contract (events,
+    field names, time format `Y-m-d\TH:i:s\Z`, signature scheme) is shared with the Chronos repo
+    (CHRON-81), so changing it here breaks delivery. Deliveries can repeat or arrive out of order:
+    `RecordChronosBooking` upserts by `uuid`, and once a booking is cancelled no later event
+    un-cancels it. A cancellation clears `read_at` so the owner notices. A page prop named `counts`
+    replaces the shared sidebar counts (Inertia does not deep-merge), which is why the Bookings
+    screen calls its filter counts `totals`.
 
 ## Tracker
 
