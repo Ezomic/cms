@@ -43,6 +43,18 @@ class StoreChronosBookingRequest extends FormRequest
     }
 
     /**
+     * Only the JSON body is signed, so only the JSON body is validated: the
+     * query string is never merged in, and a missing Content-Type header does
+     * not turn a valid delivery into an empty one.
+     *
+     * @return array<array-key, mixed>
+     */
+    public function validationData(): array
+    {
+        return $this->json()->all();
+    }
+
+    /**
      * The sender is a server, not a browser: it gets a 422 whatever Accept
      * header it sent, never the redirect a form post would get.
      */

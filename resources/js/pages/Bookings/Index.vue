@@ -58,6 +58,9 @@ const toggle = (row: Row) => {
 };
 const markUnread = (row: Row) => router.post(`/admin/bookings/${row.id}/unread`, {}, { preserveScroll: true });
 
+// A valid address may contain "?" or "&", which a mailto link would read as
+// extra headers (bcc, body). Encoding them keeps the link to one recipient.
+const mailHref = (email: string) => `mailto:${email.replace(/[?&#%]/g, encodeURIComponent)}`;
 const telHref = (phone: string) => `tel:${phone.replace(/[^\d+]/g, '')}`;
 </script>
 
@@ -111,7 +114,7 @@ const telHref = (phone: string) => `tel:${phone.replace(/[^\d+]/g, '')}`;
                         <dd>{{ row.is_cancelled ? `Cancelled ${row.cancelled_when}` : 'Booked' }}</dd>
                         <dt class="text-muted-foreground">Email</dt>
                         <dd>
-                            <a :href="`mailto:${row.email}`" class="underline underline-offset-2">{{ row.email }}</a>
+                            <a :href="mailHref(row.email)" class="underline underline-offset-2">{{ row.email }}</a>
                         </dd>
                         <dt class="text-muted-foreground">Phone</dt>
                         <dd>

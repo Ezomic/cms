@@ -30,11 +30,11 @@ class RecordChronosBooking
      */
     private function record(string $event, array $data): void
     {
-        $booking = Booking::firstWhere('uuid', $data['uuid']);
-        $cancelledAt = $this->cancelledAt($event, $data);
+        $attributes = [...$this->attributes($data), 'cancelled_at' => $this->cancelledAt($event, $data)];
+        $booking = Booking::firstWhere('uuid', $attributes['uuid']);
 
         if ($booking === null) {
-            Booking::create([...$this->attributes($data), 'cancelled_at' => $cancelledAt]);
+            Booking::create($attributes);
 
             return;
         }
@@ -45,13 +45,11 @@ class RecordChronosBooking
             return;
         }
 
-        $booking->fill([...$this->attributes($data), 'cancelled_at' => $cancelledAt]);
-
-        if ($cancelledAt !== null) {
-            $booking->forceFill(['read_at' => null]);
-        }
-
-        $booking->save();
+        // A cancellation makes a read booking unread again, so it is noticed.
+        $booking->forceFill([
+            ...$attributes,
+            'read_at' => $attributes['cancelled_at'] === null ? $booking->read_at : null,
+        ])->save();
     }
 
     /**
@@ -73,18 +71,27 @@ class RecordChronosBooking
     private function attributes(array $data): array
     {
         return [
-            'uuid' => $data['uuid'],
-            'type' => $data['type'],
+            // MySQL compares the unique uuid case-insensitively, SQLite does
+            // not. One spelling keeps the lookup the same on both.
+            'uuid' => strtolower((string) $data['uuid']),
+            'type' => $this->text($data['type']),
             'starts_at' => $this->time((string) $data['starts_at']),
             'ends_at' => $this->time((string) $data['ends_at']),
-            'guest_name' => $data['guest_name'],
-            'guest_email' => $data['guest_email'],
-            'guest_phone' => $data['guest_phone'] ?? null,
-            'guest_note' => $data['guest_note'] ?? null,
-            'guest_timezone' => $data['guest_timezone'],
-            'locale' => $data['locale'],
+            'guest_name' => $this->text($data['guest_name']),
+            'guest_email' => $this->text($data['guest_email']),
+            'guest_phone' => $this->text($data['guest_phone'] ?? null),
+            'guest_note' => $this->text($data['guest_note'] ?? null),
+            'guest_timezone' => $this->text($data['guest_timezone']),
+            'locale' => $this->text($data['locale']),
             'booked_at' => $this->time((string) $data['created_at']),
         ];
+    }
+
+    private function text(?string $value): ?string
+    {
+        $value = trim((string) $value);
+
+        return $value === '' ? null : $value;
     }
 
     private function time(string $value): CarbonImmutable

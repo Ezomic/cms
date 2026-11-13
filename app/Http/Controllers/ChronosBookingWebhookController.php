@@ -12,10 +12,10 @@ class ChronosBookingWebhookController extends Controller
 {
     public function __invoke(StoreChronosBookingRequest $request, RecordChronosBooking $record): Response
     {
-        /** @var array<string, string|null> $booking */
-        $booking = $request->validated('booking');
+        /** @var array{event: string, booking: array<string, string|null>} $payload */
+        $payload = $request->validated();
 
-        $record->handle($request->string('event')->toString(), $booking);
+        $record->handle($payload['event'], $payload['booking']);
 
         return response()->noContent();
     }

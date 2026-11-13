@@ -435,6 +435,56 @@ class ChronosBookingWebhookTest extends TestCase
         $this->assertSame('2026-11-20 09:15:00', $booking->cancelled_at?->toDateTimeString());
     }
 
+    public function test_a_created_event_that_already_carries_a_cancellation_is_stored_cancelled(): void
+    {
+        $this->send($this->payload('booking.created', ['cancelled_at' => '2026-11-20T09:15:00Z']))->assertNoContent();
+
+        $this->assertNotNull(Booking::sole()->cancelled_at);
+    }
+
+    public function test_the_same_uuid_in_another_case_is_the_same_booking(): void
+    {
+        $this->send($this->payload());
+        $this->send($this->payload('booking.cancelled', ['uuid' => strtoupper(self::UUID)]))->assertNoContent();
+
+        $booking = Booking::sole();
+
+        $this->assertSame(self::UUID, $booking->uuid);
+        $this->assertNotNull($booking->cancelled_at);
+    }
+
+    public function test_a_signed_json_body_is_read_without_a_content_type_header(): void
+    {
+        $body = (string) json_encode($this->payload(overrides: ['guest_name' => '  Jane Doe  ', 'guest_phone' => '  ']));
+        $timestamp = now()->getTimestamp();
+
+        $this->call('POST', self::URL, [], [], [], [
+            'CONTENT_TYPE' => 'text/plain',
+            'HTTP_X_CHRONOS_TIMESTAMP' => (string) $timestamp,
+            'HTTP_X_CHRONOS_SIGNATURE' => hash_hmac('sha256', $timestamp.'.'.$body, self::SECRET),
+        ], $body)->assertNoContent();
+
+        $booking = Booking::sole();
+
+        $this->assertSame('Jane Doe', $booking->guest_name);
+        $this->assertNull($booking->guest_phone);
+    }
+
+    public function test_unsigned_query_parameters_never_reach_the_booking(): void
+    {
+        $body = (string) json_encode(['event' => 'booking.created']);
+        $timestamp = now()->getTimestamp();
+        $query = http_build_query(['booking' => $this->payload()['booking']]);
+
+        $this->call('POST', self::URL.'?'.$query, [], [], [], [
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_X_CHRONOS_TIMESTAMP' => (string) $timestamp,
+            'HTTP_X_CHRONOS_SIGNATURE' => hash_hmac('sha256', $timestamp.'.'.$body, self::SECRET),
+        ], $body)->assertStatus(422);
+
+        $this->assertSame(0, Booking::count());
+    }
+
     public function test_get_requests_fall_through_to_the_404_page(): void
     {
         $this->get(self::URL)->assertNotFound();
