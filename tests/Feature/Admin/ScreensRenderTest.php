@@ -39,6 +39,7 @@ class ScreensRenderTest extends TestCase
             "/admin/skills/{$skill->id}/edit" => 'Skills/Form',
             '/admin/skills/trash' => 'Skills/Trash',
             '/admin/contact-submissions' => 'ContactSubmissions/Index',
+            '/admin/bookings' => 'Bookings/Index',
             '/admin/profile' => 'Profile/Edit',
             '/admin/users' => 'Users/Index',
             '/admin/users/create' => 'Users/Form',

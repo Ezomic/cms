@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\ContactSubmissionController;
 use App\Http\Controllers\Admin\ContentGapController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -11,12 +12,14 @@ use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\LoginCodeController;
+use App\Http\Controllers\ChronosBookingWebhookController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\OgImageController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\VerifyChronosSignature;
 use App\Support\LandingPages;
 use Illuminate\Support\Facades\Route;
 
@@ -57,6 +60,14 @@ Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 Route::get('/robots.txt', fn () => response("User-agent: *\nDisallow: /admin\n\nSitemap: ".route('sitemap')."\n", 200, ['Content-Type' => 'text/plain']))->name('robots');
 Route::get('/og/home.png', [OgImageController::class, 'home'])->name('og.home');
 Route::get('/og/work/{project:slug}.png', [OgImageController::class, 'project'])->name('og.project');
+
+// Chronos pushes each booking and cancellation here (CMS-153). A server calls
+// it, not a browser, so the whole web group is dropped: no session, cookies or
+// CSRF token. The signature middleware is the only thing guarding it.
+Route::post('/webhooks/chronos/bookings', ChronosBookingWebhookController::class)
+    ->name('webhooks.chronos.bookings')
+    ->withoutMiddleware('web')
+    ->middleware(['throttle:chronos-webhook', VerifyChronosSignature::class]);
 
 // Admin auth
 Route::get('/admin/login', [AdminLoginController::class, 'show'])->name('admin.login');
@@ -102,6 +113,10 @@ Route::middleware(['auth', HandleInertiaRequests::class])->prefix('admin')->name
     Route::post('/contact-submissions/{contactSubmission}/unreplied', [ContactSubmissionController::class, 'markUnreplied'])->name('contact-submissions.unreplied');
     Route::post('/contact-submissions/{contactSubmission}/note', [ContactSubmissionController::class, 'saveNote'])->name('contact-submissions.note');
     Route::delete('/contact-submissions/{contactSubmission}', [ContactSubmissionController::class, 'destroy'])->name('contact-submissions.destroy');
+
+    Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
+    Route::post('/bookings/{booking}/read', [BookingController::class, 'markRead'])->name('bookings.read');
+    Route::post('/bookings/{booking}/unread', [BookingController::class, 'markUnread'])->name('bookings.unread');
 
     Route::get('/content-gaps', [ContentGapController::class, 'index'])->name('content-gaps.index');
 

@@ -1,7 +1,19 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
-import { LayoutDashboard, FolderKanban, Quote, ListChecks, Inbox, User, Users, ShieldCheck, Search, FileWarning } from 'lucide-vue-next';
+import {
+    LayoutDashboard,
+    FolderKanban,
+    Quote,
+    ListChecks,
+    Inbox,
+    User,
+    Users,
+    ShieldCheck,
+    Search,
+    FileWarning,
+    CalendarClock,
+} from 'lucide-vue-next';
 import PortalSwitcher from '@/components/PortalSwitcher.vue';
 
 defineProps<{ title?: string }>();
@@ -9,7 +21,7 @@ defineProps<{ title?: string }>();
 interface SharedProps {
     appName: string;
     auth: { user: { name: string | null } | null };
-    counts: { unread: number };
+    counts: { unread: number; unreadBookings: number };
     flash: { status: string | null };
 }
 
@@ -65,6 +77,14 @@ const isActive = (match: string) => (match === '/admin' ? url.value === '/admin'
                     v-if="shared.counts?.unread"
                     class="bg-accent text-accent-foreground ml-auto rounded-full px-1.5 py-0.5 font-mono text-[11px]"
                     >{{ shared.counts.unread }}</span
+                >
+            </a>
+            <a href="/admin/bookings" class="nav" :class="isActive('/admin/bookings') ? 'nav-on' : ''">
+                <CalendarClock class="size-[17px]" /> Bookings
+                <span
+                    v-if="shared.counts?.unreadBookings"
+                    class="bg-accent text-accent-foreground ml-auto rounded-full px-1.5 py-0.5 font-mono text-[11px]"
+                    >{{ shared.counts.unreadBookings }}</span
                 >
             </a>
 
