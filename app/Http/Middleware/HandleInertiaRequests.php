@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Booking;
 use App\Models\ContactSubmission;
 use App\Services\Portal\IdPortalClient;
 use Illuminate\Http\Request;
@@ -47,6 +48,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'counts' => [
                 'unread' => fn () => $user ? ContactSubmission::whereNull('read_at')->count() : 0,
+                'unreadBookings' => fn () => $user ? Booking::whereNull('read_at')->count() : 0,
             ],
             'flash' => [
                 'status' => fn () => $request->session()->get('status'),
