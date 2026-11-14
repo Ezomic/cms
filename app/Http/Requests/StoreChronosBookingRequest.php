@@ -7,6 +7,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class StoreChronosBookingRequest extends FormRequest
@@ -47,11 +48,32 @@ class StoreChronosBookingRequest extends FormRequest
      * query string is never merged in, and a missing Content-Type header does
      * not turn a valid delivery into an empty one.
      *
+     * Booking values are trimmed here, before the rules run, so what is
+     * validated is exactly what gets stored: a required field holding only
+     * whitespace, NUL bytes or invisible characters fails as missing.
+     *
      * @return array<array-key, mixed>
      */
     public function validationData(): array
     {
-        return $this->json()->all();
+        $data = $this->json()->all();
+
+        if (is_array($data['booking'] ?? null)) {
+            $data['booking'] = array_map($this->trimmed(...), $data['booking']);
+        }
+
+        return $data;
+    }
+
+    private function trimmed(mixed $value): mixed
+    {
+        if (! is_string($value)) {
+            return $value;
+        }
+
+        $value = Str::trim($value);
+
+        return $value === '' ? null : $value;
     }
 
     /**

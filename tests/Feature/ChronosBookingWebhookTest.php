@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Middleware\VerifyChronosSignature;
 use App\Models\Booking;
 use App\Models\PageView;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -520,12 +521,102 @@ class ChronosBookingWebhookTest extends TestCase
         $this->assertSame(0, PageView::count());
     }
 
-    public function test_deliveries_are_throttled(): void
+    public function test_the_signature_is_checked_before_the_rate_limit(): void
     {
-        for ($i = 0; $i < 60; $i++) {
+        $route = Route::getRoutes()->getByName('webhooks.chronos.bookings');
+
+        $this->assertNotNull($route);
+
+        // gatherRouteMiddleware returns the list after Laravel's priority
+        // sorting, which is the order the middleware really run in.
+        $middleware = Route::gatherRouteMiddleware($route);
+        $signature = array_search(VerifyChronosSignature::class, $middleware, true);
+        $throttle = array_search('Illuminate\Routing\Middleware\ThrottleRequests:chronos-webhook', $middleware, true);
+
+        $this->assertIsInt($signature);
+        $this->assertIsInt($throttle);
+        $this->assertLessThan($throttle, $signature);
+    }
+
+    public function test_unsigned_requests_never_use_up_the_allowance_of_signed_ones(): void
+    {
+        for ($i = 0; $i < 150; $i++) {
             $this->deliver('{}', ['X-Chronos-Signature' => 'wrong'])->assertUnauthorized();
         }
 
-        $this->deliver('{}', ['X-Chronos-Signature' => 'wrong'])->assertStatus(429);
+        for ($i = 0; $i < 150; $i++) {
+            $this->deliver('{}', ['X-Chronos-Signature' => null])->assertUnauthorized();
+        }
+
+        $this->send($this->payload())->assertNoContent();
+
+        $this->assertSame(1, Booking::count());
+    }
+
+    public function test_signed_deliveries_are_throttled(): void
+    {
+        for ($i = 0; $i < 60; $i++) {
+            $this->send($this->payload())->assertNoContent();
+        }
+
+        $this->send($this->payload())->assertStatus(429);
+    }
+
+    #[DataProvider('requiredTextFields')]
+    public function test_required_field_that_is_empty_after_trimming_is_a_validation_failure(string $field, string $value, string $contentType): void
+    {
+        $body = (string) json_encode($this->payload(overrides: [$field => $value]));
+        $timestamp = now()->getTimestamp();
+
+        $this->call('POST', self::URL, [], [], [], [
+            'CONTENT_TYPE' => $contentType,
+            'HTTP_X_CHRONOS_TIMESTAMP' => (string) $timestamp,
+            'HTTP_X_CHRONOS_SIGNATURE' => hash_hmac('sha256', $timestamp.'.'.$body, self::SECRET),
+        ], $body)->assertStatus(422);
+
+        $this->assertSame(0, Booking::count());
+    }
+
+    /**
+     * @return array<string, array{string, string, string}>
+     */
+    public static function requiredTextFields(): array
+    {
+        $values = [
+            'a NUL byte' => "\0",
+            'NUL bytes and spaces' => " \0 \0\t",
+            'whitespace' => " \n\t ",
+            'a zero width space' => "\u{200B}",
+            'a non-breaking space' => "\u{00A0}",
+        ];
+
+        $cases = [];
+
+        foreach (['type', 'guest_name', 'guest_timezone', 'locale'] as $field) {
+            foreach ($values as $label => $value) {
+                foreach (['application/json', 'text/plain'] as $contentType) {
+                    $cases["{$field} of {$label} as {$contentType}"] = [$field, $value, $contentType];
+                }
+            }
+        }
+
+        return $cases;
+    }
+
+    public function test_optional_fields_that_are_empty_after_trimming_are_stored_as_null(): void
+    {
+        $this->send($this->payload(overrides: ['guest_phone' => "\0", 'guest_note' => " \0\u{200B} "]))->assertNoContent();
+
+        $booking = Booking::sole();
+
+        $this->assertNull($booking->guest_phone);
+        $this->assertNull($booking->guest_note);
+    }
+
+    public function test_a_nul_byte_around_a_value_is_trimmed_away(): void
+    {
+        $this->send($this->payload(overrides: ['guest_name' => "\0Jane Doe\0"]))->assertNoContent();
+
+        $this->assertSame('Jane Doe', Booking::sole()->guest_name);
     }
 }

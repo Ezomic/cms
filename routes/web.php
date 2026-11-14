@@ -63,11 +63,13 @@ Route::get('/og/work/{project:slug}.png', [OgImageController::class, 'project'])
 
 // Chronos pushes each booking and cancellation here (CMS-153). A server calls
 // it, not a browser, so the whole web group is dropped: no session, cookies or
-// CSRF token. The signature middleware is the only thing guarding it.
+// CSRF token. The signature middleware is the only thing guarding it, and it
+// runs before the throttle: only signed requests count against the limit, so
+// unsigned junk cannot use up the allowance and get real bookings a 429.
 Route::post('/webhooks/chronos/bookings', ChronosBookingWebhookController::class)
     ->name('webhooks.chronos.bookings')
     ->withoutMiddleware('web')
-    ->middleware(['throttle:chronos-webhook', VerifyChronosSignature::class]);
+    ->middleware([VerifyChronosSignature::class, 'throttle:chronos-webhook']);
 
 // Admin auth
 Route::get('/admin/login', [AdminLoginController::class, 'show'])->name('admin.login');

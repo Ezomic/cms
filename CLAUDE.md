@@ -87,7 +87,7 @@ never fires on merge to `main`.
 | `GET /sitemap.xml` | `sitemap` | `SitemapController` | Projects and tags, both locales, with hreflang alternates |
 | `GET /robots.txt` | `robots` | closure | Disallows `/admin` |
 | `POST /contact` | `contact.store` | `ContactController@store` | Throttled via `throttle:contact`; **inside** the locale group, so `/nl/contact` exists too (CMS-116) |
-| `POST /webhooks/chronos/bookings` | `webhooks.chronos.bookings` | `ChronosBookingWebhookController` | Chronos pushes bookings and cancellations here (CMS-153). Registered once, with the `web` group removed (no session, cookies or CSRF), behind `throttle:chronos-webhook` and `VerifyChronosSignature` |
+| `POST /webhooks/chronos/bookings` | `webhooks.chronos.bookings` | `ChronosBookingWebhookController` | Chronos pushes bookings and cancellations here (CMS-153). Registered once, with the `web` group removed (no session, cookies or CSRF), behind `VerifyChronosSignature` and then `throttle:chronos-webhook`, in that order: only signed requests count against the limit |
 
 Every route in the `$publicRoutes` closure is registered **twice**: unprefixed (English default) and
 under a `/nl` prefix (`nl.` name prefix). The OG images, sitemap and robots sit outside that closure
