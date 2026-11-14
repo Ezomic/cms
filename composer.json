@@ -18,7 +18,7 @@
         "laravel/passkeys": "^0.2.1",
         "laravel/tinker": "^3.0",
         "thijssensoftware/flare-client": "^0.3.4",
-        "thijssensoftware/id-client": "^0.4.1",
+        "thijssensoftware/id-client": "^0.4.2",
         "thijssensoftware/snag-client": "^0.1.0"
     },
     "require-dev": {
